@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GG Academy — Карта курса</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#F8F9FC;--bg2:#FFFFFF;--bg3:#EEF1F8;
+  --border:#DDE2EE;--text:#1A2035;--text2:#4A5568;--text3:#8A95A8;
+  --gold:#C9A84C;--gold-dk:#8A6820;--gold-bg:rgba(201,168,76,.08);
+  --teal:#0F8A7A;--teal-bg:rgba(15,138,122,.07);
+  --navy:#0D1B2A;
+  --m1:#C9A84C;--m2:#2DD4BF;--m3:#14B8A6;--m4:#D97706;--m5:#A78BFA;--m6:#C9A84C;
+  --mono:'IBM Plex Mono',monospace;--sans:'Inter',sans-serif;
+  --r:10px;--sh:0 2px 10px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding:32px 20px 60px}
+
+/* ── PAGE ── */
+.page{max-width:1080px;margin:0 auto}
+
+/* ── HEADER ── */
+.header{background:var(--navy);border-radius:14px;padding:32px 36px;margin-bottom:28px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(201,168,76,.08)}
+.header::after{content:'';position:absolute;bottom:-60px;left:-20px;width:180px;height:180px;border-radius:50%;background:rgba(201,168,76,.05)}
+.header>*{position:relative;z-index:1}
+.header-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:10px}
+.header-title{font-size:26px;font-weight:700;color:#F0D88A;margin-bottom:8px;line-height:1.25}
+.header-sub{font-size:14px;color:rgba(248,244,238,.55);line-height:1.65;max-width:640px}
+.header-meta{display:flex;gap:20px;margin-top:18px;flex-wrap:wrap}
+.hm-item{display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(248,244,238,.5)}
+.hm-val{font-family:var(--mono);font-weight:600;color:#F0D88A;font-size:13px}
+
+/* ── COURSE GOAL ── */
+.goal-card{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r);padding:20px 24px;margin-bottom:28px;box-shadow:var(--sh)}
+.goal-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dk);margin-bottom:10px;font-weight:600}
+.goal-text{font-size:14px;color:var(--text2);line-height:1.75}
+.goal-text strong{color:var(--text);font-weight:600}
+.goal-outcomes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.go-item{background:var(--bg3);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.55;border:1px solid var(--border)}
+.go-item strong{display:block;font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;font-family:var(--mono)}
+
+/* ── SECTION HEADER ── */
+.sec-header{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* ── MODULE CARDS ── */
+.modules{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
+.mod-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.mod-header{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s}
+.mod-header:hover{background:var(--bg3)}
+.mod-num{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:16px;font-weight:700;color:white;flex-shrink:0}
+.mod-title-wrap{}
+.mod-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.mod-title{font-size:15px;font-weight:700;color:var(--text)}
+.mod-meta{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.tag{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;white-space:nowrap}
+.tag-xp{background:var(--gold-bg);color:var(--gold-dk)}
+.tag-time{background:var(--bg3);color:var(--text3)}
+.mod-body{padding:0 22px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+
+.col-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;font-weight:600}
+.item-list{display:flex;flex-direction:column;gap:5px}
+.item{display:flex;gap:8px;font-size:12px;color:var(--text2);line-height:1.5;padding:5px 8px;border-radius:6px;background:var(--bg3)}
+.item-icon{flex-shrink:0;font-size:13px}
+
+.goal-block{background:var(--bg3);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.65;border-left:3px solid}
+.goal-block strong{display:block;font-size:11px;font-weight:700;color:var(--text);margin-bottom:5px}
+.why-block{background:var(--bg3);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.65;margin-top:8px}
+.why-block strong{color:var(--text);font-weight:600}
+
+.mechanics-list{display:flex;flex-direction:column;gap:5px}
+.mech{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--bg2)}
+.mech-icon{font-size:14px;flex-shrink:0}
+.mech-text{}
+.mech-why{font-size:10px;color:var(--text3);margin-top:1px}
+
+/* ── PROGRESSION MAP ── */
+.prog-map{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:28px;box-shadow:var(--sh)}
+.prog-row{display:flex;align-items:stretch;gap:0}
+.prog-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.prog-step::after{content:'→';position:absolute;right:-10px;top:22px;font-size:14px;color:var(--text3);z-index:2}
+.prog-step:last-child::after{display:none}
+.prog-dot{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;border:2px solid}
+.prog-label{font-family:var(--mono);font-size:9px;text-align:center;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;line-height:1.45}
+.prog-sublabel{font-size:10px;color:var(--text2);text-align:center;margin-top:3px;line-height:1.4;max-width:80px}
+
+/* ── TAXONOMY TABLE ── */
+.taxonomy{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px;box-shadow:var(--sh)}
+.tx-head{display:grid;grid-template-columns:120px repeat(6,1fr);background:var(--bg3);border-bottom:1px solid var(--border)}
+.tx-cell{padding:10px 12px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);font-weight:600;border-right:1px solid var(--border)}
+.tx-cell:last-child{border-right:none}
+.tx-row{display:grid;grid-template-columns:120px repeat(6,1fr);border-bottom:1px solid var(--border)}
+.tx-row:last-child{border-bottom:none}
+.tx-label{padding:10px 12px;font-size:11px;font-weight:600;color:var(--text2);background:var(--bg3);border-right:1px solid var(--border);display:flex;align-items:center}
+.tx-val{padding:10px 12px;font-size:11px;color:var(--text2);border-right:1px solid var(--border);display:flex;align-items:center;line-height:1.4}
+.tx-val:last-child{border-right:none}
+.dot-yes{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.dot-no{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--border);margin-right:4px}
+
+/* ── BOTTOM ROW ── */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.info-card h3{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.info-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.info-card ul li{font-size:12px;color:var(--text2);line-height:1.55;padding-left:16px;position:relative}
+.info-card ul li::before{content:'→';position:absolute;left:0;color:var(--gold-dk);font-size:10px;font-weight:700}
+
+/* ── FOOTER ── */
+.footer{text-align:center;font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;padding-top:24px;border-top:1px solid var(--border)}
+
+@media(max-width:700px){
+  .mod-body{grid-template-columns:1fr}
+  .goal-outcomes{grid-template-columns:1fr}
+  .bottom-grid{grid-template-columns:1fr}
+  .prog-row{flex-direction:column;gap:12px}
+  .prog-step::after{display:none}
+  .tx-head,.tx-row{grid-template-columns:80px repeat(3,1fr)}
+  .tx-head .tx-cell:nth-child(n+5),.tx-row .tx-val:nth-child(n+5){display:none}
+  .header{padding:22px 18px}
+  .header-title{font-size:20px}
+  body{padding:16px 12px 40px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-eyebrow">Программа курса · Golden Goose Academy</div>
+  <div class="header-title">«Дело о вертикали mVAS» — карта обучения</div>
+  <div class="header-sub">Онбординг-курс в формате RPG для методолога, впервые работающего с CPA-платформой в вертикали mVAS. Детектив-нуар нарратив + iSpring-механики.</div>
+  <div class="header-meta">
+    <div class="hm-item">📚 Модулей <span class="hm-val">6</span></div>
+    <div class="hm-item">⏱ Общее время <span class="hm-val">6–8 часов</span></div>
+    <div class="hm-item">⭐ Суммарно XP <span class="hm-val">2 200</span></div>
+    <div class="hm-item">🎭 Формат <span class="hm-val">RPG + интерактив</span></div>
+    <div class="hm-item">👤 Персонаж <span class="hm-val">Ирина — методолог-детектив</span></div>
+  </div>
+</div>
+
+<!-- COURSE GOAL -->
+<div class="goal-card">
+  <div class="goal-label">Цель курса</div>
+  <div class="goal-text">
+    Методолог должен освоить вертикаль mVAS на уровне, достаточном для <strong>проектирования обучения внутри Golden Goose</strong> — строить профили компетенций, кейсы, матрицы оценки и курсы для AM-команды. Не стать AM, но говорить на одном языке с AM и понимать вертикаль изнутри.
+  </div>
+  <div class="goal-outcomes">
+    <div class="go-item">
+      <strong>Предметная компетентность</strong>
+      Знать экосистему, типы офферов, механику EPC/апрув/постбек на уровне уверенного объяснения
+    </div>
+    <div class="go-item">
+      <strong>Операционное понимание</strong>
+      Знать рабочие процессы AM: диагностика, коммуникация с партнёром, compliance, рабочий день
+    </div>
+    <div class="go-item">
+      <strong>Методологическая применимость</strong>
+      Уметь задавать правильные вопросы AM, строить обучающие сценарии на реальных ситуациях вертикали
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESSION MAP -->
+<div class="sec-header">Карта прогрессии знаний</div>
+<div class="prog-map">
+  <div class="prog-row">
+    <div class="prog-step">
+      <div class="prog-dot" style="background:rgba(201,168,76,.1);border-color:var(--m1)">🏢</div>
+      <div class="prog-label" style="color:var(--m1)">М1</div>
+      <div class="prog-sublabel">Кто есть кто в системе</div>
+    </div>
+    <div class="prog-step">
+      <div class="prog-dot" style="background:rgba(45,212,191,.1);border-color:var(--m2)">💰</div>
+      <div class="prog-label" style="color:var(--m2)">М2</div>
+      <div class="prog-sublabel">Как работают деньги</div>
+    </div>
+    <div class="prog-step">
+      <div class="prog-dot" style="background:rgba(20,184,166,.1);border-color:var(--m3)">🔗</div>
+      <div class="prog-label" style="color:var(--m3)">М3</div>
+      <div class="prog-sublabel">Техническая механика</div>
+    </div>
+    <div class="prog-step">
+      <div class="prog-dot" style="background:rgba(217,119,6,.1);border-color:var(--m4)">🌍</div>
+      <div class="prog-label" style="color:var(--m4)">М4</div>
+      <div class="prog-sublabel">Диагностика апрува</div>
+    </div>
+    <div class="prog-step">
+      <div class="prog-dot" style="background:rgba(167,139,250,.1);border-color:var(--m5)">😤</div>
+      <div class="prog-label" style="color:var(--m5)">М5</div>
+      <div class="prog-sublabel">Кризисная коммуникация</div>
+    </div>
+    <div class="prog-step">
+      <div class="prog-dot" style="background:rgba(201,168,76,.1);border-color:var(--m6)">⭐</div>
+      <div class="prog-label" style="color:var(--m6)">М6</div>
+      <div class="prog-sublabel">Правила и практика</div>
+    </div>
+  </div>
+  <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:12px;color:var(--text2)">
+    <div style="padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--m1)"><strong style="display:block;font-size:11px;color:var(--text);margin-bottom:3px">М1–М2: Концептуальный слой</strong>Экосистема, роли, бизнес-модель. Отвечает на вопрос «как устроено»</div>
+    <div style="padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--m3)"><strong style="display:block;font-size:11px;color:var(--text);margin-bottom:3px">М3–М4: Операционный слой</strong>Техника и диагностика. Отвечает на вопрос «как работает и что ломается»</div>
+    <div style="padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--m5)"><strong style="display:block;font-size:11px;color:var(--text);margin-bottom:3px">М5–М6: Поведенческий слой</strong>Коммуникация и правила. Отвечает на вопрос «как действовать»</div>
+  </div>
+</div>
+
+<!-- MODULES -->
+<div class="sec-header">Программа по модулям</div>
+<div class="modules">
+
+  <!-- M1 -->
+  <div class="mod-card">
+    <div class="mod-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none'">
+      <div class="mod-num" style="background:var(--m1)">1</div>
+      <div class="mod-title-wrap">
+        <div class="mod-eyebrow" style="color:var(--m1)">День первый</div>
+        <div class="mod-title">Первый день — экосистема и роли</div>
+      </div>
+      <div class="mod-meta">
+        <span class="tag tag-xp">200 XP</span>
+        <span class="tag tag-time">~25 мин</span>
+      </div>
+    </div>
+    <div class="mod-body">
+      <div>
+        <div class="col-label">Что изучаем</div>
+        <div class="item-list">
+          <div class="item"><span class="item-icon">🏢</span>Три роли в экосистеме: рекламодатель, Golden Goose, партнёр</div>
+          <div class="item"><span class="item-icon">💰</span>Маржа платформы — откуда берётся и как считается</div>
+          <div class="item"><span class="item-icon">📋</span>Структура оффера: ГЕО + механика + выплата + CR</div>
+          <div class="item"><span class="item-icon">📱</span>Источники трафика: Pop, Push, In-App, соцсети</div>
+          <div class="item"><span class="item-icon">🔗</span>Цепочка движения денег: кто платит кому и за что</div>
+        </div>
+        <div class="goal-block" style="border-color:var(--m1);margin-top:12px">
+          <strong>Цель модуля</strong>
+          Сформировать ментальную модель экосистемы. После М1 студент должен уверенно объяснить схему «рекламодатель → платформа → партнёр» и понять что именно продаётся в mVAS.
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Игровые механики и почему они здесь</div>
+        <div class="mechanics-list">
+          <div class="mech"><span class="mech-icon">💬</span><div><div class="mech-text">Диалог с Олесей — выбор реплики с XP</div><div class="mech-why">Вхождение в роль. Создаёт контекст «первый день» без перегрузки информацией сразу</div></div></div>
+          <div class="mech"><span class="mech-icon">🃏</span><div><div class="mech-text">4 карточки ролей — нажать чтобы раскрыть</div><div class="mech-why">Управляемое раскрытие. Студент сам выбирает темп — не листает, а исследует</div></div></div>
+          <div class="mech"><span class="mech-icon">🎯</span><div><div class="mech-text">Drag & drop — расставить цепочку ролей</div><div class="mech-why">Первый активный перенос знания. Проверяет понимание порядка, а не просто факт</div></div></div>
+          <div class="mech"><span class="mech-icon">❓</span><div><div class="mech-text">Квиз: CR vs выплата — что важнее</div><div class="mech-why">Мостик к М2. Создаёт когнитивный конфликт который М2 разрешает через EPC</div></div></div>
+          <div class="mech"><span class="mech-icon">📓</span><div><div class="mech-text">Дневник расследования — 8 записей</div><div class="mech-why">Структурирует и закрепляет. Студент видит что именно осталось из модуля</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M2 -->
+  <div class="mod-card">
+    <div class="mod-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none'">
+      <div class="mod-num" style="background:var(--m2)">2</div>
+      <div class="mod-title-wrap">
+        <div class="mod-eyebrow" style="color:var(--m2)">День второй</div>
+        <div class="mod-title">Как деньги попадают к нам — бизнес-модель</div>
+      </div>
+      <div class="mod-meta">
+        <span class="tag tag-xp">300 XP</span>
+        <span class="tag tag-time">~35 мин</span>
+      </div>
+    </div>
+    <div class="mod-body">
+      <div>
+        <div class="col-label">Что изучаем</div>
+        <div class="item-list">
+          <div class="item"><span class="item-icon">📐</span>EPC = Выплата × CR × Апрув — формула и смысл</div>
+          <div class="item"><span class="item-icon">⚖️</span>CPA vs RevShare — когда что выгоднее</div>
+          <div class="item"><span class="item-icon">🆚</span>Сравнение офферов по EPC, а не по выплате</div>
+          <div class="item"><span class="item-icon">📦</span>6 типов mVAS-офферов: DCB, PIN Submit, App Installs, Click-to-SMS/Call, Push, CPS/CPL</div>
+          <div class="item"><span class="item-icon">⚠️</span>5 ошибок партнёров из реальной практики GG</div>
+        </div>
+        <div class="goal-block" style="border-color:var(--m2);margin-top:12px">
+          <strong>Цель модуля</strong>
+          Освоить финансовую логику вертикали. После М2 студент должен уметь сравнивать офферы по EPC, объяснить партнёру почему выплата $0.40 может быть хуже чем $0.28, и назвать 6 типов офферов с их механиками.
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Игровые механики и почему они здесь</div>
+        <div class="mechanics-list">
+          <div class="mech"><span class="mech-icon">📊</span><div><div class="mech-text">Визуальная диаграмма маржи ($0.50→$0.18→$0.32)</div><div class="mech-why">Делает абстрактную бизнес-модель наглядной. Один взгляд = понимание структуры дохода</div></div></div>
+          <div class="mech"><span class="mech-icon">🎚️</span><div><div class="mech-text">EPC-калькулятор с 4 слайдерами</div><div class="mech-why">Exploratory learning. Студент сам двигает параметры и видит как апрув убивает EPC — это не прочитать, это почувствовать</div></div></div>
+          <div class="mech"><span class="mech-icon">🃏</span><div><div class="mech-text">6 карточек типов офферов — раскрыть и прочитать</div><div class="mech-why">Каждый тип требует разного уровня внимания. Карточки дают выбор глубины</div></div></div>
+          <div class="mech"><span class="mech-icon">🏆</span><div><div class="mech-text">Выбор лучшего оффера — задание с подсчётом EPC</div><div class="mech-why">Перенос знания в действие. Нельзя «угадать» — нужно посчитать</div></div></div>
+          <div class="mech"><span class="mech-icon">📖</span><div><div class="mech-text">5 ошибок — аккордеоны с кейсами GG</div><div class="mech-why">Контекст реальной практики. Ошибки из видео GG делают контент достоверным, не придуманным</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M3 -->
+  <div class="mod-card">
+    <div class="mod-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none'">
+      <div class="mod-num" style="background:var(--m3)">3</div>
+      <div class="mod-title-wrap">
+        <div class="mod-eyebrow" style="color:var(--m3)">День третий</div>
+        <div class="mod-title">Путь одного клика — трекинг и постбек</div>
+      </div>
+      <div class="mod-meta">
+        <span class="tag tag-xp">350 XP</span>
+        <span class="tag tag-time">~40 мин</span>
+      </div>
+    </div>
+    <div class="mod-body">
+      <div>
+        <div class="col-label">Что изучаем</div>
+        <div class="item-list">
+          <div class="item"><span class="item-icon">🔗</span>6 шагов клика: от рекламной сети до выплаты</div>
+          <div class="item"><span class="item-icon">📬</span>Постбек S2S: click_id, status, payout, geo</div>
+          <div class="item"><span class="item-icon">🔐</span>Почему S2S надёжнее пикселя в mVAS</div>
+          <div class="item"><span class="item-icon">⚡</span>6 причин расхождения данных трекер/платформа</div>
+          <div class="item"><span class="item-icon">🔧</span>7 трекеров: Binom (выбор GG), Voluum, RedTrack, Bemob, PureClick, Keitaro</div>
+          <div class="item"><span class="item-icon">🧪</span>Реальный кейс: Pakistan, Sweepstakes, 3 правила зон</div>
+        </div>
+        <div class="goal-block" style="border-color:var(--m3);margin-top:12px">
+          <strong>Цель модуля</strong>
+          Понять техническую инфраструктуру вертикали. После М3 студент должен объяснить что такое click_id, почему данные расходятся и как выбрать трекер для партнёра — на языке AM, а не IT.
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Игровые механики и почему они здесь</div>
+        <div class="mechanics-list">
+          <div class="mech"><span class="mech-icon">▶️</span><div><div class="mech-text">Анимированный путь клика — 6 шагов по кнопке</div><div class="mech-why">Темп раскрытия критичен для технического контента. Каждый шаг должен «осесть» до следующего</div></div></div>
+          <div class="mech"><span class="mech-icon">💻</span><div><div class="mech-text">Код постбека с раскрываемыми параметрами</div><div class="mech-why">Методолог не программист, но должен читать URL. Раскрываемые параметры снижают тревожность перед кодом</div></div></div>
+          <div class="mech"><span class="mech-icon">🐛</span><div><div class="mech-text">3 дебаг-кейса — диагностируй причину</div><div class="mech-why">Высший приоритет: применение знания в реалистичных ситуациях. Нельзя угадать — нужно рассуждать</div></div></div>
+          <div class="mech"><span class="mech-icon">🎯</span><div><div class="mech-text">Drag & drop — сортировка по причинам расхождения</div><div class="mech-why">Классификация — более глубокий уровень обработки чем узнавание. Требует понимания различий</div></div></div>
+          <div class="mech"><span class="mech-icon">❓</span><div><div class="mech-text">Квиз: правило красной зоны с лидами</div><div class="mech-why">Проверяет логику принятия решения, не факт. «Снизить ставку» vs «забанить» — это суждение AM</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M4 -->
+  <div class="mod-card">
+    <div class="mod-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none'">
+      <div class="mod-num" style="background:var(--m4)">4</div>
+      <div class="mod-title-wrap">
+        <div class="mod-eyebrow" style="color:var(--m4)">День четвёртый</div>
+        <div class="mod-title">Почему апрув разный — ГЕО, операторы, фрод</div>
+      </div>
+      <div class="mod-meta">
+        <span class="tag tag-xp">400 XP</span>
+        <span class="tag tag-time">~40 мин</span>
+      </div>
+    </div>
+    <div class="mod-body">
+      <div>
+        <div class="col-label">Что изучаем</div>
+        <div class="item-list">
+          <div class="item"><span class="item-icon">🌍</span>6 ключевых ГЕО: Нигерия, Кения, ЮАР, Индонезия, Бразилия, Саудовская Аравия</div>
+          <div class="item"><span class="item-icon">📡</span>Операторы и диапазоны апрува: Safaricom 78% vs MTN 45%</div>
+          <div class="item"><span class="item-icon">3️⃣</span>Три причины разного апрува: политика оператора, механика, качество трафика</div>
+          <div class="item"><span class="item-icon">🤖</span>6 паттернов фрода с сигналами в данных</div>
+          <div class="item"><span class="item-icon">🔍</span>Алгоритм расследования падения апрува за 3 шага</div>
+        </div>
+        <div class="goal-block" style="border-color:var(--m4);margin-top:12px">
+          <strong>Цель модуля</strong>
+          Научиться читать апрув как диагностический сигнал. После М4 студент должен уметь сказать почему Safaricom лучше MTN, назвать 6 паттернов фрода и пройти алгоритм расследования от «апрув упал» до «нашли причину».
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Игровые механики и почему они здесь</div>
+        <div class="mechanics-list">
+          <div class="mech"><span class="mech-icon">🗂️</span><div><div class="mech-text">Доска операторов — 6 ГЕО, нажать чтобы раскрыть</div><div class="mech-why">Имитирует реальный рабочий инструмент AM. Пространственная организация помогает запоминанию</div></div></div>
+          <div class="mech"><span class="mech-icon">📏</span><div><div class="mech-text">Бар-чарт апрува по операторам</div><div class="mech-why">Сравнительная визуализация: разница 78% vs 42% без расчётов, просто взглядом</div></div></div>
+          <div class="mech"><span class="mech-icon">🔓</span><div><div class="mech-text">Пошаговое расследование с блокировкой шагов</div><div class="mech-why">Принудительная последовательность = правильный мыслительный процесс. Нельзя перепрыгнуть к выводу</div></div></div>
+          <div class="mech"><span class="mech-icon">💬</span><div><div class="mech-text">Диалог: как написать партнёру — 3 варианта</div><div class="mech-why">Переносит техническое знание в коммуникацию. Правильный ответ требует понимания и тактики</div></div></div>
+          <div class="mech"><span class="mech-icon">⚠️</span><div><div class="mech-text">6 карточек фрод-паттернов с сигналами</div><div class="mech-why">Операционный справочник. Форма карточек позволяет вернуться к ним как к шпаргалке</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M5 -->
+  <div class="mod-card">
+    <div class="mod-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none'">
+      <div class="mod-num" style="background:var(--m5)">5</div>
+      <div class="mod-title-wrap">
+        <div class="mod-eyebrow" style="color:var(--m5)">День пятый</div>
+        <div class="mod-title">Партнёр в панике — кризисная коммуникация</div>
+      </div>
+      <div class="mod-meta">
+        <span class="tag tag-xp">450 XP</span>
+        <span class="tag tag-time">~45 мин</span>
+      </div>
+    </div>
+    <div class="mod-body">
+      <div>
+        <div class="col-label">Что изучаем</div>
+        <div class="item-list">
+          <div class="item"><span class="item-icon">💬</span>Симуляция переписки с партнёром Максимом — 4 раунда</div>
+          <div class="item"><span class="item-icon">🌳</span>Дерево диагностики: cap + IP-концентрация одновременно</div>
+          <div class="item"><span class="item-icon">🤝</span>5 принципов кризисной коммуникации AM</div>
+          <div class="item"><span class="item-icon">🔎</span>Разделение причин: внешние (cap) vs партнёрские (фрод)</div>
+          <div class="item"><span class="item-icon">📈</span>Кризис как возможность: upsell оффера в конце разговора</div>
+        </div>
+        <div class="goal-block" style="border-color:var(--m5);margin-top:12px">
+          <strong>Цель модуля</strong>
+          Освоить поведенческий паттерн AM в кризисе. После М5 студент должен знать структуру «факт → разбор → ответственность → решение → следующий шаг» и понимать почему важно разделять причины прежде чем говорить с партнёром.
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Игровые механики и почему они здесь</div>
+        <div class="mechanics-list">
+          <div class="mech"><span class="mech-icon">📱</span><div><div class="mech-text">Чат-симулятор — 4 раунда, выбор реплики AM</div><div class="mech-why">Максимально приближен к реальной рабочей ситуации. Ошибочный выбор ощущается — партнёр злится</div></div></div>
+          <div class="mech"><span class="mech-icon">🌳</span><div><div class="mech-text">Дерево диагностики с блокировкой шагов</div><div class="mech-why">Принудительная последовательность: данные → гипотеза → проверка. Нельзя обвинить партнёра не проверив</div></div></div>
+          <div class="mech"><span class="mech-icon">💬</span><div><div class="mech-text">Диалог Дмитрия — разбор 5 принципов</div><div class="mech-why">Аналитический NPC объясняет почему сработало. Превращает симуляцию в рефлексию</div></div></div>
+          <div class="mech"><span class="mech-icon">📊</span><div><div class="mech-text">Коммуникационный профиль по итогам</div><div class="mech-why">Персонализированная обратная связь. Студент видит какие принципы применил, какие пропустил</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M6 -->
+  <div class="mod-card">
+    <div class="mod-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none'">
+      <div class="mod-num" style="background:var(--m6)">6</div>
+      <div class="mod-title-wrap">
+        <div class="mod-eyebrow" style="color:var(--m6)">День шестой · Финал</div>
+        <div class="mod-title">Стать своей — compliance, рабочий день, экзамен</div>
+      </div>
+      <div class="mod-meta">
+        <span class="tag tag-xp">500 XP</span>
+        <span class="tag tag-time">~50 мин</span>
+      </div>
+    </div>
+    <div class="mod-body">
+      <div>
+        <div class="col-label">Что изучаем</div>
+        <div class="item-list">
+          <div class="item"><span class="item-icon">⚖️</span>Compliance: 6 рынков, регуляторы, риски нарушений</div>
+          <div class="item"><span class="item-icon">🚨</span>Сценарий compliance-нарушения — действия AM</div>
+          <div class="item"><span class="item-icon">⏱️</span>Рабочий день AM по часам: morning review → CRM</div>
+          <div class="item"><span class="item-icon">🌐</span>6 конференций с задачами AM на каждой</div>
+          <div class="item"><span class="item-icon">🏆</span>Финальный экзамен: 8 вопросов по всем модулям</div>
+          <div class="item"><span class="item-icon">🔒</span>Вердикт: «Дело закрыто» или «Расследование продолжается»</div>
+        </div>
+        <div class="goal-block" style="border-color:var(--m6);margin-top:12px">
+          <strong>Цель модуля</strong>
+          Завершить картину AM как профессии. После М6 студент должен знать compliance-требования ключевых рынков, понимать структуру рабочего дня AM и пройти финальный экзамен с результатом ≥6/8.
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Игровые механики и почему они здесь</div>
+        <div class="mechanics-list">
+          <div class="mech"><span class="mech-icon">📋</span><div><div class="mech-text">Таблица compliance — 6 рынков с цветовой кодировкой</div><div class="mech-why">Справочный формат: не нужно запоминать всё, нужно знать где смотреть и что критично</div></div></div>
+          <div class="mech"><span class="mech-icon">🚨</span><div><div class="mech-text">Сценарий-кейс: партнёр нарушает compliance</div><div class="mech-why">Переводит таблицу в действие. «Что делает AM» важнее чем «что написано в таблице»</div></div></div>
+          <div class="mech"><span class="mech-icon">⏱️</span><div><div class="mech-text">Интерактивный таймлайн рабочего дня</div><div class="mech-why">Раскрываемые блоки позволяют смотреть на глубину: не просто «что делает», но «с какими инструментами и почему»</div></div></div>
+          <div class="mech"><span class="mech-icon">📝</span><div><div class="mech-text">Экзамен 8 вопросов — кейсовый формат</div><div class="mech-why">Финальная проверка: каждый вопрос — реальная ситуация AM, не определение из глоссария</div></div></div>
+          <div class="mech"><span class="mech-icon">🔒</span><div><div class="mech-text">Анимированный вердикт «Дело закрыто»</div><div class="mech-why">Нарративное завершение. Поддерживает детектив-метафору и создаёт ощущение завершённости</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MECHANICS TAXONOMY -->
+<div class="sec-header">Матрица механик по модулям</div>
+<div class="taxonomy">
+  <div class="tx-head">
+    <div class="tx-cell">Механика</div>
+    <div class="tx-cell" style="color:var(--m1)">М1</div>
+    <div class="tx-cell" style="color:var(--m2)">М2</div>
+    <div class="tx-cell" style="color:var(--m3)">М3</div>
+    <div class="tx-cell" style="color:var(--m4)">М4</div>
+    <div class="tx-cell" style="color:var(--m5)">М5</div>
+    <div class="tx-cell" style="color:var(--m6)">М6</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Диалог RPG</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m1)"></span>Олеся</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m2)"></span>Дмитрий</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m3)"></span>Дмитрий</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m4)"></span>Олеся + Дм</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m5)"></span>Максим</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m6)"></span>Олеся</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Drag & Drop</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m1)"></span>Цепочка</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m3)"></span>Сортировка</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Калькулятор</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m2)"></span>EPC+слайдеры</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Квиз</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m1)"></span>1 вопрос</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m2)"></span>1 вопрос</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m3)"></span>1 вопрос</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m5)"></span>3 вопроса</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m6)"></span>8 вопросов</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Чат-симулятор</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m5)"></span>4 раунда</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Расследование</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m3)"></span>3 кейса</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m4)"></span>3 шага</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m5)"></span>дерево</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Раскрывашки</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m1)"></span>4 роли</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m2)"></span>6 офферов</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m3)"></span>Постбек</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m4)"></span>ГЕО + причины</div>
+    <div class="tx-val"><span class="dot-no"></span>—</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m6)"></span>Таймлайн</div>
+  </div>
+  <div class="tx-row">
+    <div class="tx-label">Дневник</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m1)"></span>8 записей</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m2)"></span>5 записей</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m3)"></span>6 записей</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m4)"></span>6 записей</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m5)"></span>6 записей</div>
+    <div class="tx-val"><span class="dot-yes" style="background:var(--m6)"></span>6 записей</div>
+  </div>
+</div>
+
+<!-- BOTTOM GRID -->
+<div class="bottom-grid">
+  <div class="info-card">
+    <h3>🎯 Почему именно этот дизайн курса</h3>
+    <ul>
+      <li><strong>RPG-нарратив снижает тревожность</strong> перед незнакомой вертикалью. Ирина — детектив, а не новичок который «должен всё знать»</li>
+      <li><strong>Два персонажа — два регистра.</strong> Олеся = HR-логика (зачем это бизнесу), Дмитрий = аналитика (как это работает). Разные голоса для разных типов знания</li>
+      <li><strong>Прогрессия Блума:</strong> М1–М2 — знание и понимание, М3–М4 — анализ, М5–М6 — оценка и применение</li>
+      <li><strong>Дневник расследования</strong> — персональный glossary который студент создаёт сам. Активная генерация лучше пассивного чтения</li>
+      <li><strong>iSpring-Noir:</strong> тёмные диалоги держат нарратив, светлые слайды дают читабельность. Два режима без разрыва стиля</li>
+    </ul>
+  </div>
+  <div class="info-card">
+    <h3>📌 Что курс не покрывает (честно)</h3>
+    <ul>
+      <li><strong>Живые данные.</strong> Реальный дашборд платформы, настоящий трекер, живой антифрод-отчёт — только через работу</li>
+      <li><strong>Партнёрская психология в деталях.</strong> Максим — один тип. Реальные партнёры разнообразнее</li>
+      <li><strong>Онбординг нового партнёра.</strong> Курс показывает кризисную коммуникацию, но не первый звонок с нуля</li>
+      <li><strong>Финансовая модель рекламодателя.</strong> Курс покрывает перспективу платформы и партнёра, но не то как рекламодатель считает LTV</li>
+      <li><strong>Итеративное тестирование курса.</strong> Это прототип под одного учащегося. Корпоративный курс потребует пилота и доработки</li>
+    </ul>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  GG Academy · «Дело о вертикали mVAS» · Разработка: Ирина Летяго, методолог · 2026
+</div>
+
+</div>
+
+<script>
+// Expand all on load for print/presentation
+// Toggle individual cards on click (already wired)
+// Auto-open first card
+document.querySelectorAll('.mod-body').forEach((b,i) => {
+  if(i > 0) b.style.display = 'none';
+});
+</script>
+</body>
+</html>

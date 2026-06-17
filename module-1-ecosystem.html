@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GG Academy · Модуль 1 · Первый день</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Special+Elite&display=swap');
+
+/* ═══════════════════════════════════════════════════════
+   GG ACADEMY · SEPIA DOSSIER · MODULE 1
+   Single light mode · warm paper · old case-file feel
+   Accent: #C9A84C
+═══════════════════════════════════════════════════════ */
+:root{
+  /* Warm paper base — sepia, no blue */
+  --paper:    #F0E9DA;   /* main background — aged paper */
+  --paper2:   #F7F2E7;   /* cards — lighter cream */
+  --paper3:   #E6DCC7;   /* sunken panels */
+  --paper4:   #DCCFB5;   /* deeper tone */
+  --paper-edge: #C8B894; /* borders */
+  --paper-edge2: #B5A37D;/* darker borders */
+
+  /* Warm ink text */
+  --ink:    #2A2317;   /* near-black warm */
+  --ink2:   #4D4030;   /* body */
+  --ink3:   #7A6B52;   /* muted */
+  --ink4:   #9A8B70;   /* faint */
+
+  /* Accent */
+  --ac:      #C9A84C;
+  --ac-rgb:  201,168,76;
+  --ac-lt:   #F0D88A;
+  --ac-dk:   #8A6820;
+  --ac-bg:   rgba(201,168,76,.10);
+  --ac-bg2:  rgba(201,168,76,.06);
+  --ac-bd:   rgba(201,168,76,.35);
+  --ac-glow: rgba(201,168,76,.22);
+  --ac-grad: linear-gradient(135deg, #8A6820, #C9A84C 65%, #F0D88A);
+  --ac-grad-soft: linear-gradient(135deg, rgba(201,168,76,.14), rgba(201,168,76,.04));
+
+  /* Status — muted warm */
+  --ok:     #4A7C2E;
+  --ok-lt:  #6FA84A;
+  --ok-bg:  rgba(74,124,46,.12);
+  --ok-bd:  rgba(74,124,46,.4);
+  --err:    #A8392B;
+  --err-lt: #C85A4A;
+  --err-bg: rgba(168,57,43,.1);
+  --err-bd: rgba(168,57,43,.4);
+
+  /* Type */
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Oswald', sans-serif;
+  --type: 'Special Elite', serif;
+
+  /* Depth — warm shadows */
+  --r: 10px;
+  --r-lg: 14px;
+  --sh-sm: 0 1px 3px rgba(60,45,25,.10), 0 1px 2px rgba(60,45,25,.06);
+  --sh: 0 3px 14px rgba(60,45,25,.10), 0 1px 4px rgba(60,45,25,.06);
+  --sh-md: 0 8px 26px rgba(60,45,25,.14), 0 3px 8px rgba(60,45,25,.08);
+  --sh-lg: 0 16px 44px rgba(60,45,25,.18), 0 6px 14px rgba(60,45,25,.10);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);min-height:100vh;overflow-x:hidden;background:var(--paper);color:var(--ink2)}
+
+/* paper grain overlay — global warm texture */
+body::after{
+  content:'';position:fixed;inset:0;z-index:8000;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ── SCAN LINE — subtle ── */
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:1px;z-index:9000;
+  background:linear-gradient(90deg,transparent,var(--ac-bd),transparent);
+  animation:scan 6s ease-in-out infinite;opacity:.4;pointer-events:none;
+}
+@keyframes scan{0%{top:46px;opacity:.4}50%{opacity:.1}100%{top:100vh;opacity:0}}
+
+/* ── HUD — case-file header ── */
+.hud{
+  position:fixed;top:0;left:0;right:0;height:46px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  border-bottom:2px solid var(--ac-dk);
+  display:flex;align-items:center;gap:10px;
+  padding:0 18px;z-index:100;
+  box-shadow:0 2px 16px rgba(42,35,23,.35);
+}
+.hud::before{
+  content:'';position:absolute;left:0;bottom:-2px;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.6;
+}
+.hud-badge{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ac-lt);background:rgba(201,168,76,.15);
+  border:1px solid var(--ac-bd);border-radius:4px;
+  padding:3px 9px;white-space:nowrap;flex-shrink:0;
+}
+.hud-mod{
+  font-family:var(--mono);font-size:10px;color:rgba(240,233,218,.5);
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.02em;
+}
+.hud-mod strong{color:var(--ac-lt);font-weight:600}
+.hud-xp-wrap{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.hud-xp-lbl{font-family:var(--mono);font-size:9px;color:rgba(240,233,218,.4);letter-spacing:.08em}
+.hud-bar{width:78px;height:4px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden}
+.hud-fill{height:100%;border-radius:3px;background:var(--ac-grad);transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(201,168,76,.5)}
+.hud-val{font-family:var(--mono);font-size:10px;color:var(--ac-lt);min-width:54px;text-align:right;font-weight:500}
+
+/* XP TOAST */
+.xp-toast{
+  position:fixed;top:54px;right:16px;
+  background:var(--ac-grad);color:#2A2317;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.06em;padding:6px 14px;border-radius:7px;
+  z-index:201;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 6px 20px rgba(201,168,76,.45);
+}
+.xp-toast.show{transform:translateX(0)}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;padding-top:46px;animation:screenIn .4s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:flex;flex-direction:column}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════
+   SCENES — now ALSO on warm paper
+═══════════════════════════ */
+.scene,.scene-bg,.scene-bg-office{position:relative}
+.scene{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:24px 20px;position:relative;overflow:hidden;
+  min-height:calc(100vh - 46px);
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(201,168,76,.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(201,168,76,.04) 0%, transparent 45%),
+    var(--paper);
+}
+.scene-bg,.scene-bg-office{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 25% 30%, rgba(201,168,76,.05) 0%, transparent 55%),
+    var(--paper);
+}
+.scene-bg::after,.scene-bg-office::after{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 41px,rgba(120,107,82,.04) 42px),
+    repeating-linear-gradient(90deg,transparent,transparent 61px,rgba(120,107,82,.04) 62px);
+  mask-image:radial-gradient(ellipse at center, black 35%, transparent 88%);
+}
+/* soft vignette — warm */
+.scene::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(120,90,50,.18);
+}
+
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.particle{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--ac-dk);opacity:0;
+  animation:floatP var(--dur,8s) var(--delay,0s) infinite ease-in-out;
+}
+@keyframes floatP{0%{transform:translateY(100vh);opacity:0}10%{opacity:.25}90%{opacity:.08}100%{transform:translateY(-20px) translateX(var(--dx,20px));opacity:0}}
+
+/* Dialogue — on paper */
+.dialogue-wrap{position:relative;z-index:10;max-width:680px;margin:0 auto;width:100%}
+.npc-row{display:flex;align-items:flex-end;gap:11px;margin-bottom:11px}
+.npc-avatar{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:radial-gradient(circle at 35% 30%, var(--paper2), var(--paper3));
+  border:2px solid var(--ac-bd);
+  box-shadow:0 0 0 4px var(--ac-glow), 0 3px 10px rgba(60,45,25,.18);
+}
+.npc-avatar.av-dmitry,.av-d,.npc-av-dmitry{border-color:rgba(15,138,122,.45);box-shadow:0 0 0 4px rgba(15,138,122,.12),0 3px 10px rgba(60,45,25,.18)}
+.npc-name{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;color:var(--ac-dk);
+}
+.npc-name.nm-d,.nm-dmitry,.dmitry{color:#0F8A7A}
+.dialogue-box{
+  background:linear-gradient(160deg, var(--paper2), var(--paper2) 70%, var(--paper3));
+  border:1px solid var(--paper-edge);border-left:3px solid var(--ac);
+  border-radius:14px;border-top-left-radius:4px;
+  padding:15px 18px;font-size:13.5px;line-height:1.8;color:var(--ink2);
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.dialogue-box.db-d,.dialogue-box.dmitry{border-left-color:#0F8A7A}
+.dialogue-box em{color:var(--ac-dk);font-style:italic;font-weight:500}
+.dialogue-box strong{color:var(--ink);font-weight:600}
+.dialogue-box.db-d strong,.dialogue-box.dmitry strong{color:#0F6A5E}
+
+.player-row{display:flex;justify-content:flex-end;margin-bottom:11px}
+.player-box{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);
+  border-radius:14px;border-top-right-radius:4px;padding:11px 15px;
+  font-size:12.5px;line-height:1.6;color:var(--ink2);max-width:82%;
+  box-shadow:var(--sh-sm);
+}
+.player-box::after{
+  content:'💬 Ирина';display:block;
+  font-family:var(--mono);font-size:9px;color:var(--ac-dk);
+  letter-spacing:.08em;margin-top:4px;text-align:right;
+}
+
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.choice-btn{
+  background:var(--paper2);
+  border:1px solid var(--paper-edge);
+  border-radius:10px;padding:12px 16px;text-align:left;
+  font-size:13px;line-height:1.6;color:var(--ink2);
+  cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);font-family:var(--sans);
+  position:relative;overflow:hidden;box-shadow:var(--sh-sm);
+}
+.choice-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--ac);transform:scaleY(0);transition:transform .25s;
+}
+.choice-btn:hover:not(:disabled){
+  background:var(--ac-bg2);border-color:var(--ac-bd);
+  transform:translateX(5px);box-shadow:var(--sh);
+}
+.choice-btn:hover:not(:disabled)::before{transform:scaleY(1)}
+.choice-btn.correct{background:var(--ok-bg);border-color:var(--ok);color:#2D4A1A}
+.choice-btn.wrong{background:var(--err-bg);border-color:var(--err);color:#6B1F15}
+
+/* Continue button */
+.btn-continue{
+  margin-top:15px;padding:12px 28px;
+  background:var(--ac-grad);
+  border:none;border-radius:10px;color:#2A2317;
+  font-family:var(--display);font-size:12px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .25s;box-shadow:0 5px 16px rgba(201,168,76,.28);
+}
+.btn-continue:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 9px 24px rgba(201,168,76,.36)}
+
+/* ═══════════════════════════
+   SLIDES — same paper, seamless
+═══════════════════════════ */
+.slide{
+  flex:1;padding:30px 26px;max-width:780px;margin:0 auto;width:100%;
+  background:var(--paper);position:relative;
+}
+.slide::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.02'/%3E%3C/svg%3E");
+}
+.slide>*{position:relative;z-index:1}
+
+/* Progress — evidence ticks */
+.prog-row,.progress-row{display:flex;gap:4px;margin-bottom:24px;align-items:center}
+.prog-step,.progress-step{flex:1;height:5px;background:var(--paper4);border-radius:3px;transition:all .4s;overflow:hidden}
+.prog-step.done,.progress-step.done{background:var(--ac-dk)}
+.prog-step.active,.progress-step.active{background:var(--ac);box-shadow:0 0 8px rgba(201,168,76,.4)}
+
+/* Eyebrow — case label */
+.eyebrow,.slide-eyebrow{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.16em;color:var(--ac-dk);text-transform:uppercase;
+  margin-bottom:8px;padding:3px 10px;
+  background:var(--ac-bg);border:1px solid var(--ac-bd);border-radius:4px;
+}
+.slide h2{
+  font-family:var(--display);font-size:28px;font-weight:700;
+  color:var(--ink);margin-bottom:8px;line-height:1.15;letter-spacing:-.01em;
+}
+.slide-sub{font-size:14px;color:var(--ink2);margin-bottom:24px;line-height:1.65}
+
+/* Case-file cards — dossier */
+.dd-card,.ops-card,.info-card,.role-map{
+  background:linear-gradient(165deg, var(--paper2), var(--paper2) 72%, var(--paper3));
+  border:1px solid var(--paper-edge);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+  transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s, border-color .25s;
+}
+.dd-card::before,.ops-card::before{
+  content:'';position:absolute;top:0;left:20px;width:36px;height:3px;
+  background:var(--ac-grad);border-radius:0 0 3px 3px;
+}
+.dd-card:hover,.ops-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);border-color:var(--ac-bd)}
+.dd-card h3,.ops-card h3{
+  font-family:var(--display);font-size:16px;font-weight:600;color:var(--ink);
+  margin-bottom:11px;display:flex;align-items:center;gap:9px;letter-spacing:.01em;
+}
+.dd-card p,.ops-card p{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:9px}
+.dd-card p:last-child,.ops-card p:last-child{margin-bottom:0}
+.dd-card strong,.ops-card strong{color:var(--ink);font-weight:600}
+
+/* Info cards (reveal) */
+.info-card{cursor:pointer}
+.info-card::before{display:none}
+.info-card:hover{border-color:var(--ac-bd);transform:translateY(-2px)}
+.info-card.revealed{
+  border-color:var(--ac);border-left:4px solid var(--ac);
+  background:linear-gradient(165deg, var(--paper2), var(--ac-bg2));
+}
+.ic-q,.info-card-q{
+  font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);
+  margin-bottom:7px;display:flex;align-items:center;gap:7px;letter-spacing:.01em;
+}
+.ic-a,.info-card-a{font-size:13px;color:var(--ink2);line-height:1.7;display:none}
+.info-card.revealed .ic-a,.info-card.revealed .info-card-a{display:block}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+/* Tables — evidence ledger */
+.dd-table,.comp-table,.mismatch-table{
+  width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin:12px 0;
+  border:1px solid var(--paper-edge2);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);
+}
+.dd-table th,.comp-table th,.mismatch-table th{
+  text-align:left;padding:11px 13px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  font-family:var(--mono);font-weight:600;color:var(--ac-lt);
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+}
+.dd-table td,.comp-table td,.mismatch-table td{
+  padding:11px 13px;border-top:1px solid var(--paper-edge);
+  color:var(--ink2);vertical-align:top;line-height:1.55;background:var(--paper2);
+}
+.dd-table tr:last-child td{border-bottom:none}
+.dd-table tr:hover td,.comp-table tr:hover td{background:var(--paper3)}
+.hi{font-weight:600;color:var(--ink)}
+.good{color:var(--ok);font-weight:600}
+.mid{color:var(--ac-dk);font-weight:600}
+.low{color:var(--err);font-weight:600}
+
+/* Notebook — detective's journal */
+.notebook{
+  background:linear-gradient(165deg, #EFE7D3, #E8DDC4);
+  border:1px solid var(--paper-edge2);border-left:4px solid var(--ac);
+  border-radius:var(--r);padding:16px 18px;margin-bottom:16px;
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.5);position:relative;
+}
+.notebook::after{
+  content:'';position:absolute;top:10px;bottom:10px;left:14px;width:1px;
+  background:repeating-linear-gradient(180deg,rgba(201,168,76,.3),rgba(201,168,76,.3) 2px,transparent 2px,transparent 6px);
+}
+.nb-title,.notebook-title{
+  font-family:var(--type);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ac-dk);margin-bottom:9px;padding-left:12px;
+}
+.nb-entry,.notebook-entry{
+  display:flex;gap:9px;padding:4px 0 4px 12px;border-bottom:1px solid rgba(201,168,76,.12);
+}
+.nb-entry:last-child,.notebook-entry:last-child{border-bottom:none}
+.nb-check{color:var(--ac-dk);flex-shrink:0;font-size:13px}
+.nb-text{color:#3A3020;font-size:12.5px;line-height:1.65;font-family:var(--type)}
+
+/* Quiz */
+.quiz-wrap,.ops-quiz,.dtree-wrap,.debug-wrap,.inv-board,.verdict-wrap{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge);border-radius:var(--r);padding:18px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+}
+.quiz-q,.dtree-q,.verdict-q,.eq-text{
+  font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink);
+  margin-bottom:13px;line-height:1.45;letter-spacing:.01em;
+}
+.quiz-opt,.dtree-opt,.verdict-opt,.debug-opt,.inv-opt,.eq-opt{
+  padding:12px 15px;border-radius:9px;
+  border:1.5px solid var(--paper-edge2);background:var(--paper);
+  font-size:13px;color:var(--ink2);cursor:pointer;
+  transition:all .2s cubic-bezier(.4,0,.2,1);line-height:1.5;margin-bottom:7px;
+}
+.quiz-opt:hover,.dtree-opt:hover,.verdict-opt:hover,
+.debug-opt:hover,.inv-opt:hover,.eq-opt:hover{
+  border-color:var(--ac);background:var(--ac-bg2);color:var(--ink);transform:translateX(3px);
+}
+.quiz-opt.correct,.dtree-opt.ok,.verdict-opt.v-ok,
+.debug-opt.ok,.inv-opt.ok,.eq-opt.ok,.quiz-opt.reveal{
+  border-color:var(--ok);background:var(--ok-bg);color:#2D4A1A;cursor:default;transform:none;
+}
+.quiz-opt.wrong,.dtree-opt.err,.verdict-opt.v-err,
+.debug-opt.err,.inv-opt.err,.eq-opt.err{
+  border-color:var(--err);background:var(--err-bg);color:#6B1F15;cursor:default;transform:none;
+}
+.quiz-explain,.dtree-reveal,.debug-reveal,.inv-reveal,.verdict-reveal,.eq-reveal{
+  font-size:12.5px;color:var(--ink2);
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:9px;padding:11px 13px;margin-top:9px;display:none;line-height:1.7;font-family:var(--type);
+}
+.quiz-explain.show,.dtree-reveal.show,.debug-reveal.show,
+.inv-reveal.show,.verdict-reveal.show,.eq-reveal.show{display:block}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:11px}
+.quiz-counter{font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.quiz-next{font-family:var(--mono);font-size:12px;color:var(--ac-dk);background:none;border:none;cursor:pointer;font-weight:600}
+
+/* Expert note */
+.expert-note,.ops-note{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);border-left:3px solid var(--ac);
+  border-radius:0 var(--r) var(--r) 0;padding:11px 15px;font-size:12.5px;
+  color:var(--ink2);margin:11px 0;line-height:1.7;font-style:italic;
+}
+.expert-note strong,.ops-note strong{color:var(--ac-dk);font-style:normal;font-weight:600}
+.scenario{
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:var(--r);padding:14px 16px;margin:10px 0;box-shadow:var(--sh-sm);
+}
+.sc-q{font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.sc-a{font-size:12.5px;color:var(--ink2);line-height:1.7}
+.sc-a strong{color:var(--ink);font-weight:600}
+.sub-h{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:16px 0 8px}
+
+/* Code block — dark inset even on light theme (terminal feel) */
+.code-block,.formula{
+  background:linear-gradient(165deg, #2A2317, #1F1A11);
+  border:1px solid var(--ac-bd);border-radius:var(--r);padding:14px 16px;
+  font-family:var(--mono);font-size:11.5px;color:var(--ac-lt);
+  margin:11px 0;line-height:1.85;overflow-x:auto;box-shadow:var(--sh-md);
+}
+.cm,.f-comment{color:#6B6050}.ck,.f-key{color:var(--ac-lt)}.cv,.f-val{color:#9AC8D8}
+.ce{color:#F4A060}.cb{color:#5EBFB0}
+
+/* Sliders */
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--paper4);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ac-grad);cursor:pointer;box-shadow:0 0 0 4px var(--ac-glow),0 2px 6px rgba(60,45,25,.3)}
+
+/* Drag & drop */
+.dnd-slot,.dnd-zone,.sort-zone{
+  border:2px dashed var(--paper-edge2);border-radius:var(--r);min-height:66px;
+  display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;
+  transition:all .25s;font-size:12px;color:var(--ink3);background:var(--paper);
+}
+.dnd-slot.has-card,.dnd-zone.has-card,.sort-zone.drag-over{
+  border-color:var(--ac);border-style:solid;background:var(--ac-bg2);
+  box-shadow:inset 0 0 16px rgba(201,168,76,.08);
+}
+.dnd-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--ac-dk);opacity:.5}
+.dnd-card,.sort-chip{
+  background:linear-gradient(165deg,var(--paper2),var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:9px;padding:9px 15px;
+  font-size:12px;font-weight:600;color:var(--ink);cursor:grab;user-select:none;
+  transition:all .18s;display:inline-flex;align-items:center;gap:6px;margin:3px;box-shadow:var(--sh-sm);
+}
+.dnd-card:hover,.sort-chip:hover{border-color:var(--ac);background:var(--ac-bg2);transform:translateY(-2px);box-shadow:var(--sh)}
+.dnd-card.placed{opacity:.35;pointer-events:none}
+.dnd-cards,.sort-pool{
+  display:flex;flex-wrap:wrap;gap:8px;padding:14px;
+  background:linear-gradient(165deg,var(--paper3),var(--paper));
+  border-radius:var(--r);border:1px dashed var(--paper-edge2);margin-bottom:14px;min-height:56px;
+}
+.dnd-zone-label,.sort-zone-title{font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+
+.role-map{padding:20px}
+.role-map::before{display:none}
+.role-map-title{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:15px;font-weight:600}
+
+/* Final card */
+.final-card{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:var(--r-lg);padding:28px;text-align:center;
+  box-shadow:var(--sh-lg);position:relative;overflow:hidden;
+}
+.final-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--ac-grad)}
+.final-card::after{
+  content:'';position:absolute;top:-60%;left:-30%;width:160%;height:200%;
+  background:conic-gradient(from 0deg,transparent 320deg,rgba(201,168,76,.05) 360deg);
+  animation:spin 12s linear infinite;pointer-events:none;
+}
+.final-card>*{position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.final-trophy{font-size:48px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px rgba(201,168,76,.3))}
+.final-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:.01em}
+.final-desc{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:16px}
+
+/* Back button */
+.gg-back{
+  position:fixed;top:9px;left:9px;z-index:9999;
+  background:linear-gradient(180deg,#2A2317,#3A3020);
+  border:1px solid var(--ac-bd);border-radius:8px;padding:7px 14px;
+  font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ac-lt);
+  cursor:pointer;transition:all .2s;letter-spacing:.06em;box-shadow:0 2px 10px rgba(42,35,23,.3);
+}
+.gg-back:hover{background:#3A3020;border-color:var(--ac);transform:translateX(-2px)}
+
+@media(max-width:600px){
+  .slide{padding:18px 14px}
+  .scene{padding:16px 12px}
+  .hud-mod{display:none}
+  .info-grid{grid-template-columns:1fr}
+  .slide h2{font-size:23px}
+}
+
+</style>
+</head>
+<body>
+
+<!-- SCAN LINE -->
+<div class="scan-line"></div>
+
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-badge">GG · M1</div>
+  <div class="hud-mod"><strong>Первый день</strong> · <span id="scene-label"></span></div>
+  <div class="hud-xp-wrap">
+    <span class="hud-xp-lbl">XP</span>
+    <div class="hud-bar"><div class="hud-fill" id="xp-fill" style="width:0%"></div></div>
+    <span class="hud-val" id="xp-val">0 / 200</span>
+  </div>
+</div>
+
+<!-- XP TOAST -->
+<div class="xp-toast" id="xp-toast">+0 XP</div>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+<!-- ════════════════════════════════════
+     SCREEN 0: INTRO
+════════════════════════════════════ -->
+<div class="screen active" id="s0">
+  <div class="scene">
+    <div class="scene-bg scene-bg-office"></div>
+    <div class="dialogue-wrap">
+
+      <!-- progress -->
+      <div class="progress-row">
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="npc-row">
+        <div class="npc-avatar">🦆</div>
+        <div>
+          <div class="npc-name">Олеся · Head of HR</div>
+          <div class="dialogue-box">
+            Ирина, добро пожаловать в Golden Goose. Я рада, что ты с нами.<br><br>
+            Тебе предстоит серьёзная задача: мы строим L&D-функцию с нуля, и тебе нужно глубоко понять нашу вертикаль — <strong>mVAS</strong>. Не на уровне «читала в интернете», а на уровне «могу объяснить партнёру почему его апрув упал».<br><br>
+            Сегодня начнём с самого начала. <em>Кто мы, как устроена платформа, кто за что отвечает.</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="choices">
+        <button class="choice-btn" onclick="nextScreen('s1', 20, 'Готова. Давай с самого начала.')">
+          💼 Готова. Давай с самого начала — мне нужно понять всю систему целиком.
+        </button>
+        <button class="choice-btn" onclick="nextScreen('s1', 10, 'У меня уже есть база...')">
+          📚 У меня уже есть база по терминологии. Можем ускориться?
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 1: ОЛЕСЯ ОБЪЯСНЯЕТ СУТЬ
+════════════════════════════════════ -->
+<div class="screen" id="s1">
+  <div class="scene">
+    <div class="scene-bg scene-bg-office"></div>
+    <div class="dialogue-wrap">
+
+      <div class="progress-row">
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div id="player-reply-1" class="player-row" style="display:none">
+        <div class="player-box" id="player-reply-1-text"></div>
+      </div>
+
+      <div class="npc-row">
+        <div class="npc-avatar">🦆</div>
+        <div>
+          <div class="npc-name">Олеся · Head of HR</div>
+          <div class="dialogue-box">
+            Хорошо. Тогда скажи мне — <strong>как ты сейчас понимаешь, чем занимается Golden Goose?</strong><br><br>
+            Не надо красиво. Просто своими словами — что мы продаём, кому и как зарабатываем?
+          </div>
+        </div>
+      </div>
+
+      <div class="choices" id="choices-s1">
+        <button class="choice-btn" onclick="handleChoice1(0)">
+          🔗 Вы соединяете рекламодателей и партнёров, которые приводят им пользователей. Зарабатываете на разнице в выплатах.
+        </button>
+        <button class="choice-btn" onclick="handleChoice1(1)">
+          📱 Вы делаете мобильные приложения и монетизируете их через подписки.
+        </button>
+        <button class="choice-btn" onclick="handleChoice1(2)">
+          💰 Вы покупаете мобильный трафик и перепродаёте его рекламодателям по более высокой цене.
+        </button>
+      </div>
+
+      <div id="feedback-s1" style="display:none;margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 2: СЛАЙД — РОЛИ В СИСТЕМЕ
+════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="slide">
+
+    <div class="progress-row">
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+
+    <div class="slide-eyebrow">Модуль 1 · Слайд 01</div>
+    <h2>Три роли в экосистеме</h2>
+    <p class="slide-sub">Нажми на каждую карточку — узнай кто это и что делает. Это база всего.</p>
+
+    <div class="info-grid">
+      <div class="info-card" onclick="revealCard(this)">
+        <div class="info-card-q">🏢 Рекламодатель — кто это?</div>
+        <div class="info-card-a">Компания, которой нужны подписчики. Платит платформе за каждую подтверждённую подписку. Не платит за показы — только за результат. Пример: мобильный оператор в Кении хочет подписчиков на контент-сервис.</div>
+      </div>
+      <div class="info-card" onclick="revealCard(this)">
+        <div class="info-card-q">🌐 Golden Goose — наша роль</div>
+        <div class="info-card-a">CPA-платформа — посредник. Принимает офферы от рекламодателей, открывает доступ партнёрам, обеспечивает трекинг, антифрод и расчёты. Зарабатывает на марже между тем что платит рекламодатель и тем что получает партнёр.</div>
+      </div>
+      <div class="info-card" onclick="revealCard(this)">
+        <div class="info-card-q">👤 Партнёр — кто это?</div>
+        <div class="info-card-a">Арбитражная команда или вебмастер. Покупает рекламный трафик в PropellerAds и других сетях, ведёт его на офферы платформы. Зарабатывает на разнице: купил дешевле, получил выплату дороже.</div>
+      </div>
+      <div class="info-card" onclick="revealCard(this)">
+        <div class="info-card-q">💰 Как выглядит маржа GG?</div>
+        <div class="info-card-a">Рекламодатель платит $0.50 → GG берёт $0.18 → партнёр получает $0.32. Чем больше качественных конверсий, тем больше маржа. Именно поэтому GG заинтересован в хороших партнёрах и честном трафике.</div>
+      </div>
+    </div>
+
+    <div class="notebook">
+      <div class="notebook-title">📓 Дневник расследования</div>
+      <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">Рекламодатель платит за результат (подписку), не за показы</span></div>
+      <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">GG = посредник. Доход = маржа между ценой рекламодателя и выплатой партнёру</span></div>
+      <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">Партнёр = арбитражник. Покупает трафик → ведёт на оффер → зарабатывает разницу</span></div>
+    </div>
+
+  
+  <div id="s2-quiz" style="margin-bottom:14px">
+    <div class="quiz-wrap">
+      <div class="quiz-q" id="s2-qq">Партнёр купил клики по $0.01 и получил выплату $0.35 за конверсию. Что нужно знать чтобы понять выгодно ли это?</div>
+      <div id="s2-opts">
+        <div class="quiz-opt" onclick="s2quiz(this,false,'Выплата — это только часть уравнения. Нужно знать CR и апрув чтобы посчитать реальный доход с клика.')">Достаточно знать выплату — $0.35 больше $0.01, значит прибыль есть</div>
+        <div class="quiz-opt" onclick="s2quiz(this,true,'Верно! CR показывает сколько кликов стали конверсиями. Без этого нельзя понять зарабатывает ли партнёр. Именно поэтому в следующем модуле разберём EPC — earnings per click.')">Нужно знать CR — сколько из кликов становятся конверсиями, иначе не посчитать</div>
+        <div class="quiz-opt" onclick="s2quiz(this,false,'Выплата GG — это маржа платформы. Нам важен CR и апрув чтобы понять доходность партнёра.')">Нужно знать выплату GG рекламодателю</div>
+      </div>
+      <div class="quiz-explain" id="s2-exp"></div>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="nextScreen('s3', 25, null)">Дальше →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 3: DRAG & DROP — РАССТАВЬ РОЛИ
+════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="slide">
+
+    <div class="progress-row">
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+
+    <div class="slide-eyebrow">Модуль 1 · Задание 01</div>
+    <h2>Расставь по цепочке</h2>
+    <p class="slide-sub">Перетащи карточки в правильном порядке — кто кому что передаёт в цепочке mVAS.</p>
+
+    <div class="role-map">
+      <div class="role-map-title">Цепочка: кто → кому → что</div>
+
+      <div class="dnd-zone">
+        <div class="dnd-slot" id="slot-0" ondragover="allowDrop(event)" ondrop="drop(event, 0)">
+          <span style="opacity:.5;font-size:11px">Кто первый?</span>
+        </div>
+        <div class="dnd-arrow">→</div>
+        <div class="dnd-slot" id="slot-1" ondragover="allowDrop(event)" ondrop="drop(event, 1)">
+          <span style="opacity:.5;font-size:11px">Кто в центре?</span>
+        </div>
+        <div class="dnd-arrow">→</div>
+        <div class="dnd-slot" id="slot-2" ondragover="allowDrop(event)" ondrop="drop(event, 2)">
+          <span style="opacity:.5;font-size:11px">Кто последний?</span>
+        </div>
+      </div>
+
+      <div class="dnd-cards" id="dnd-pool">
+        <div class="dnd-card" draggable="true" data-id="partner" ondragstart="drag(event)">
+          👤 Партнёр
+        </div>
+        <div class="dnd-card" draggable="true" data-id="platform" ondragstart="drag(event)">
+          🌐 GG Platform
+        </div>
+        <div class="dnd-card" draggable="true" data-id="advertiser" ondragstart="drag(event)">
+          🏢 Рекламодатель
+        </div>
+      </div>
+    </div>
+
+    <div id="dnd-feedback" style="font-size:13px;margin-bottom:14px;min-height:20px;color:var(--ink3)"></div>
+    <button class="btn-continue" id="dnd-check-btn" onclick="checkDND()" style="background:var(--navy3);color:var(--ink3)">
+      Проверить →
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 4: ДИАЛОГ — ЧТО ТАКОЕ ОФФЕР
+════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="scene">
+    <div class="scene-bg scene-bg-office"></div>
+    <div class="dialogue-wrap">
+
+      <div class="progress-row">
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step done"></div>
+        <div class="progress-step active"></div>
+        <div class="progress-step"></div>
+      </div>
+
+      <div class="npc-row">
+        <div class="npc-avatar">🦆</div>
+        <div>
+          <div class="npc-name">Олеся · Head of HR</div>
+          <div class="dialogue-box">
+            Отлично. Теперь важная деталь — <strong>оффер</strong>.<br><br>
+            Именно вокруг него строится вся работа AM. Партнёр видит оффер и решает: лить или не лить. Рекламодатель создаёт оффер и устанавливает условия.<br><br>
+            Ирина, вот реальный пример: <em>«Нигерия, PIN submit, выплата $0.32, конверт ~3.5%»</em>.<br><br>
+            Ты можешь объяснить — что здесь означает каждый элемент?
+          </div>
+        </div>
+      </div>
+
+      <div class="choices" id="choices-s4">
+        <button class="choice-btn" onclick="handleChoice4(0)">
+          ✅ Нигерия = ГЕО (страна трафика). PIN submit = механика подписки через SMS-код. $0.32 = выплата партнёру за подтверждённую подписку. 3.5% = примерный CR от клика.
+        </button>
+        <button class="choice-btn" onclick="handleChoice4(1)">
+          📊 Нигерия = рекламодатель. PIN submit = тип платежа. $0.32 = стоимость клика. 3.5% = процент апрува.
+        </button>
+        <button class="choice-btn" onclick="handleChoice4(2)">
+          🤔 Не уверена насчёт PIN submit и конверта — могу объяснить только ГЕО и выплату.
+        </button>
+      </div>
+
+      <div id="feedback-s4" style="display:none;margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     SCREEN 5: ФИНАЛ МОДУЛЯ
+════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="slide">
+
+    <div class="progress-row">
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+    </div>
+
+    <div class="final-card">
+      <span class="final-trophy">🔍</span>
+      <div class="final-title">Модуль 1 завершён</div>
+      <div class="final-desc">
+        Ты прошла первый день расследования.<br>
+        Экосистема mVAS больше не чёрный ящик — ты видишь трёх игроков и понимаешь как между ними движутся деньги.
+      </div>
+
+      <div class="notebook" style="text-align:left;margin-bottom:20px">
+        <div class="notebook-title">📓 Что записала сегодня</div>
+        <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">GG = CPA-платформа-посредник. Маржа = разница между ценой рекл. и выплатой партнёру</span></div>
+        <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">Цепочка: Рекламодатель → GG Platform → Партнёр → Пользователь</span></div>
+        <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">Оффер = целевое действие + выплата + ГЕО + механика + конверт</span></div>
+        <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">PIN submit = двухшаговая подписка через SMS-код</span></div>
+        <div class="notebook-entry"><span class="nb-check">✓</span><span class="nb-text">CR 3.5% от клика — это норма для PIN submit на качественном трафике</span></div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px">
+        <div style="text-align:center">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-bottom:4px">НАБРАНО XP</div>
+          <div style="font-size:28px;font-weight:700;color:var(--gold)" id="final-xp">0</div>
+        </div>
+        <div style="width:1px;height:40px;background:var(--navy3)"></div>
+        <div style="text-align:center">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--ink3);margin-bottom:4px">УРОВЕНЬ</div>
+          <div style="font-size:28px;font-weight:700;color:var(--gold)">Детектив-стажёр</div>
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">
+        Завтра — Модуль 2: <strong style="color:var(--gold)">«Как деньги попадают к нам»</strong>.<br>
+        Разберёшь бизнес-модель платформы, научишься считать EPC и поймёшь зачем нужен RevShare.
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px">
+  <button class="btn-continue" style="background:linear-gradient(135deg,var(--ac-dk),var(--ac-lt));flex:1;min-width:160px" onclick="nextScreen('s-traffic',0,null)">🗺 Бонус: источники трафика</button>
+</div>
+<button class="btn-continue" style="background:var(--bg3);color:var(--text2)" onclick="restartModule()">↺ Пройти ещё раз</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let xp = 0;
+const XP_MAX = 200;
+let playerReply = '';
+
+// ── PARTICLES ──
+(function initParticles() {
+  const wrap = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;--dur:${6+Math.random()*10}s;--delay:${Math.random()*8}s;--dx:${(Math.random()-.5)*60}px`;
+    wrap.appendChild(p);
+  }
+})();
+
+// ── XP SYSTEM ──
+function addXP(amount) {
+  xp = Math.min(xp + amount, XP_MAX);
+  document.getElementById('xp-fill').style.width = (xp / XP_MAX * 100) + '%';
+  document.getElementById('xp-val').textContent = xp + ' / ' + XP_MAX;
+  const toast = document.getElementById('xp-toast');
+  toast.textContent = '+' + amount + ' XP';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// ── SCREEN NAV ──
+function nextScreen(id, xpAmount, reply) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  target.classList.add('active');
+
+  // update scene label
+  const labels = { s0:'Вступление', s1:'Диалог', s2:'Роли в системе', s3:'Задание', s4:'Диалог', s5:'Финал' };
+  document.getElementById('scene-label').textContent = labels[id] || '';
+
+  if (xpAmount) addXP(xpAmount);
+
+  if (reply && id === 's1') {
+    playerReply = reply;
+    const row = document.getElementById('player-reply-1');
+    const txt = document.getElementById('player-reply-1-text');
+    row.style.display = 'flex';
+    txt.textContent = reply;
+  }
+
+  window.scrollTo(0, 0);
+}
+
+// ── CHOICE HANDLERS ──
+function handleChoice1(idx) {
+  const choices = document.querySelectorAll('#choices-s1 .choice-btn');
+  choices.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback-s1');
+  fb.style.display = 'block';
+
+  if (idx === 0) {
+    choices[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar">🦆</div><div><div class="npc-name">Олеся</div><div class="dialogue-box">Точно. <strong>Именно так.</strong> Мы посредник — арбитраж между рекламодателем и партнёром. Наша маржа = разница в выплатах. Всё остальное строится вокруг этого.</div></div></div><button class="btn-continue" onclick="nextScreen('s2', 30, null)" style="margin-top:12px">Дальше →</button>`;
+    addXP(30);
+  } else if (idx === 1) {
+    choices[1].classList.add('wrong');
+    choices[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar">🦆</div><div><div class="npc-name">Олеся</div><div class="dialogue-box">Не совсем. Мы не делаем приложения — мы <em>соединяем</em> рекламодателей с партнёрами. Приложения и контент-сервисы принадлежат рекламодателям. Наш продукт — платформа и трафик.</div></div></div><button class="btn-continue" onclick="nextScreen('s2', 10, null)" style="margin-top:12px">Понятно, дальше →</button>`;
+    addXP(10);
+  } else {
+    choices[2].classList.add('wrong');
+    choices[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar">🦆</div><div><div class="npc-name">Олеся</div><div class="dialogue-box">Близко, но не совсем. Мы не «покупаем» трафик сами — это делают <em>партнёры</em>. Мы предоставляем им платформу с офферами и берём маржу с каждой конверсии.</div></div></div><button class="btn-continue" onclick="nextScreen('s2', 15, null)" style="margin-top:12px">Понятно →</button>`;
+    addXP(15);
+  }
+}
+
+function handleChoice4(idx) {
+  const choices = document.querySelectorAll('#choices-s4 .choice-btn');
+  choices.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback-s4');
+  fb.style.display = 'block';
+
+  if (idx === 0) {
+    choices[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar">🦆</div><div><div class="npc-name">Олеся</div><div class="dialogue-box"><strong>Отлично. Всё верно.</strong> Ты уже говоришь на языке платформы. Именно так AM объясняет оффер партнёру: что за гео, какая механика, сколько получишь, какой конверт ожидать. Это основа всего.</div></div></div><button class="btn-continue" onclick="goFinal(40)" style="margin-top:12px">Завершить модуль →</button>`;
+    addXP(40);
+  } else if (idx === 1) {
+    choices[1].classList.add('wrong');
+    choices[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar">🦆</div><div><div class="npc-name">Олеся</div><div class="dialogue-box">Есть несколько ошибок. <strong>Нигерия</strong> — это ГЕО, страна трафика, не рекламодатель. <strong>$0.32</strong> — это выплата за конверсию, не за клик. <strong>3.5%</strong> — это CR (конверт), не апрув. Запомни различие — пригодится.</div></div></div><button class="btn-continue" onclick="goFinal(15)" style="margin-top:12px">Понятно →</button>`;
+    addXP(15);
+  } else {
+    choices[2].classList.add('wrong');
+    choices[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar">🦆</div><div><div class="npc-name">Олеся</div><div class="dialogue-box">Честно — уважаю. <strong>PIN submit</strong> — это двухшаговая подписка: пользователь вводит номер → получает SMS → вводит код. <strong>Конверт 3.5%</strong> = из 100 кликов 3–4 становятся подписками. Запомни — это ежедневные цифры AM.</div></div></div><button class="btn-continue" onclick="goFinal(20)" style="margin-top:12px">Записала →</button>`;
+    addXP(20);
+  }
+}
+
+function goFinal(bonus) {
+  if (bonus) addXP(bonus);
+  document.getElementById('final-xp').textContent = xp;
+  nextScreen('s5', 0, null);
+}
+
+// ── REVEAL CARDS ──
+let revealedCards = 0;
+function revealCard(card) {
+  if (!card.classList.contains('revealed')) {
+    card.classList.add('revealed');
+    revealedCards++;
+    if (revealedCards === 1) addXP(5);
+  }
+}
+
+// ── DRAG & DROP ──
+const DND_ANSWER = ['advertiser', 'platform', 'partner'];
+const DND_LABELS = {
+  advertiser: '🏢 Рекламодатель',
+  platform:   '🌐 GG Platform',
+  partner:    '👤 Партнёр'
+};
+const slots = [null, null, null];
+let dragId = null;
+
+function drag(e) {
+  dragId = e.target.dataset.id;
+  e.target.classList.add('dragging');
+  setTimeout(() => e.target.classList.remove('dragging'), 0);
+}
+
+function allowDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+  e.currentTarget.addEventListener('dragleave', () => e.currentTarget.classList.remove('drag-over'), { once: true });
+}
+
+function drop(e, slotIdx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!dragId) return;
+
+  // Remove from previous slot
+  const prevSlot = slots.indexOf(dragId);
+  if (prevSlot >= 0) {
+    slots[prevSlot] = null;
+    const prevEl = document.getElementById('slot-' + prevSlot);
+    prevEl.innerHTML = '<span style="opacity:.5;font-size:11px">Перетащи сюда</span>';
+    prevEl.classList.remove('has-card');
+  }
+
+  // Remove placed state from pool card
+  document.querySelectorAll('.dnd-card').forEach(c => {
+    if (c.dataset.id === dragId) c.classList.remove('placed');
+  });
+
+  // Place in new slot
+  slots[slotIdx] = dragId;
+  const slotEl = document.getElementById('slot-' + slotIdx);
+  slotEl.innerHTML = `<div style="font-size:13px;font-weight:500">${DND_LABELS[dragId]}</div>`;
+  slotEl.classList.add('has-card');
+
+  // Mark as placed in pool
+  document.querySelectorAll('.dnd-card').forEach(c => {
+    if (c.dataset.id === dragId) c.classList.add('placed');
+  });
+
+  dragId = null;
+
+  // Enable check button if all slots filled
+  if (slots.every(s => s !== null)) {
+    const btn = document.getElementById('dnd-check-btn');
+    btn.style.background = '';
+    btn.style.color = '';
+  }
+}
+
+function checkDND() {
+  if (!slots.every(s => s !== null)) {
+    document.getElementById('dnd-feedback').textContent = 'Расставь все три карточки, потом проверяем.';
+    return;
+  }
+
+  const correct = DND_ANSWER.every((ans, i) => slots[i] === ans);
+  const fb = document.getElementById('dnd-feedback');
+
+  if (correct) {
+    fb.innerHTML = '✅ <strong style="color:#4ADE80">Правильно!</strong> Деньги идут от рекламодателя → через GG → к партнёру. Именно в такой цепочке и формируется маржа платформы.';
+    fb.style.color = '#4ADE80';
+    addXP(35);
+    setTimeout(() => nextScreen('s4', 0, null), 1800);
+  } else {
+    fb.innerHTML = '❌ Не совсем. Подумай: кто создаёт оффер? Кто распределяет? Кто исполняет? Попробуй ещё раз.';
+    fb.style.color = '#EF4444';
+    addXP(5);
+  }
+}
+
+
+function s2quiz(el, correct, explain) {
+  document.querySelectorAll('#s2-opts .quiz-opt').forEach(o => o.style.pointerEvents='none');
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) document.querySelectorAll('#s2-opts .quiz-opt')[1].classList.add('correct');
+  const exp = document.getElementById('s2-exp');
+  exp.textContent = (correct ? '✅ ' : '❌ ') + explain;
+  exp.classList.add('show');
+  addXP(correct ? 20 : 8);
+}
+
+function restartModule() {
+  xp = 0;
+  document.getElementById('xp-fill').style.width = '0%';
+  document.getElementById('xp-val').textContent = '0 / 200';
+  revealedCards = 0;
+  slots.fill(null);
+  document.querySelectorAll('.dnd-card').forEach(c => c.classList.remove('placed'));
+  document.querySelectorAll('.dnd-slot').forEach((s, i) => {
+    s.innerHTML = '<span style="opacity:.5;font-size:11px">' + ['Кто первый?', 'Кто в центре?', 'Кто последний?'][i] + '</span>';
+    s.classList.remove('has-card');
+  });
+  document.getElementById('dnd-feedback').textContent = '';
+  document.querySelectorAll('.choice-btn').forEach(b => { b.disabled = false; b.className = 'choice-btn'; });
+  document.querySelectorAll('#feedback-s1, #feedback-s4').forEach(f => f.style.display = 'none');
+  document.querySelectorAll('.info-card').forEach(c => c.classList.remove('revealed'));
+  document.getElementById('player-reply-1').style.display = 'none';
+  nextScreen('s0', 0, null);
+}
+</script>
+
+<!-- ════ NEW: TRAFFIC SOURCES SCREEN ════ -->
+<div class="screen" id="s-traffic">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div>
+  </div>
+  <div class="eyebrow">Модуль 1 · Бонус</div>
+  <h2>Откуда приходит трафик в mVAS</h2>
+  <p class="slide-sub">Источники трафика — ключевой параметр при выборе оффера. Разные форматы дают разный CR и апрув.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <div class="dd-card">
+      <h3>🌐 Pop / Popunder</h3>
+      <p>Всплывающее окно под основным. Широкий охват, низкая стоимость клика ($0.003–0.015). CR 1–5%. Основной формат для mVAS Африки и SEA.</p>
+      <div class="expert-note">19% push-трафика в сетях идёт только с мобайла. Pop-трафик — ещё выше.</div>
+    </div>
+    <div class="dd-card">
+      <h3>🔔 Push-уведомления</h3>
+      <p>Пользователь уже согласился получать уведомления — более тёплая аудитория. CR выше, стоимость клика выше ($0.008–0.03).</p>
+      <div class="expert-note">Push-аудитория осознанная — хороша для retention-офферов и RevShare.</div>
+    </div>
+    <div class="dd-card">
+      <h3>📱 In-App реклама</h3>
+      <p>Баннеры внутри мобильных приложений. Высокая мобильная аудитория, но нужна точная таргетировка по ОС и устройству.</p>
+    </div>
+    <div class="dd-card">
+      <h3>📲 Соцсети (FB/Instagram)</h3>
+      <p>Формально не запрещены, но алгоритм Meta агрессивно блокирует mVAS-лендинги. Риск бана аккаунта. Используют с клоакингом.</p>
+      <div class="expert-note"><strong>Важно:</strong> для mVAS безопаснее PropellerAds, RichAds, Kadam — там mVAS разрешён явно.</div>
+    </div>
+  </div>
+
+  <div class="dd-card" style="margin-bottom:14px">
+    <h3>⚡ Рейтинг источников для mVAS</h3>
+    <div class="dd-table" style="font-size:12px">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:var(--sl-bg3)"><th style="padding:8px;text-align:left;font-size:11px;color:var(--sl-text3)">Источник</th><th style="padding:8px;text-align:left;font-size:11px;color:var(--sl-text3)">CR</th><th style="padding:8px;text-align:left;font-size:11px;color:var(--sl-text3)">Стоимость</th><th style="padding:8px;text-align:left;font-size:11px;color:var(--sl-text3)">Риск</th></tr></thead>
+        <tbody>
+          <tr><td style="padding:8px;border-top:1px solid var(--sl-border)"><strong>Pop</strong></td><td style="padding:8px;border-top:1px solid var(--sl-border);color:#D97706">1–5%</td><td style="padding:8px;border-top:1px solid var(--sl-border)">Низкая</td><td style="padding:8px;border-top:1px solid var(--sl-border)">Средний (боты)</td></tr>
+          <tr><td style="padding:8px;border-top:1px solid var(--sl-border)"><strong>Push</strong></td><td style="padding:8px;border-top:1px solid var(--sl-border);color:#16A34A">2–8%</td><td style="padding:8px;border-top:1px solid var(--sl-border)">Средняя</td><td style="padding:8px;border-top:1px solid var(--sl-border)">Низкий</td></tr>
+          <tr><td style="padding:8px;border-top:1px solid var(--sl-border)"><strong>In-App</strong></td><td style="padding:8px;border-top:1px solid var(--sl-border);color:#16A34A">3–10%</td><td style="padding:8px;border-top:1px solid var(--sl-border)">Высокая</td><td style="padding:8px;border-top:1px solid var(--sl-border)">Низкий</td></tr>
+          <tr><td style="padding:8px;border-top:1px solid var(--sl-border)"><strong>Соцсети</strong></td><td style="padding:8px;border-top:1px solid var(--sl-border);color:#D97706">Зависит</td><td style="padding:8px;border-top:1px solid var(--sl-border)">Высокая</td><td style="padding:8px;border-top:1px solid var(--sl-border);color:#DC2626">Высокий</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="nextScreen('s5',10,null)">Завершить модуль →</button>
+</div>
+</div>
+
+</body>
+</html>

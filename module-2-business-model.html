@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GG Academy · Модуль 2 · Как деньги попадают к нам</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Special+Elite&display=swap');
+
+/* ═══════════════════════════════════════════════════════
+   GG ACADEMY · SEPIA DOSSIER · MODULE 2
+   Single light mode · warm paper · old case-file feel
+   Accent: #1A8A7A
+═══════════════════════════════════════════════════════ */
+:root{
+  /* Warm paper base — sepia, no blue */
+  --paper:    #F0E9DA;   /* main background — aged paper */
+  --paper2:   #F7F2E7;   /* cards — lighter cream */
+  --paper3:   #E6DCC7;   /* sunken panels */
+  --paper4:   #DCCFB5;   /* deeper tone */
+  --paper-edge: #C8B894; /* borders */
+  --paper-edge2: #B5A37D;/* darker borders */
+
+  /* Warm ink text */
+  --ink:    #2A2317;   /* near-black warm */
+  --ink2:   #4D4030;   /* body */
+  --ink3:   #7A6B52;   /* muted */
+  --ink4:   #9A8B70;   /* faint */
+
+  /* Accent */
+  --ac:      #1A8A7A;
+  --ac-rgb:  26,138,122;
+  --ac-lt:   #5EC4B5;
+  --ac-dk:   #0F5A50;
+  --ac-bg:   rgba(26,138,122,.10);
+  --ac-bg2:  rgba(26,138,122,.06);
+  --ac-bd:   rgba(26,138,122,.35);
+  --ac-glow: rgba(26,138,122,.22);
+  --ac-grad: linear-gradient(135deg, #0F5A50, #1A8A7A 65%, #5EC4B5);
+  --ac-grad-soft: linear-gradient(135deg, rgba(26,138,122,.14), rgba(26,138,122,.04));
+
+  /* Status — muted warm */
+  --ok:     #4A7C2E;
+  --ok-lt:  #6FA84A;
+  --ok-bg:  rgba(74,124,46,.12);
+  --ok-bd:  rgba(74,124,46,.4);
+  --err:    #A8392B;
+  --err-lt: #C85A4A;
+  --err-bg: rgba(168,57,43,.1);
+  --err-bd: rgba(168,57,43,.4);
+
+  /* Type */
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Oswald', sans-serif;
+  --type: 'Special Elite', serif;
+
+  /* Depth — warm shadows */
+  --r: 10px;
+  --r-lg: 14px;
+  --sh-sm: 0 1px 3px rgba(60,45,25,.10), 0 1px 2px rgba(60,45,25,.06);
+  --sh: 0 3px 14px rgba(60,45,25,.10), 0 1px 4px rgba(60,45,25,.06);
+  --sh-md: 0 8px 26px rgba(60,45,25,.14), 0 3px 8px rgba(60,45,25,.08);
+  --sh-lg: 0 16px 44px rgba(60,45,25,.18), 0 6px 14px rgba(60,45,25,.10);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);min-height:100vh;overflow-x:hidden;background:var(--paper);color:var(--ink2)}
+
+/* paper grain overlay — global warm texture */
+body::after{
+  content:'';position:fixed;inset:0;z-index:8000;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ── SCAN LINE — subtle ── */
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:1px;z-index:9000;
+  background:linear-gradient(90deg,transparent,var(--ac-bd),transparent);
+  animation:scan 6s ease-in-out infinite;opacity:.4;pointer-events:none;
+}
+@keyframes scan{0%{top:46px;opacity:.4}50%{opacity:.1}100%{top:100vh;opacity:0}}
+
+/* ── HUD — case-file header ── */
+.hud{
+  position:fixed;top:0;left:0;right:0;height:46px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  border-bottom:2px solid var(--ac-dk);
+  display:flex;align-items:center;gap:10px;
+  padding:0 18px;z-index:100;
+  box-shadow:0 2px 16px rgba(42,35,23,.35);
+}
+.hud::before{
+  content:'';position:absolute;left:0;bottom:-2px;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.6;
+}
+.hud-badge{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ac-lt);background:rgba(26,138,122,.15);
+  border:1px solid var(--ac-bd);border-radius:4px;
+  padding:3px 9px;white-space:nowrap;flex-shrink:0;
+}
+.hud-mod{
+  font-family:var(--mono);font-size:10px;color:rgba(240,233,218,.5);
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.02em;
+}
+.hud-mod strong{color:var(--ac-lt);font-weight:600}
+.hud-xp-wrap{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.hud-xp-lbl{font-family:var(--mono);font-size:9px;color:rgba(240,233,218,.4);letter-spacing:.08em}
+.hud-bar{width:78px;height:4px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden}
+.hud-fill{height:100%;border-radius:3px;background:var(--ac-grad);transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(26,138,122,.5)}
+.hud-val{font-family:var(--mono);font-size:10px;color:var(--ac-lt);min-width:54px;text-align:right;font-weight:500}
+
+/* XP TOAST */
+.xp-toast{
+  position:fixed;top:54px;right:16px;
+  background:var(--ac-grad);color:#2A2317;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.06em;padding:6px 14px;border-radius:7px;
+  z-index:201;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 6px 20px rgba(26,138,122,.45);
+}
+.xp-toast.show{transform:translateX(0)}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;padding-top:46px;animation:screenIn .4s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:flex;flex-direction:column}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════
+   SCENES — now ALSO on warm paper
+═══════════════════════════ */
+.scene,.scene-bg,.scene-bg-office{position:relative}
+.scene{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:24px 20px;position:relative;overflow:hidden;
+  min-height:calc(100vh - 46px);
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(26,138,122,.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(26,138,122,.04) 0%, transparent 45%),
+    var(--paper);
+}
+.scene-bg,.scene-bg-office{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 25% 30%, rgba(26,138,122,.05) 0%, transparent 55%),
+    var(--paper);
+}
+.scene-bg::after,.scene-bg-office::after{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 41px,rgba(120,107,82,.04) 42px),
+    repeating-linear-gradient(90deg,transparent,transparent 61px,rgba(120,107,82,.04) 62px);
+  mask-image:radial-gradient(ellipse at center, black 35%, transparent 88%);
+}
+/* soft vignette — warm */
+.scene::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(120,90,50,.18);
+}
+
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.particle{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--ac-dk);opacity:0;
+  animation:floatP var(--dur,8s) var(--delay,0s) infinite ease-in-out;
+}
+@keyframes floatP{0%{transform:translateY(100vh);opacity:0}10%{opacity:.25}90%{opacity:.08}100%{transform:translateY(-20px) translateX(var(--dx,20px));opacity:0}}
+
+/* Dialogue — on paper */
+.dialogue-wrap{position:relative;z-index:10;max-width:680px;margin:0 auto;width:100%}
+.npc-row{display:flex;align-items:flex-end;gap:11px;margin-bottom:11px}
+.npc-avatar{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:radial-gradient(circle at 35% 30%, var(--paper2), var(--paper3));
+  border:2px solid var(--ac-bd);
+  box-shadow:0 0 0 4px var(--ac-glow), 0 3px 10px rgba(60,45,25,.18);
+}
+.npc-avatar.av-dmitry,.av-d,.npc-av-dmitry{border-color:rgba(15,138,122,.45);box-shadow:0 0 0 4px rgba(15,138,122,.12),0 3px 10px rgba(60,45,25,.18)}
+.npc-name{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;color:var(--ac-dk);
+}
+.npc-name.nm-d,.nm-dmitry,.dmitry{color:#0F8A7A}
+.dialogue-box{
+  background:linear-gradient(160deg, var(--paper2), var(--paper2) 70%, var(--paper3));
+  border:1px solid var(--paper-edge);border-left:3px solid var(--ac);
+  border-radius:14px;border-top-left-radius:4px;
+  padding:15px 18px;font-size:13.5px;line-height:1.8;color:var(--ink2);
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.dialogue-box.db-d,.dialogue-box.dmitry{border-left-color:#0F8A7A}
+.dialogue-box em{color:var(--ac-dk);font-style:italic;font-weight:500}
+.dialogue-box strong{color:var(--ink);font-weight:600}
+.dialogue-box.db-d strong,.dialogue-box.dmitry strong{color:#0F6A5E}
+
+.player-row{display:flex;justify-content:flex-end;margin-bottom:11px}
+.player-box{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);
+  border-radius:14px;border-top-right-radius:4px;padding:11px 15px;
+  font-size:12.5px;line-height:1.6;color:var(--ink2);max-width:82%;
+  box-shadow:var(--sh-sm);
+}
+.player-box::after{
+  content:'💬 Ирина';display:block;
+  font-family:var(--mono);font-size:9px;color:var(--ac-dk);
+  letter-spacing:.08em;margin-top:4px;text-align:right;
+}
+
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.choice-btn{
+  background:var(--paper2);
+  border:1px solid var(--paper-edge);
+  border-radius:10px;padding:12px 16px;text-align:left;
+  font-size:13px;line-height:1.6;color:var(--ink2);
+  cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);font-family:var(--sans);
+  position:relative;overflow:hidden;box-shadow:var(--sh-sm);
+}
+.choice-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--ac);transform:scaleY(0);transition:transform .25s;
+}
+.choice-btn:hover:not(:disabled){
+  background:var(--ac-bg2);border-color:var(--ac-bd);
+  transform:translateX(5px);box-shadow:var(--sh);
+}
+.choice-btn:hover:not(:disabled)::before{transform:scaleY(1)}
+.choice-btn.correct{background:var(--ok-bg);border-color:var(--ok);color:#2D4A1A}
+.choice-btn.wrong{background:var(--err-bg);border-color:var(--err);color:#6B1F15}
+
+/* Continue button */
+.btn-continue{
+  margin-top:15px;padding:12px 28px;
+  background:var(--ac-grad);
+  border:none;border-radius:10px;color:#2A2317;
+  font-family:var(--display);font-size:12px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .25s;box-shadow:0 5px 16px rgba(26,138,122,.28);
+}
+.btn-continue:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 9px 24px rgba(26,138,122,.36)}
+
+/* ═══════════════════════════
+   SLIDES — same paper, seamless
+═══════════════════════════ */
+.slide{
+  flex:1;padding:30px 26px;max-width:780px;margin:0 auto;width:100%;
+  background:var(--paper);position:relative;
+}
+.slide::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.02'/%3E%3C/svg%3E");
+}
+.slide>*{position:relative;z-index:1}
+
+/* Progress — evidence ticks */
+.prog-row,.progress-row{display:flex;gap:4px;margin-bottom:24px;align-items:center}
+.prog-step,.progress-step{flex:1;height:5px;background:var(--paper4);border-radius:3px;transition:all .4s;overflow:hidden}
+.prog-step.done,.progress-step.done{background:var(--ac-dk)}
+.prog-step.active,.progress-step.active{background:var(--ac);box-shadow:0 0 8px rgba(26,138,122,.4)}
+
+/* Eyebrow — case label */
+.eyebrow,.slide-eyebrow{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.16em;color:var(--ac-dk);text-transform:uppercase;
+  margin-bottom:8px;padding:3px 10px;
+  background:var(--ac-bg);border:1px solid var(--ac-bd);border-radius:4px;
+}
+.slide h2{
+  font-family:var(--display);font-size:28px;font-weight:700;
+  color:var(--ink);margin-bottom:8px;line-height:1.15;letter-spacing:-.01em;
+}
+.slide-sub{font-size:14px;color:var(--ink2);margin-bottom:24px;line-height:1.65}
+
+/* Case-file cards — dossier */
+.dd-card,.ops-card,.info-card,.role-map{
+  background:linear-gradient(165deg, var(--paper2), var(--paper2) 72%, var(--paper3));
+  border:1px solid var(--paper-edge);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+  transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s, border-color .25s;
+}
+.dd-card::before,.ops-card::before{
+  content:'';position:absolute;top:0;left:20px;width:36px;height:3px;
+  background:var(--ac-grad);border-radius:0 0 3px 3px;
+}
+.dd-card:hover,.ops-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);border-color:var(--ac-bd)}
+.dd-card h3,.ops-card h3{
+  font-family:var(--display);font-size:16px;font-weight:600;color:var(--ink);
+  margin-bottom:11px;display:flex;align-items:center;gap:9px;letter-spacing:.01em;
+}
+.dd-card p,.ops-card p{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:9px}
+.dd-card p:last-child,.ops-card p:last-child{margin-bottom:0}
+.dd-card strong,.ops-card strong{color:var(--ink);font-weight:600}
+
+/* Info cards (reveal) */
+.info-card{cursor:pointer}
+.info-card::before{display:none}
+.info-card:hover{border-color:var(--ac-bd);transform:translateY(-2px)}
+.info-card.revealed{
+  border-color:var(--ac);border-left:4px solid var(--ac);
+  background:linear-gradient(165deg, var(--paper2), var(--ac-bg2));
+}
+.ic-q,.info-card-q{
+  font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);
+  margin-bottom:7px;display:flex;align-items:center;gap:7px;letter-spacing:.01em;
+}
+.ic-a,.info-card-a{font-size:13px;color:var(--ink2);line-height:1.7;display:none}
+.info-card.revealed .ic-a,.info-card.revealed .info-card-a{display:block}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+/* Tables — evidence ledger */
+.dd-table,.comp-table,.mismatch-table{
+  width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin:12px 0;
+  border:1px solid var(--paper-edge2);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);
+}
+.dd-table th,.comp-table th,.mismatch-table th{
+  text-align:left;padding:11px 13px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  font-family:var(--mono);font-weight:600;color:var(--ac-lt);
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+}
+.dd-table td,.comp-table td,.mismatch-table td{
+  padding:11px 13px;border-top:1px solid var(--paper-edge);
+  color:var(--ink2);vertical-align:top;line-height:1.55;background:var(--paper2);
+}
+.dd-table tr:last-child td{border-bottom:none}
+.dd-table tr:hover td,.comp-table tr:hover td{background:var(--paper3)}
+.hi{font-weight:600;color:var(--ink)}
+.good{color:var(--ok);font-weight:600}
+.mid{color:var(--ac-dk);font-weight:600}
+.low{color:var(--err);font-weight:600}
+
+/* Notebook — detective's journal */
+.notebook{
+  background:linear-gradient(165deg, #EFE7D3, #E8DDC4);
+  border:1px solid var(--paper-edge2);border-left:4px solid var(--ac);
+  border-radius:var(--r);padding:16px 18px;margin-bottom:16px;
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.5);position:relative;
+}
+.notebook::after{
+  content:'';position:absolute;top:10px;bottom:10px;left:14px;width:1px;
+  background:repeating-linear-gradient(180deg,rgba(26,138,122,.3),rgba(26,138,122,.3) 2px,transparent 2px,transparent 6px);
+}
+.nb-title,.notebook-title{
+  font-family:var(--type);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ac-dk);margin-bottom:9px;padding-left:12px;
+}
+.nb-entry,.notebook-entry{
+  display:flex;gap:9px;padding:4px 0 4px 12px;border-bottom:1px solid rgba(26,138,122,.12);
+}
+.nb-entry:last-child,.notebook-entry:last-child{border-bottom:none}
+.nb-check{color:var(--ac-dk);flex-shrink:0;font-size:13px}
+.nb-text{color:#3A3020;font-size:12.5px;line-height:1.65;font-family:var(--type)}
+
+/* Quiz */
+.quiz-wrap,.ops-quiz,.dtree-wrap,.debug-wrap,.inv-board,.verdict-wrap{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge);border-radius:var(--r);padding:18px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+}
+.quiz-q,.dtree-q,.verdict-q,.eq-text{
+  font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink);
+  margin-bottom:13px;line-height:1.45;letter-spacing:.01em;
+}
+.quiz-opt,.dtree-opt,.verdict-opt,.debug-opt,.inv-opt,.eq-opt{
+  padding:12px 15px;border-radius:9px;
+  border:1.5px solid var(--paper-edge2);background:var(--paper);
+  font-size:13px;color:var(--ink2);cursor:pointer;
+  transition:all .2s cubic-bezier(.4,0,.2,1);line-height:1.5;margin-bottom:7px;
+}
+.quiz-opt:hover,.dtree-opt:hover,.verdict-opt:hover,
+.debug-opt:hover,.inv-opt:hover,.eq-opt:hover{
+  border-color:var(--ac);background:var(--ac-bg2);color:var(--ink);transform:translateX(3px);
+}
+.quiz-opt.correct,.dtree-opt.ok,.verdict-opt.v-ok,
+.debug-opt.ok,.inv-opt.ok,.eq-opt.ok,.quiz-opt.reveal{
+  border-color:var(--ok);background:var(--ok-bg);color:#2D4A1A;cursor:default;transform:none;
+}
+.quiz-opt.wrong,.dtree-opt.err,.verdict-opt.v-err,
+.debug-opt.err,.inv-opt.err,.eq-opt.err{
+  border-color:var(--err);background:var(--err-bg);color:#6B1F15;cursor:default;transform:none;
+}
+.quiz-explain,.dtree-reveal,.debug-reveal,.inv-reveal,.verdict-reveal,.eq-reveal{
+  font-size:12.5px;color:var(--ink2);
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:9px;padding:11px 13px;margin-top:9px;display:none;line-height:1.7;font-family:var(--type);
+}
+.quiz-explain.show,.dtree-reveal.show,.debug-reveal.show,
+.inv-reveal.show,.verdict-reveal.show,.eq-reveal.show{display:block}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:11px}
+.quiz-counter{font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.quiz-next{font-family:var(--mono);font-size:12px;color:var(--ac-dk);background:none;border:none;cursor:pointer;font-weight:600}
+
+/* Expert note */
+.expert-note,.ops-note{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);border-left:3px solid var(--ac);
+  border-radius:0 var(--r) var(--r) 0;padding:11px 15px;font-size:12.5px;
+  color:var(--ink2);margin:11px 0;line-height:1.7;font-style:italic;
+}
+.expert-note strong,.ops-note strong{color:var(--ac-dk);font-style:normal;font-weight:600}
+.scenario{
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:var(--r);padding:14px 16px;margin:10px 0;box-shadow:var(--sh-sm);
+}
+.sc-q{font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.sc-a{font-size:12.5px;color:var(--ink2);line-height:1.7}
+.sc-a strong{color:var(--ink);font-weight:600}
+.sub-h{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:16px 0 8px}
+
+/* Code block — dark inset even on light theme (terminal feel) */
+.code-block,.formula{
+  background:linear-gradient(165deg, #2A2317, #1F1A11);
+  border:1px solid var(--ac-bd);border-radius:var(--r);padding:14px 16px;
+  font-family:var(--mono);font-size:11.5px;color:var(--ac-lt);
+  margin:11px 0;line-height:1.85;overflow-x:auto;box-shadow:var(--sh-md);
+}
+.cm,.f-comment{color:#6B6050}.ck,.f-key{color:var(--ac-lt)}.cv,.f-val{color:#9AC8D8}
+.ce{color:#F4A060}.cb{color:#5EBFB0}
+
+/* Sliders */
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--paper4);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ac-grad);cursor:pointer;box-shadow:0 0 0 4px var(--ac-glow),0 2px 6px rgba(60,45,25,.3)}
+
+/* Drag & drop */
+.dnd-slot,.dnd-zone,.sort-zone{
+  border:2px dashed var(--paper-edge2);border-radius:var(--r);min-height:66px;
+  display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;
+  transition:all .25s;font-size:12px;color:var(--ink3);background:var(--paper);
+}
+.dnd-slot.has-card,.dnd-zone.has-card,.sort-zone.drag-over{
+  border-color:var(--ac);border-style:solid;background:var(--ac-bg2);
+  box-shadow:inset 0 0 16px rgba(26,138,122,.08);
+}
+.dnd-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--ac-dk);opacity:.5}
+.dnd-card,.sort-chip{
+  background:linear-gradient(165deg,var(--paper2),var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:9px;padding:9px 15px;
+  font-size:12px;font-weight:600;color:var(--ink);cursor:grab;user-select:none;
+  transition:all .18s;display:inline-flex;align-items:center;gap:6px;margin:3px;box-shadow:var(--sh-sm);
+}
+.dnd-card:hover,.sort-chip:hover{border-color:var(--ac);background:var(--ac-bg2);transform:translateY(-2px);box-shadow:var(--sh)}
+.dnd-card.placed{opacity:.35;pointer-events:none}
+.dnd-cards,.sort-pool{
+  display:flex;flex-wrap:wrap;gap:8px;padding:14px;
+  background:linear-gradient(165deg,var(--paper3),var(--paper));
+  border-radius:var(--r);border:1px dashed var(--paper-edge2);margin-bottom:14px;min-height:56px;
+}
+.dnd-zone-label,.sort-zone-title{font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+
+.role-map{padding:20px}
+.role-map::before{display:none}
+.role-map-title{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:15px;font-weight:600}
+
+/* Final card */
+.final-card{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:var(--r-lg);padding:28px;text-align:center;
+  box-shadow:var(--sh-lg);position:relative;overflow:hidden;
+}
+.final-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--ac-grad)}
+.final-card::after{
+  content:'';position:absolute;top:-60%;left:-30%;width:160%;height:200%;
+  background:conic-gradient(from 0deg,transparent 320deg,rgba(26,138,122,.05) 360deg);
+  animation:spin 12s linear infinite;pointer-events:none;
+}
+.final-card>*{position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.final-trophy{font-size:48px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px rgba(26,138,122,.3))}
+.final-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:.01em}
+.final-desc{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:16px}
+
+/* Back button */
+.gg-back{
+  position:fixed;top:9px;left:9px;z-index:9999;
+  background:linear-gradient(180deg,#2A2317,#3A3020);
+  border:1px solid var(--ac-bd);border-radius:8px;padding:7px 14px;
+  font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ac-lt);
+  cursor:pointer;transition:all .2s;letter-spacing:.06em;box-shadow:0 2px 10px rgba(42,35,23,.3);
+}
+.gg-back:hover{background:#3A3020;border-color:var(--ac);transform:translateX(-2px)}
+
+@media(max-width:600px){
+  .slide{padding:18px 14px}
+  .scene{padding:16px 12px}
+  .hud-mod{display:none}
+  .info-grid{grid-template-columns:1fr}
+  .slide h2{font-size:23px}
+}
+
+</style>
+</head>
+<body>
+
+<div class="scan-line"></div>
+
+<div class="hud">
+  <div class="hud-badge">GG · M2</div>
+  <div class="hud-mod"><strong>Как деньги попадают к нам</strong> · <span id="scene-lbl"></span></div>
+  <div class="hud-xp-wrap">
+    <span class="hud-xp-lbl">XP</span>
+    <div class="hud-bar"><div class="hud-fill" id="xp-fill" style="width:0%"></div></div>
+    <span class="hud-val" id="xp-val">0 / 300</span>
+  </div>
+</div>
+<div class="xp-toast" id="xp-toast">+0 XP</div>
+<div class="particles" id="particles"></div>
+
+<!-- ════ S0: INTRO ════ -->
+<div class="screen active" id="s0">
+<div class="scene">
+  <div class="scene-bg"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+      <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar">🦆</div>
+      <div>
+        <div class="npc-name">Олеся · Head of HR</div>
+        <div class="dialogue-box">
+          Ирина, доброе утро. Вчера ты разобралась с ролями — это хорошо.<br><br>
+          Сегодня идём глубже. <strong>Деньги</strong>. Как именно GG зарабатывает, как считается маржа, что такое EPC и почему два оффера с разными выплатами могут давать одинаковый доход.<br><br>
+          У тебя вчера был вопрос про маржу — сегодня закроем его полностью. <em>Дмитрий подключится когда дойдём до расчётов — он лучше объясняет через цифры.</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="choices">
+      <button class="choice-btn" onclick="go('s1', 15)">
+        📊 Отлично. Мне важно понять именно финансовую логику — как строить курсы про это для AM.
+      </button>
+      <button class="choice-btn" onclick="go('s1', 10)">
+        🤔 Честно — вчера немного запуталась в разнице между маржой и выплатой. Можем начать с этого?
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S1: БИЗНЕС-МОДЕЛЬ — СЛАЙД ════ -->
+<div class="screen" id="s1">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+    <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 2 · Слайд 01</div>
+  <h2>Где в этом деньги GG</h2>
+  <p class="slide-sub">Нажми на каждую карточку — узнай роль в цепочке и откуда берётся маржа.</p>
+
+  <div class="margin-flow">
+    <div class="mf-node adv">
+      <div class="mf-lbl">Рекламодатель</div>
+      <div class="mf-name">платит GG</div>
+      <div class="mf-price">$0.50</div>
+      <div class="mf-sub">за каждую подписку</div>
+    </div>
+    <div class="mf-arrow">→</div>
+    <div class="mf-node gg">
+      <div class="mf-lbl">Golden Goose</div>
+      <div class="mf-name">берёт маржу</div>
+      <div class="mf-price">$0.18</div>
+      <div class="mf-sub">36% от выплаты рекл.</div>
+    </div>
+    <div class="mf-arrow">→</div>
+    <div class="mf-node part">
+      <div class="mf-lbl">Партнёр</div>
+      <div class="mf-name">получает выплату</div>
+      <div class="mf-price">$0.32</div>
+      <div class="mf-sub">за каждую конверсию</div>
+    </div>
+  </div>
+
+  <div class="margin-badge">
+    <strong>Маржа GG = $0.50 − $0.32 = $0.18 с одной конверсии</strong>
+    При 1 000 конверсий в день — $180/день только с одного оффера. При 50 активных офферах × средней активности — это и есть бизнес.
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card" onclick="reveal(this)">
+      <div class="ic-q">💡 Почему GG заинтересован в хорошем трафике?</div>
+      <div class="ic-a">Больше качественных конверсий = больше маржи. Фрод снижает апрув = меньше оплаченных конверсий = меньше маржи. Поэтому антифрод — это защита бизнес-модели, а не просто технология.</div>
+    </div>
+    <div class="info-card" onclick="reveal(this)">
+      <div class="ic-q">💡 Что будет если партнёр уйдёт к конкуренту?</div>
+      <div class="ic-a">Платформа теряет его объём навсегда. Один крупный партнёр может давать 200+ конверсий в день. Это $36/день маржи. За год — $13 000 только с одного партнёра. Поэтому удержание партнёров — ключевая задача AM.</div>
+    </div>
+    <div class="info-card" onclick="reveal(this)">
+      <div class="ic-q">💡 Что такое RevShare и как он меняет расчёт?</div>
+      <div class="ic-a">При RevShare партнёр получает % от дохода рекламодателя с привлечённого пользователя на всё время жизни подписки. GG берёт маржу не разово, а регулярно — пока пользователь платит. Для платформы это стабильный доход.</div>
+    </div>
+    <div class="info-card" onclick="reveal(this)">
+      <div class="ic-q">💡 Почему рекламодатель соглашается платить $0.50?</div>
+      <div class="ic-a">Рекламодатель считает LTV: если подписчик платит $0.50/день и остаётся 20 дней — LTV = $10. Заплатить $0.50 за привлечение и получить $10 — хорошая сделка. Именно поэтому quality трафика важен: плохой трафик = короткий LTV = убыток рекламодателя.</div>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s2', 20)">Дальше: что такое EPC →</button>
+</div>
+</div>
+
+<!-- ════ S2: ДМИТРИЙ ПОЯВЛЯЕТСЯ → EPC ════ -->
+<div class="screen" id="s2">
+<div class="scene">
+  <div class="scene-bg"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div>
+      <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar dmitry">📊</div>
+      <div>
+        <div class="npc-name dmitry">Дмитрий · Senior Analyst</div>
+        <div class="dialogue-box dmitry">
+          Ирина, привет. Олеся сказала — ты разбираешься быстро. Хорошо.<br><br>
+          Перейдём сразу к делу. <strong>EPC — Earnings Per Click</strong> — это главная метрика для сравнения офферов. Не выплата, не CR отдельно. Именно EPC показывает сколько партнёр зарабатывает с каждого клика.<br><br>
+          Формула простая: <em>EPC = Выплата × CR</em>.<br><br>
+          Почему это важно? Потому что оффер с выплатой $0.40 может быть хуже оффера с $0.28, если CR у него ниже.
+        </div>
+      </div>
+    </div>
+
+    <div class="choices" id="ch-s2">
+      <button class="choice-btn" onclick="handleS2(0)">
+        📐 Понятно. То есть оффер $0.28 при CR 4% даёт EPC $0.0112, а оффер $0.40 при CR 2% даёт $0.0080 — первый лучше?
+      </button>
+      <button class="choice-btn" onclick="handleS2(1)">
+        ❓ Подождите — CR это конверт от клика? Или что-то другое?
+      </button>
+      <button class="choice-btn" onclick="handleS2(2)">
+        📈 А апрув как влияет на EPC? Если оператор отклоняет конверсии — EPC же падает?
+      </button>
+    </div>
+    <div id="fb-s2" style="display:none;margin-top:10px"></div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S3: ИНТЕРАКТИВНЫЙ EPC КАЛЬКУЛЯТОР ════ -->
+<div class="screen" id="s3">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 2 · Задание 01</div>
+  <h2>Считаем EPC — сама</h2>
+  <p class="slide-sub">Подвигай слайдеры. Посмотри как меняется EPC и заработок при разных параметрах оффера.</p>
+
+  <div class="formula">
+    <span class="f-comment">// Формула EPC</span><br>
+    <span class="f-key">EPC</span> = <span class="f-val">Выплата</span> × <span class="f-val">CR</span> × <span class="f-val">Апрув</span><br>
+    <span class="f-comment">// Реальный EPC учитывает апрув оператора — не все конверсии оплачиваются</span>
+  </div>
+
+  <div class="epc-calc">
+    <div class="epc-calc-title">Калькулятор оффера</div>
+
+    <div class="sl-row">
+      <div class="sl-top"><span>Выплата партнёру ($)</span><span class="sl-val" id="v-pay">$0.32</span></div>
+      <input type="range" id="r-pay" min="0.05" max="1.00" step="0.01" value="0.32" oninput="calcEPC()">
+    </div>
+    <div class="sl-row">
+      <div class="sl-top"><span>CR от клика (%)</span><span class="sl-val" id="v-cr">3.5%</span></div>
+      <input type="range" id="r-cr" min="0.5" max="10" step="0.1" value="3.5" oninput="calcEPC()">
+    </div>
+    <div class="sl-row">
+      <div class="sl-top"><span>Апрув оператора (%)</span><span class="sl-val" id="v-ap">70%</span></div>
+      <input type="range" id="r-ap" min="20" max="95" step="1" value="70" oninput="calcEPC()">
+    </div>
+    <div class="sl-row">
+      <div class="sl-top"><span>Объём кликов</span><span class="sl-val" id="v-cl">5 000</span></div>
+      <input type="range" id="r-cl" min="100" max="20000" step="100" value="5000" oninput="calcEPC()">
+    </div>
+
+    <div class="epc-result" id="epc-result">
+      <div><div class="epc-item-lbl">EPC реальный</div><div class="epc-item-val" id="r-epc">$0.0078</div><div class="epc-item-sub">с апрувом</div></div>
+      <div><div class="epc-item-lbl">Конверсий оплачено</div><div class="epc-item-val" id="r-conv">123</div><div class="epc-item-sub">из 175 конверсий</div></div>
+      <div><div class="epc-item-lbl">Доход партнёра</div><div class="epc-item-val" id="r-income">$39.3</div><div class="epc-item-sub">за эту кампанию</div></div>
+    </div>
+  </div>
+
+  <div id="epc-insight" style="font-size:12px;color:var(--ink3);margin-bottom:14px;min-height:36px;line-height:1.6;transition:all .3s"></div>
+
+  <button class="btn-continue" onclick="go('s-offers', 15)">Дальше: типы офферов →</button>
+</div>
+</div>
+
+<!-- ════ S4: СРАВНИ ДВА ОФФЕРА ════ -->
+<div class="screen" id="s4">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 2 · Задание 02</div>
+  <h2>Какой оффер лучше?</h2>
+  <p class="slide-sub">Партнёр пишет: «Помоги выбрать оффер под pop-трафик на Нигерию». Вот два варианта. Выбери лучший и объясни почему.</p>
+
+  <div class="compare-wrap">
+    <div class="compare-title">Нигерия · Pop-трафик · Выбери оффер для партнёра</div>
+    <div class="compare-grid">
+      <div class="offer-card" id="oc-a" onclick="pickOffer('a')">
+        <div class="best-badge">✓ ЛУЧШИЙ</div>
+        <div class="oc-geo">NG · MTN · PIN submit</div>
+        <div class="oc-name">Оффер Нигерия-01</div>
+        <div class="oc-row"><span class="oc-lbl">Выплата</span><span class="oc-val">$0.32</span></div>
+        <div class="oc-row"><span class="oc-lbl">CR (норма)</span><span class="oc-val">3.5%</span></div>
+        <div class="oc-row"><span class="oc-lbl">Апрув MTN</span><span class="oc-val">65%</span></div>
+        <div class="oc-row"><span class="oc-lbl">EPC реальный</span><span class="oc-val" id="epc-a">?</span></div>
+      </div>
+      <div class="offer-card" id="oc-b" onclick="pickOffer('b')">
+        <div class="oc-geo">NG · Airtel · PIN submit</div>
+        <div class="oc-name">Оффер Нигерия-02</div>
+        <div class="oc-row"><span class="oc-lbl">Выплата</span><span class="oc-val">$0.40</span></div>
+        <div class="oc-row"><span class="oc-lbl">CR (норма)</span><span class="oc-val">2.0%</span></div>
+        <div class="oc-row"><span class="oc-lbl">Апрув Airtel</span><span class="oc-val">55%</span></div>
+        <div class="oc-row"><span class="oc-lbl">EPC реальный</span><span class="oc-val" id="epc-b">?</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="offer-hint" style="font-size:11px;color:var(--ink3);margin-bottom:12px">💡 Подсказка: посчитай EPC = Выплата × CR × Апрув для каждого</div>
+  <div id="offer-fb" style="display:none;margin-bottom:14px"></div>
+  <button class="btn-continue" id="offer-next-btn" onclick="go('s5', 0)" style="display:none">Дальше →</button>
+</div>
+</div>
+
+<!-- ════ S5: ДИАЛОГ — CPA vs REVSHARE ════ -->
+<div class="screen" id="s5">
+<div class="scene">
+  <div class="scene-bg"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+      <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar dmitry">📊</div>
+      <div>
+        <div class="npc-name dmitry">Дмитрий · Senior Analyst</div>
+        <div class="dialogue-box dmitry">
+          Хорошо. Теперь про <strong>CPA против RevShare</strong> — это самый частый вопрос от партнёров.<br><br>
+          CPA: выплата разовая — сразу после подтверждения подписки. Предсказуемо.<br>
+          RevShare: партнёр получает <em>процент от дохода рекламодателя</em> пока пользователь платит за подписку.<br><br>
+          Вопрос для тебя: <strong>когда партнёру выгоднее RevShare, а не CPA?</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="dtree">
+      <div class="dtree-q">Партнёр спрашивает: «Мне взять CPA $0.35 или RevShare 30%? Мой трафик — push, Кения, Safaricom». Что отвечаешь?</div>
+      <div class="dtree-opts" id="dtree-opts">
+        <div class="dtree-opt" onclick="pickDtree(this, true)">
+          RevShare выгоднее если трафик качественный — пользователи остаются в подписке долго. При чёрне 5%/день и выплате $0.5/день: за месяц RevShare принесёт ~$3.20, а CPA $0.35 разово.
+        </div>
+        <div class="dtree-opt" onclick="pickDtree(this, false)">
+          CPA всегда лучше — деньги сразу, никакого риска.
+        </div>
+        <div class="dtree-opt" onclick="pickDtree(this, false)">
+          RevShare лучше всегда — там больше денег в перспективе.
+        </div>
+      </div>
+      <div class="dtree-reveal" id="dtree-reveal"></div>
+    </div>
+
+    <div id="dtree-continue" style="display:none">
+      <button class="btn-continue" onclick="go('s6', 0)">Завершить модуль →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S6: ФИНАЛ ════ -->
+<div class="screen" id="s6">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+  </div>
+
+  <div class="final-card">
+    <span class="final-trophy">💰</span>
+    <div class="final-title">Модуль 2 завершён</div>
+    <div class="final-desc">
+      Теперь ты видишь деньги в системе — откуда берётся маржа GG,<br>
+      как считается EPC и почему выплата сама по себе ничего не говорит.
+    </div>
+
+    <div class="notebook" style="text-align:left;margin-bottom:18px">
+      <div class="nb-title">📓 Дневник расследования · День 2</div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Маржа GG = цена рекламодателя − выплата партнёру. Пример: $0.50 − $0.32 = $0.18</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">EPC реальный = Выплата × CR × Апрув. Это единственная метрика для сравнения офферов</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Оффер с большей выплатой может быть хуже если CR или апрув ниже — смотри на EPC</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">CPA = деньги сразу. RevShare = деньги долго, если трафик качественный</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">RevShare выгоднее CPA когда churn низкий (пользователи платят долго)</span></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:18px">
+      <div style="text-align:center">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink3);margin-bottom:4px">НАБРАНО XP</div>
+        <div style="font-size:26px;font-weight:700;color:var(--gold)" id="final-xp">0</div>
+      </div>
+      <div style="width:1px;height:38px;background:var(--navy3)"></div>
+      <div style="text-align:center">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink3);margin-bottom:4px">УРОВЕНЬ</div>
+        <div style="font-size:16px;font-weight:700;color:var(--gold)">Детектив по деньгам</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">
+      Завтра — Модуль 3: <strong style="color:var(--gold)">«Путь одного клика»</strong>.<br>
+      Разберёшь трекинг и постбек изнутри. Поймёшь почему данные в трекере и платформе иногда расходятся — и как это диагностировать.
+    </div>
+
+    <button class="btn-continue" onclick="restart()">↺ Пройти ещё раз</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── INIT ──
+let xp = 0;
+const XP_MAX = 300;
+
+(function() {
+  const wrap = document.getElementById('particles');
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;--dur:${7+Math.random()*9}s;--delay:${Math.random()*8}s;--dx:${(Math.random()-.5)*55}px`;
+    wrap.appendChild(p);
+  }
+  calcEPC();
+  // show EPC values on offer card
+  const a = 0.32 * 0.035 * 0.65;
+  const b = 0.40 * 0.020 * 0.55;
+  document.getElementById('epc-a').textContent = '?';
+  document.getElementById('epc-b').textContent = '?';
+})();
+
+// ── XP ──
+function addXP(n) {
+  xp = Math.min(xp + n, XP_MAX);
+  document.getElementById('xp-fill').style.width = (xp/XP_MAX*100) + '%';
+  document.getElementById('xp-val').textContent = xp + ' / ' + XP_MAX;
+  const t = document.getElementById('xp-toast');
+  t.textContent = '+' + n + ' XP';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── NAV ──
+function go(id, xpAmt) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const lbls = {s0:'День второй',s1:'Бизнес-модель',s2:'Знакомство с EPC',s3:'Калькулятор',s4:'Задание',s5:'CPA vs RevShare',s6:'Финал'};
+  document.getElementById('scene-lbl').textContent = lbls[id] || '';
+  if (xpAmt) addXP(xpAmt);
+  if (id === 's6') document.getElementById('final-xp').textContent = xp;
+  window.scrollTo(0,0);
+}
+
+// ── REVEAL CARDS ──
+function reveal(card) {
+  if (!card.classList.contains('revealed')) {
+    card.classList.add('revealed');
+    addXP(5);
+  }
+}
+
+// ── S2: EPC DIALOGUE ──
+function handleS2(idx) {
+  document.querySelectorAll('#ch-s2 .choice-btn').forEach(b => b.disabled = true);
+  const fb = document.getElementById('fb-s2');
+  fb.style.display = 'block';
+
+  if (idx === 0) {
+    document.querySelectorAll('#ch-s2 .choice-btn')[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar dmitry">📊</div><div><div class="npc-name dmitry">Дмитрий</div><div class="dialogue-box dmitry"><strong>Именно так.</strong> Ты считаешь быстро. $0.28×4%=$0.0112 vs $0.40×2%=$0.0080 — первый оффер лучше на 40%. Запомни этот принцип: <em>никогда не сравнивай офферы по выплате — только по EPC.</em></div></div></div><button class="btn-continue" onclick="go('s3',35)" style="margin-top:10px">Дальше: считаем сами →</button>`;
+    addXP(35);
+  } else if (idx === 1) {
+    document.querySelectorAll('#ch-s2 .choice-btn')[1].classList.add('wrong');
+    document.querySelectorAll('#ch-s2 .choice-btn')[0].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar dmitry">📊</div><div><div class="npc-name dmitry">Дмитрий</div><div class="dialogue-box dmitry">Да, CR — это конверт от клика. Из 100 кликов CR 3.5% = 3-4 подписки. Но важный момент: реальный EPC = Выплата × CR × <strong>Апрув</strong>. Апрув оператора снижает итоговую цифру. Сейчас посчитаем.</div></div></div><button class="btn-continue" onclick="go('s3',20)" style="margin-top:10px">Понятно →</button>`;
+    addXP(20);
+  } else {
+    document.querySelectorAll('#ch-s2 .choice-btn')[2].classList.add('correct');
+    fb.innerHTML = `<div class="npc-row"><div class="npc-avatar dmitry">📊</div><div><div class="npc-name dmitry">Дмитрий</div><div class="dialogue-box dmitry"><strong>Отличный вопрос.</strong> Да — апрув оператора прямо снижает EPC. Полная формула: EPC = Выплата × CR × Апрув. Оффер $0.32 при CR 3.5% и апруве 70% → EPC = $0.32 × 0.035 × 0.70 = $0.0078. Пойдём считать.</div></div></div><button class="btn-continue" onclick="go('s3',40)" style="margin-top:10px">Считаем →</button>`;
+    addXP(40);
+  }
+}
+
+// ── EPC CALC ──
+function calcEPC() {
+  const pay = parseFloat(document.getElementById('r-pay').value);
+  const cr  = parseFloat(document.getElementById('r-cr').value)/100;
+  const ap  = parseFloat(document.getElementById('r-ap').value)/100;
+  const cl  = parseInt(document.getElementById('r-cl').value);
+
+  document.getElementById('v-pay').textContent = '$'+pay.toFixed(2);
+  document.getElementById('v-cr').textContent  = (cr*100).toFixed(1)+'%';
+  document.getElementById('v-ap').textContent  = Math.round(ap*100)+'%';
+  document.getElementById('v-cl').textContent  = cl.toLocaleString('ru');
+
+  const epc   = pay * cr * ap;
+  const convs = Math.round(cl * cr);
+  const paid  = Math.round(convs * ap);
+  const income= paid * pay;
+
+  document.getElementById('r-epc').textContent   = '$'+epc.toFixed(4);
+  document.getElementById('r-conv').textContent  = paid.toLocaleString('ru');
+  document.getElementById('r-income').textContent= '$'+(income).toFixed(1);
+
+  const ins = document.getElementById('epc-insight');
+  if (epc > 0.01) {
+    ins.innerHTML = `✅ <strong style="color:#4ADE80">Хороший EPC</strong> — оффер конкурентоспособен. Breakeven CPC ≈ $${epc.toFixed(4)} — если трафик дешевле этого, партнёр в плюсе.`;
+  } else if (epc > 0.005) {
+    ins.innerHTML = `⚠️ <strong style="color:var(--gold)">Средний EPC</strong> — работает только при очень дешёвом pop-трафике ($0.003–0.005/клик).`;
+  } else {
+    ins.innerHTML = `🔴 <strong style="color:#EF4444">Слабый EPC</strong> — сложно найти прибыльный трафик при таких параметрах. Нужно менять оффер или гео.`;
+  }
+}
+
+// ── OFFER COMPARE ──
+let offerPicked = false;
+function pickOffer(which) {
+  if (offerPicked) return;
+  offerPicked = true;
+
+  const aEPC = (0.32 * 0.035 * 0.65).toFixed(4);
+  const bEPC = (0.40 * 0.020 * 0.55).toFixed(4);
+  document.getElementById('epc-a').textContent = '$'+aEPC;
+  document.getElementById('epc-b').textContent = '$'+bEPC;
+  document.getElementById('offer-hint').style.display = 'none';
+
+  const fb = document.getElementById('offer-fb');
+  fb.style.display = 'block';
+
+  if (which === 'a') {
+    document.getElementById('oc-a').classList.add('selected-ok');
+    document.getElementById('oc-b').style.opacity = '.5';
+    fb.innerHTML = `<div style="background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:9px;padding:12px 14px;font-size:12px;color:#BBF7D0;line-height:1.65">✅ <strong>Правильно!</strong> Нигерия-01 лучше: EPC $${aEPC} против $${bEPC} у Нигерии-02. Несмотря на меньшую выплату ($0.32 vs $0.40) — выше CR и апрув дают лучший итоговый доход с каждого клика. Именно это ты объясняешь партнёру.</div>`;
+    addXP(40);
+  } else {
+    document.getElementById('oc-b').classList.add('selected-wrong');
+    document.getElementById('oc-a').classList.add('selected-ok');
+    fb.innerHTML = `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:9px;padding:12px 14px;font-size:12px;color:#FECACA;line-height:1.65">❌ Не совсем. Нигерия-02 выглядит привлекательнее из-за выплаты $0.40 — но EPC у неё $${bEPC}, а у Нигерии-01 $${aEPC}. Партнёр заработает <strong>больше с каждого клика на первом оффере</strong> — потому что CR и апрув перевешивают выплату.</div>`;
+    addXP(15);
+  }
+
+  document.getElementById('offer-next-btn').style.display = 'block';
+  addXP(0); // trigger display update
+}
+
+// ── DECISION TREE ──
+let dtreeDone = false;
+function pickDtree(el, correct) {
+  if (dtreeDone) return;
+  dtreeDone = true;
+
+  document.querySelectorAll('.dtree-opt').forEach(o => o.style.pointerEvents = 'none');
+  const rev = document.getElementById('dtree-reveal');
+  rev.classList.add('show');
+
+  if (correct) {
+    el.classList.add('chosen-ok');
+    rev.innerHTML = `✅ <strong style="color:var(--teal-lt)">Точно.</strong> Дмитрий кивает. RevShare выгоден при низком churn — если пользователь платит 20+ дней, партнёр заработает $3+ против $0.35 по CPA. Но если churn высокий (8–10%/день) — за 5 дней уйдёт половина подписчиков, и CPA окажется выгоднее. Ключ — <strong style="color:var(--teal-lt)">качество трафика</strong>.`;
+    addXP(40);
+  } else {
+    el.classList.add('chosen-err');
+    rev.innerHTML = `❌ Не совсем. Ни CPA, ни RevShare не лучше «всегда» — всё зависит от качества трафика. При низком churn RevShare может принести в 8–10 раз больше. При высоком churn — CPA надёжнее: деньги получены сразу, риска нет. AM помогает партнёру выбрать модель под его конкретный трафик.`;
+    addXP(15);
+  }
+
+  document.getElementById('dtree-continue').style.display = 'block';
+}
+
+function restart() {
+  xp = 0;
+  document.getElementById('xp-fill').style.width = '0%';
+  document.getElementById('xp-val').textContent = '0 / 300';
+  offerPicked = false;
+  dtreeDone = false;
+  document.querySelectorAll('.choice-btn').forEach(b => { b.disabled = false; b.className = 'choice-btn'; });
+  document.querySelectorAll('#fb-s2, #offer-fb').forEach(f => f.style.display = 'none');
+  document.getElementById('offer-next-btn').style.display = 'none';
+  document.getElementById('offer-hint').style.display = 'block';
+  document.querySelectorAll('.dtree-opt').forEach(o => { o.style.pointerEvents = ''; o.className = 'dtree-opt'; });
+  document.getElementById('dtree-reveal').className = 'dtree-reveal';
+  document.getElementById('dtree-reveal').innerHTML = '';
+  document.getElementById('dtree-continue').style.display = 'none';
+  document.getElementById('oc-a').className = 'offer-card';
+  document.getElementById('oc-b').className = 'offer-card';
+  document.getElementById('oc-b').style.opacity = '';
+  document.getElementById('epc-a').textContent = '?';
+  document.getElementById('epc-b').textContent = '?';
+  document.querySelectorAll('.info-card').forEach(c => c.classList.remove('revealed'));
+  calcEPC();
+  go('s0', 0);
+}
+</script>
+
+<!-- ════ NEW: OFFER TYPES ════ -->
+<div class="screen" id="s-offers">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+  <div class="eyebrow">Модуль 2 · Слайд 03</div>
+  <h2>Шесть типов mVAS-офферов</h2>
+  <p class="slide-sub">mVAS давно вышел за пределы одного типа. Нажми каждую карточку — узнай механику и особенности.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px" id="offer-types-grid">
+    <div class="info-card" onclick="this.classList.toggle('revealed');if(this.classList.contains('revealed'))addXP(5)">
+      <div class="ic-q">📱 1. DCB — Direct Carrier Billing</div>
+      <div class="ic-a"><strong>Механика:</strong> пользователь нажимает кнопку → деньги списываются с баланса телефона автоматически (1-click) или с подтверждением (2-click).<br><br>Требуется 3G/4G/5G соединение. Самый высокий CR — меньше шагов.<br><br><strong>Контент:</strong> погода, гороскопы, обои, видео, датинг-сервисы.</div>
+    </div>
+    <div class="info-card" onclick="this.classList.toggle('revealed');if(this.classList.contains('revealed'))addXP(5)">
+      <div class="ic-q">📲 2. PIN Submit</div>
+      <div class="ic-a"><strong>Механика:</strong> пользователь вводит номер телефона → получает SMS с PIN-кодом → вводит код → оформляет подписку.<br><br>Два шага = ниже CR чем DCB, но доступен на большем числе операторов. Самый распространённый тип в Африке.</div>
+    </div>
+    <div class="info-card" onclick="this.classList.toggle('revealed');if(this.classList.contains('revealed'))addXP(5)">
+      <div class="ic-q">📥 3. App Installs</div>
+      <div class="ic-a"><strong>Механика:</strong> пользователь скачивает приложение. Иногда нужны доп.шаги: регистрация или вход.<br><br>Скачивание через браузер (APK) или App Store. Подходит для утилит, игр, образовательных приложений.</div>
+    </div>
+    <div class="info-card" onclick="this.classList.toggle('revealed');if(this.classList.contains('revealed'))addXP(5)">
+      <div class="ic-q">💬 4. Click-to-SMS / Click-to-Call</div>
+      <div class="ic-a"><strong>Механика:</strong> пользователь нажимает кнопку → автоматически отправляет SMS или звонит на номер. Конверсия — сам факт звонка/SMS.<br><br>IVR (Interactive Voice Response): конверсия по голосовому ответу.</div>
+    </div>
+    <div class="info-card" onclick="this.classList.toggle('revealed');if(this.classList.contains('revealed'))addXP(5)">
+      <div class="ic-q">🔔 5. Push-подписки</div>
+      <div class="ic-a"><strong>Механика:</strong> пользователь разрешает push-уведомления. Конверсия = подтверждение разрешения.<br><br>Низкий барьер входа, но ценность подписчика зависит от монетизации push-канала.</div>
+    </div>
+    <div class="info-card" onclick="this.classList.toggle('revealed');if(this.classList.contains('revealed'))addXP(5)">
+      <div class="ic-q">🛒 6. CPS/CPL (мобайл)</div>
+      <div class="ic-a"><strong>Оригинально десктопные офферы, теперь на мобайл:</strong><br>CPS (Cost Per Sale) — оплата за покупку. Пример: мобильный шоппинг, кредитные карты.<br>CPL (Cost Per Lead) — оплата за заявку: имейл, телефон.<br><br>Выплаты выше, CR ниже.</div>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s-mistakes',15)">Дальше: 5 ошибок партнёров →</button>
+</div>
+</div>
+
+<!-- ════ NEW: 5 MISTAKES ════ -->
+<div class="screen" id="s-mistakes">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+  </div>
+  <div class="eyebrow">Модуль 2 · Слайд 04 — из видео GG Academy</div>
+  <h2>5 ошибок партнёров в mVAS</h2>
+  <p class="slide-sub">Это реальные ошибки которые AM видит каждый день. Знай их — чтобы объяснять партнёрам до запуска.</p>
+
+  <div class="reasons-grid">
+    <div class="reason-card" onclick="this.classList.toggle('open');if(this.classList.contains('open'))addXP(6)">
+      <div class="reason-header">
+        <div class="reason-num rn-1">1</div>
+        <div class="reason-title">Искать уникальный оффер которого нет у конкурентов</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">Уникальный оффер уникален именно потому что его почти нет — это не значит что он прибыльный. <strong>Популярные офферы популярны потому что работают.</strong> Один партнёр не может закрыть весь трафик оффера — на хороший оффер хватит десяткам команд. Задача: взять рабочий оффер и <em>оптимизировать</em> свой подход к нему.
+      <div class="reason-example">Используй spy-сервисы (AdSpy, SpyOver) чтобы увидеть что уже работает → бери это за основу → тести вариации</div>
+      </div>
+    </div>
+
+    <div class="reason-card" onclick="this.classList.toggle('open');if(this.classList.contains('open'))addXP(6)">
+      <div class="reason-header">
+        <div class="reason-num rn-2">2</div>
+        <div class="reason-title">Пытаться «продать» вместо решения проблемы пользователя</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">Пользователь не хочет «подписаться на сервис». Он хочет погоду на завтра, гороскоп, развлечение. <strong>Лендинг должен решать его проблему, а не продавать продукт.</strong> Ищи что реально беспокоит целевую аудиторию — в форумах, соцсетях, группах.
+      <div class="reason-example">Плохо: «Подпишись на премиум!» → Хорошо: «Узнай точный прогноз погоды для твоего района — нажми одну кнопку»</div>
+      </div>
+    </div>
+
+    <div class="reason-card" onclick="this.classList.toggle('open');if(this.classList.contains('open'))addXP(6)">
+      <div class="reason-header">
+        <div class="reason-num rn-3">3</div>
+        <div class="reason-title">Тестировать один-единственный креатив</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">Никогда не известно заранее какой креатив выстрелит — даже самый опытный AM ошибается в прогнозах. <strong>Минимум 3–5 вариантов для начального теста.</strong> Потом масштабируй победителя. Интуиция работает — но только как гипотеза для теста, не как основание не тестировать.
+      <div class="reason-example">Кейс GG: в тесте кампании в Пакистане самый слабый креатив на первом тесте стал лидером на втором. Не исключай рано.</div>
+      </div>
+    </div>
+
+    <div class="reason-card" onclick="this.classList.toggle('open');if(this.classList.contains('open'))addXP(6)">
+      <div class="reason-header">
+        <div class="reason-num rn-1">4</div>
+        <div class="reason-title">Не ограничивать тестовый бюджет</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">Запустить тест без лимита бюджета = слить деньги до того как успеешь что-то понять. <strong>Стартуй с $10/день</strong> — этого достаточно чтобы увидеть динамику и понять потенциал угла. Потом масштабируй постепенно. Бюджетное ограничение — не слабость, а дисциплина.
+      </div>
+    </div>
+
+    <div class="reason-card" onclick="this.classList.toggle('open');if(this.classList.contains('open'))addXP(6)">
+      <div class="reason-header">
+        <div class="reason-num rn-2">5</div>
+        <div class="reason-title">Один источник трафика на всё</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">Один источник = один слепой угол. Разные источники показывают разные аудитории, разное поведение, разный апрув. <strong>Тестируй минимум 2 источника</strong> — сравни и оставь лучший. Это также защищает от внезапных изменений в политике одной платформы.
+      <div class="reason-example">Попробуй Pop через PropellerAds + Push через RichAds — посмотри что даёт лучший EPC на одном ГЕО</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s4',20)">Дальше: сравни офферы →</button>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GG Academy · Модуль 3 · Путь одного клика</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Special+Elite&display=swap');
+
+/* ═══════════════════════════════════════════════════════
+   GG ACADEMY · SEPIA DOSSIER · MODULE 3
+   Single light mode · warm paper · old case-file feel
+   Accent: #0E9488
+═══════════════════════════════════════════════════════ */
+:root{
+  /* Warm paper base — sepia, no blue */
+  --paper:    #F0E9DA;   /* main background — aged paper */
+  --paper2:   #F7F2E7;   /* cards — lighter cream */
+  --paper3:   #E6DCC7;   /* sunken panels */
+  --paper4:   #DCCFB5;   /* deeper tone */
+  --paper-edge: #C8B894; /* borders */
+  --paper-edge2: #B5A37D;/* darker borders */
+
+  /* Warm ink text */
+  --ink:    #2A2317;   /* near-black warm */
+  --ink2:   #4D4030;   /* body */
+  --ink3:   #7A6B52;   /* muted */
+  --ink4:   #9A8B70;   /* faint */
+
+  /* Accent */
+  --ac:      #0E9488;
+  --ac-rgb:  14,148,136;
+  --ac-lt:   #4FC4B8;
+  --ac-dk:   #0A5F58;
+  --ac-bg:   rgba(14,148,136,.10);
+  --ac-bg2:  rgba(14,148,136,.06);
+  --ac-bd:   rgba(14,148,136,.35);
+  --ac-glow: rgba(14,148,136,.22);
+  --ac-grad: linear-gradient(135deg, #0A5F58, #0E9488 65%, #4FC4B8);
+  --ac-grad-soft: linear-gradient(135deg, rgba(14,148,136,.14), rgba(14,148,136,.04));
+
+  /* Status — muted warm */
+  --ok:     #4A7C2E;
+  --ok-lt:  #6FA84A;
+  --ok-bg:  rgba(74,124,46,.12);
+  --ok-bd:  rgba(74,124,46,.4);
+  --err:    #A8392B;
+  --err-lt: #C85A4A;
+  --err-bg: rgba(168,57,43,.1);
+  --err-bd: rgba(168,57,43,.4);
+
+  /* Type */
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Oswald', sans-serif;
+  --type: 'Special Elite', serif;
+
+  /* Depth — warm shadows */
+  --r: 10px;
+  --r-lg: 14px;
+  --sh-sm: 0 1px 3px rgba(60,45,25,.10), 0 1px 2px rgba(60,45,25,.06);
+  --sh: 0 3px 14px rgba(60,45,25,.10), 0 1px 4px rgba(60,45,25,.06);
+  --sh-md: 0 8px 26px rgba(60,45,25,.14), 0 3px 8px rgba(60,45,25,.08);
+  --sh-lg: 0 16px 44px rgba(60,45,25,.18), 0 6px 14px rgba(60,45,25,.10);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);min-height:100vh;overflow-x:hidden;background:var(--paper);color:var(--ink2)}
+
+/* paper grain overlay — global warm texture */
+body::after{
+  content:'';position:fixed;inset:0;z-index:8000;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ── SCAN LINE — subtle ── */
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:1px;z-index:9000;
+  background:linear-gradient(90deg,transparent,var(--ac-bd),transparent);
+  animation:scan 6s ease-in-out infinite;opacity:.4;pointer-events:none;
+}
+@keyframes scan{0%{top:46px;opacity:.4}50%{opacity:.1}100%{top:100vh;opacity:0}}
+
+/* ── HUD — case-file header ── */
+.hud{
+  position:fixed;top:0;left:0;right:0;height:46px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  border-bottom:2px solid var(--ac-dk);
+  display:flex;align-items:center;gap:10px;
+  padding:0 18px;z-index:100;
+  box-shadow:0 2px 16px rgba(42,35,23,.35);
+}
+.hud::before{
+  content:'';position:absolute;left:0;bottom:-2px;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.6;
+}
+.hud-badge{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ac-lt);background:rgba(14,148,136,.15);
+  border:1px solid var(--ac-bd);border-radius:4px;
+  padding:3px 9px;white-space:nowrap;flex-shrink:0;
+}
+.hud-mod{
+  font-family:var(--mono);font-size:10px;color:rgba(240,233,218,.5);
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.02em;
+}
+.hud-mod strong{color:var(--ac-lt);font-weight:600}
+.hud-xp-wrap{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.hud-xp-lbl{font-family:var(--mono);font-size:9px;color:rgba(240,233,218,.4);letter-spacing:.08em}
+.hud-bar{width:78px;height:4px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden}
+.hud-fill{height:100%;border-radius:3px;background:var(--ac-grad);transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(14,148,136,.5)}
+.hud-val{font-family:var(--mono);font-size:10px;color:var(--ac-lt);min-width:54px;text-align:right;font-weight:500}
+
+/* XP TOAST */
+.xp-toast{
+  position:fixed;top:54px;right:16px;
+  background:var(--ac-grad);color:#2A2317;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.06em;padding:6px 14px;border-radius:7px;
+  z-index:201;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 6px 20px rgba(14,148,136,.45);
+}
+.xp-toast.show{transform:translateX(0)}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;padding-top:46px;animation:screenIn .4s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:flex;flex-direction:column}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════
+   SCENES — now ALSO on warm paper
+═══════════════════════════ */
+.scene,.scene-bg,.scene-bg-office{position:relative}
+.scene{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:24px 20px;position:relative;overflow:hidden;
+  min-height:calc(100vh - 46px);
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(14,148,136,.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(14,148,136,.04) 0%, transparent 45%),
+    var(--paper);
+}
+.scene-bg,.scene-bg-office{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 25% 30%, rgba(14,148,136,.05) 0%, transparent 55%),
+    var(--paper);
+}
+.scene-bg::after,.scene-bg-office::after{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 41px,rgba(120,107,82,.04) 42px),
+    repeating-linear-gradient(90deg,transparent,transparent 61px,rgba(120,107,82,.04) 62px);
+  mask-image:radial-gradient(ellipse at center, black 35%, transparent 88%);
+}
+/* soft vignette — warm */
+.scene::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(120,90,50,.18);
+}
+
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.particle{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--ac-dk);opacity:0;
+  animation:floatP var(--dur,8s) var(--delay,0s) infinite ease-in-out;
+}
+@keyframes floatP{0%{transform:translateY(100vh);opacity:0}10%{opacity:.25}90%{opacity:.08}100%{transform:translateY(-20px) translateX(var(--dx,20px));opacity:0}}
+
+/* Dialogue — on paper */
+.dialogue-wrap{position:relative;z-index:10;max-width:680px;margin:0 auto;width:100%}
+.npc-row{display:flex;align-items:flex-end;gap:11px;margin-bottom:11px}
+.npc-avatar{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:radial-gradient(circle at 35% 30%, var(--paper2), var(--paper3));
+  border:2px solid var(--ac-bd);
+  box-shadow:0 0 0 4px var(--ac-glow), 0 3px 10px rgba(60,45,25,.18);
+}
+.npc-avatar.av-dmitry,.av-d,.npc-av-dmitry{border-color:rgba(15,138,122,.45);box-shadow:0 0 0 4px rgba(15,138,122,.12),0 3px 10px rgba(60,45,25,.18)}
+.npc-name{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;color:var(--ac-dk);
+}
+.npc-name.nm-d,.nm-dmitry,.dmitry{color:#0F8A7A}
+.dialogue-box{
+  background:linear-gradient(160deg, var(--paper2), var(--paper2) 70%, var(--paper3));
+  border:1px solid var(--paper-edge);border-left:3px solid var(--ac);
+  border-radius:14px;border-top-left-radius:4px;
+  padding:15px 18px;font-size:13.5px;line-height:1.8;color:var(--ink2);
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.dialogue-box.db-d,.dialogue-box.dmitry{border-left-color:#0F8A7A}
+.dialogue-box em{color:var(--ac-dk);font-style:italic;font-weight:500}
+.dialogue-box strong{color:var(--ink);font-weight:600}
+.dialogue-box.db-d strong,.dialogue-box.dmitry strong{color:#0F6A5E}
+
+.player-row{display:flex;justify-content:flex-end;margin-bottom:11px}
+.player-box{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);
+  border-radius:14px;border-top-right-radius:4px;padding:11px 15px;
+  font-size:12.5px;line-height:1.6;color:var(--ink2);max-width:82%;
+  box-shadow:var(--sh-sm);
+}
+.player-box::after{
+  content:'💬 Ирина';display:block;
+  font-family:var(--mono);font-size:9px;color:var(--ac-dk);
+  letter-spacing:.08em;margin-top:4px;text-align:right;
+}
+
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.choice-btn{
+  background:var(--paper2);
+  border:1px solid var(--paper-edge);
+  border-radius:10px;padding:12px 16px;text-align:left;
+  font-size:13px;line-height:1.6;color:var(--ink2);
+  cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);font-family:var(--sans);
+  position:relative;overflow:hidden;box-shadow:var(--sh-sm);
+}
+.choice-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--ac);transform:scaleY(0);transition:transform .25s;
+}
+.choice-btn:hover:not(:disabled){
+  background:var(--ac-bg2);border-color:var(--ac-bd);
+  transform:translateX(5px);box-shadow:var(--sh);
+}
+.choice-btn:hover:not(:disabled)::before{transform:scaleY(1)}
+.choice-btn.correct{background:var(--ok-bg);border-color:var(--ok);color:#2D4A1A}
+.choice-btn.wrong{background:var(--err-bg);border-color:var(--err);color:#6B1F15}
+
+/* Continue button */
+.btn-continue{
+  margin-top:15px;padding:12px 28px;
+  background:var(--ac-grad);
+  border:none;border-radius:10px;color:#2A2317;
+  font-family:var(--display);font-size:12px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .25s;box-shadow:0 5px 16px rgba(14,148,136,.28);
+}
+.btn-continue:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 9px 24px rgba(14,148,136,.36)}
+
+/* ═══════════════════════════
+   SLIDES — same paper, seamless
+═══════════════════════════ */
+.slide{
+  flex:1;padding:30px 26px;max-width:780px;margin:0 auto;width:100%;
+  background:var(--paper);position:relative;
+}
+.slide::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.02'/%3E%3C/svg%3E");
+}
+.slide>*{position:relative;z-index:1}
+
+/* Progress — evidence ticks */
+.prog-row,.progress-row{display:flex;gap:4px;margin-bottom:24px;align-items:center}
+.prog-step,.progress-step{flex:1;height:5px;background:var(--paper4);border-radius:3px;transition:all .4s;overflow:hidden}
+.prog-step.done,.progress-step.done{background:var(--ac-dk)}
+.prog-step.active,.progress-step.active{background:var(--ac);box-shadow:0 0 8px rgba(14,148,136,.4)}
+
+/* Eyebrow — case label */
+.eyebrow,.slide-eyebrow{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.16em;color:var(--ac-dk);text-transform:uppercase;
+  margin-bottom:8px;padding:3px 10px;
+  background:var(--ac-bg);border:1px solid var(--ac-bd);border-radius:4px;
+}
+.slide h2{
+  font-family:var(--display);font-size:28px;font-weight:700;
+  color:var(--ink);margin-bottom:8px;line-height:1.15;letter-spacing:-.01em;
+}
+.slide-sub{font-size:14px;color:var(--ink2);margin-bottom:24px;line-height:1.65}
+
+/* Case-file cards — dossier */
+.dd-card,.ops-card,.info-card,.role-map{
+  background:linear-gradient(165deg, var(--paper2), var(--paper2) 72%, var(--paper3));
+  border:1px solid var(--paper-edge);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+  transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s, border-color .25s;
+}
+.dd-card::before,.ops-card::before{
+  content:'';position:absolute;top:0;left:20px;width:36px;height:3px;
+  background:var(--ac-grad);border-radius:0 0 3px 3px;
+}
+.dd-card:hover,.ops-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);border-color:var(--ac-bd)}
+.dd-card h3,.ops-card h3{
+  font-family:var(--display);font-size:16px;font-weight:600;color:var(--ink);
+  margin-bottom:11px;display:flex;align-items:center;gap:9px;letter-spacing:.01em;
+}
+.dd-card p,.ops-card p{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:9px}
+.dd-card p:last-child,.ops-card p:last-child{margin-bottom:0}
+.dd-card strong,.ops-card strong{color:var(--ink);font-weight:600}
+
+/* Info cards (reveal) */
+.info-card{cursor:pointer}
+.info-card::before{display:none}
+.info-card:hover{border-color:var(--ac-bd);transform:translateY(-2px)}
+.info-card.revealed{
+  border-color:var(--ac);border-left:4px solid var(--ac);
+  background:linear-gradient(165deg, var(--paper2), var(--ac-bg2));
+}
+.ic-q,.info-card-q{
+  font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);
+  margin-bottom:7px;display:flex;align-items:center;gap:7px;letter-spacing:.01em;
+}
+.ic-a,.info-card-a{font-size:13px;color:var(--ink2);line-height:1.7;display:none}
+.info-card.revealed .ic-a,.info-card.revealed .info-card-a{display:block}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+/* Tables — evidence ledger */
+.dd-table,.comp-table,.mismatch-table{
+  width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin:12px 0;
+  border:1px solid var(--paper-edge2);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);
+}
+.dd-table th,.comp-table th,.mismatch-table th{
+  text-align:left;padding:11px 13px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  font-family:var(--mono);font-weight:600;color:var(--ac-lt);
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+}
+.dd-table td,.comp-table td,.mismatch-table td{
+  padding:11px 13px;border-top:1px solid var(--paper-edge);
+  color:var(--ink2);vertical-align:top;line-height:1.55;background:var(--paper2);
+}
+.dd-table tr:last-child td{border-bottom:none}
+.dd-table tr:hover td,.comp-table tr:hover td{background:var(--paper3)}
+.hi{font-weight:600;color:var(--ink)}
+.good{color:var(--ok);font-weight:600}
+.mid{color:var(--ac-dk);font-weight:600}
+.low{color:var(--err);font-weight:600}
+
+/* Notebook — detective's journal */
+.notebook{
+  background:linear-gradient(165deg, #EFE7D3, #E8DDC4);
+  border:1px solid var(--paper-edge2);border-left:4px solid var(--ac);
+  border-radius:var(--r);padding:16px 18px;margin-bottom:16px;
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.5);position:relative;
+}
+.notebook::after{
+  content:'';position:absolute;top:10px;bottom:10px;left:14px;width:1px;
+  background:repeating-linear-gradient(180deg,rgba(14,148,136,.3),rgba(14,148,136,.3) 2px,transparent 2px,transparent 6px);
+}
+.nb-title,.notebook-title{
+  font-family:var(--type);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ac-dk);margin-bottom:9px;padding-left:12px;
+}
+.nb-entry,.notebook-entry{
+  display:flex;gap:9px;padding:4px 0 4px 12px;border-bottom:1px solid rgba(14,148,136,.12);
+}
+.nb-entry:last-child,.notebook-entry:last-child{border-bottom:none}
+.nb-check{color:var(--ac-dk);flex-shrink:0;font-size:13px}
+.nb-text{color:#3A3020;font-size:12.5px;line-height:1.65;font-family:var(--type)}
+
+/* Quiz */
+.quiz-wrap,.ops-quiz,.dtree-wrap,.debug-wrap,.inv-board,.verdict-wrap{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge);border-radius:var(--r);padding:18px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+}
+.quiz-q,.dtree-q,.verdict-q,.eq-text{
+  font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink);
+  margin-bottom:13px;line-height:1.45;letter-spacing:.01em;
+}
+.quiz-opt,.dtree-opt,.verdict-opt,.debug-opt,.inv-opt,.eq-opt{
+  padding:12px 15px;border-radius:9px;
+  border:1.5px solid var(--paper-edge2);background:var(--paper);
+  font-size:13px;color:var(--ink2);cursor:pointer;
+  transition:all .2s cubic-bezier(.4,0,.2,1);line-height:1.5;margin-bottom:7px;
+}
+.quiz-opt:hover,.dtree-opt:hover,.verdict-opt:hover,
+.debug-opt:hover,.inv-opt:hover,.eq-opt:hover{
+  border-color:var(--ac);background:var(--ac-bg2);color:var(--ink);transform:translateX(3px);
+}
+.quiz-opt.correct,.dtree-opt.ok,.verdict-opt.v-ok,
+.debug-opt.ok,.inv-opt.ok,.eq-opt.ok,.quiz-opt.reveal{
+  border-color:var(--ok);background:var(--ok-bg);color:#2D4A1A;cursor:default;transform:none;
+}
+.quiz-opt.wrong,.dtree-opt.err,.verdict-opt.v-err,
+.debug-opt.err,.inv-opt.err,.eq-opt.err{
+  border-color:var(--err);background:var(--err-bg);color:#6B1F15;cursor:default;transform:none;
+}
+.quiz-explain,.dtree-reveal,.debug-reveal,.inv-reveal,.verdict-reveal,.eq-reveal{
+  font-size:12.5px;color:var(--ink2);
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:9px;padding:11px 13px;margin-top:9px;display:none;line-height:1.7;font-family:var(--type);
+}
+.quiz-explain.show,.dtree-reveal.show,.debug-reveal.show,
+.inv-reveal.show,.verdict-reveal.show,.eq-reveal.show{display:block}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:11px}
+.quiz-counter{font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.quiz-next{font-family:var(--mono);font-size:12px;color:var(--ac-dk);background:none;border:none;cursor:pointer;font-weight:600}
+
+/* Expert note */
+.expert-note,.ops-note{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);border-left:3px solid var(--ac);
+  border-radius:0 var(--r) var(--r) 0;padding:11px 15px;font-size:12.5px;
+  color:var(--ink2);margin:11px 0;line-height:1.7;font-style:italic;
+}
+.expert-note strong,.ops-note strong{color:var(--ac-dk);font-style:normal;font-weight:600}
+.scenario{
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:var(--r);padding:14px 16px;margin:10px 0;box-shadow:var(--sh-sm);
+}
+.sc-q{font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.sc-a{font-size:12.5px;color:var(--ink2);line-height:1.7}
+.sc-a strong{color:var(--ink);font-weight:600}
+.sub-h{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:16px 0 8px}
+
+/* Code block — dark inset even on light theme (terminal feel) */
+.code-block,.formula{
+  background:linear-gradient(165deg, #2A2317, #1F1A11);
+  border:1px solid var(--ac-bd);border-radius:var(--r);padding:14px 16px;
+  font-family:var(--mono);font-size:11.5px;color:var(--ac-lt);
+  margin:11px 0;line-height:1.85;overflow-x:auto;box-shadow:var(--sh-md);
+}
+.cm,.f-comment{color:#6B6050}.ck,.f-key{color:var(--ac-lt)}.cv,.f-val{color:#9AC8D8}
+.ce{color:#F4A060}.cb{color:#5EBFB0}
+
+/* Sliders */
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--paper4);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ac-grad);cursor:pointer;box-shadow:0 0 0 4px var(--ac-glow),0 2px 6px rgba(60,45,25,.3)}
+
+/* Drag & drop */
+.dnd-slot,.dnd-zone,.sort-zone{
+  border:2px dashed var(--paper-edge2);border-radius:var(--r);min-height:66px;
+  display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;
+  transition:all .25s;font-size:12px;color:var(--ink3);background:var(--paper);
+}
+.dnd-slot.has-card,.dnd-zone.has-card,.sort-zone.drag-over{
+  border-color:var(--ac);border-style:solid;background:var(--ac-bg2);
+  box-shadow:inset 0 0 16px rgba(14,148,136,.08);
+}
+.dnd-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--ac-dk);opacity:.5}
+.dnd-card,.sort-chip{
+  background:linear-gradient(165deg,var(--paper2),var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:9px;padding:9px 15px;
+  font-size:12px;font-weight:600;color:var(--ink);cursor:grab;user-select:none;
+  transition:all .18s;display:inline-flex;align-items:center;gap:6px;margin:3px;box-shadow:var(--sh-sm);
+}
+.dnd-card:hover,.sort-chip:hover{border-color:var(--ac);background:var(--ac-bg2);transform:translateY(-2px);box-shadow:var(--sh)}
+.dnd-card.placed{opacity:.35;pointer-events:none}
+.dnd-cards,.sort-pool{
+  display:flex;flex-wrap:wrap;gap:8px;padding:14px;
+  background:linear-gradient(165deg,var(--paper3),var(--paper));
+  border-radius:var(--r);border:1px dashed var(--paper-edge2);margin-bottom:14px;min-height:56px;
+}
+.dnd-zone-label,.sort-zone-title{font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+
+.role-map{padding:20px}
+.role-map::before{display:none}
+.role-map-title{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:15px;font-weight:600}
+
+/* Final card */
+.final-card{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:var(--r-lg);padding:28px;text-align:center;
+  box-shadow:var(--sh-lg);position:relative;overflow:hidden;
+}
+.final-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--ac-grad)}
+.final-card::after{
+  content:'';position:absolute;top:-60%;left:-30%;width:160%;height:200%;
+  background:conic-gradient(from 0deg,transparent 320deg,rgba(14,148,136,.05) 360deg);
+  animation:spin 12s linear infinite;pointer-events:none;
+}
+.final-card>*{position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.final-trophy{font-size:48px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px rgba(14,148,136,.3))}
+.final-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:.01em}
+.final-desc{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:16px}
+
+/* Back button */
+.gg-back{
+  position:fixed;top:9px;left:9px;z-index:9999;
+  background:linear-gradient(180deg,#2A2317,#3A3020);
+  border:1px solid var(--ac-bd);border-radius:8px;padding:7px 14px;
+  font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ac-lt);
+  cursor:pointer;transition:all .2s;letter-spacing:.06em;box-shadow:0 2px 10px rgba(42,35,23,.3);
+}
+.gg-back:hover{background:#3A3020;border-color:var(--ac);transform:translateX(-2px)}
+
+@media(max-width:600px){
+  .slide{padding:18px 14px}
+  .scene{padding:16px 12px}
+  .hud-mod{display:none}
+  .info-grid{grid-template-columns:1fr}
+  .slide h2{font-size:23px}
+}
+
+</style>
+</head>
+<body>
+
+<div class="scan-line"></div>
+<div class="hud">
+  <div class="hud-badge">GG · M3</div>
+  <div class="hud-mod"><strong>Путь одного клика</strong> · <span id="scene-lbl"></span></div>
+  <div class="hud-xp-wrap">
+    <span class="hud-xp-lbl">XP</span>
+    <div class="hud-bar"><div class="hud-fill" id="xp-fill" style="width:0%"></div></div>
+    <span class="hud-val" id="xp-val">0 / 350</span>
+  </div>
+</div>
+<div class="xp-toast" id="xp-toast">+0 XP</div>
+<div class="particles" id="particles"></div>
+
+<!-- ════ S0: ИНТРО ════ -->
+<div class="screen active" id="s0">
+<div class="scene">
+  <div class="scene-bg"></div>
+  <div class="data-stream" id="data-stream"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+      <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar npc-av-dmitry">📊</div>
+      <div>
+        <div class="npc-name dmitry">Дмитрий · Senior Analyst</div>
+        <div class="dialogue-box dmitry">
+          Ирина, сегодня буду я. Олеся попросила провести тебя через трекинг — это моя любимая тема.<br><br>
+          Большинство методологов останавливаются на «клик → конверсия». <em>Это слишком поверхностно.</em> Ты должна понять что происходит внутри этой цепочки — иначе не сможешь написать реалистичный кейс для AM и не поймёшь почему данные иногда расходятся.<br><br>
+          <strong>Сегодня разберёшь: что такое click_id, как работает postback, почему S2S надёжнее пикселя, и как диагностировать расхождение данных.</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="choices">
+      <button class="choice-btn" onclick="go('s1',15)">🔍 Готова. Меня особенно интересует почему данные расходятся — это частый вопрос от AM в кейсах.</button>
+      <button class="choice-btn" onclick="go('s1',10)">🤔 Признаюсь — не до конца понимаю разницу между трекером и платформой. С этого и начнём?</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S1: АНИМИРОВАННЫЙ ПУТЬ КЛИКА ════ -->
+<div class="screen" id="s1">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+    <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 3 · Слайд 01</div>
+  <h2>Шесть шагов одного клика</h2>
+  <p class="slide-sub">Нажми «Запустить» — наблюдай как клик превращается в конверсию и деньги. Каждый шаг раскрывается по очереди.</p>
+
+  <div class="click-path">
+    <div class="cp-title">
+      <span>Путь от клика до выплаты</span>
+      <button class="cp-btn" id="run-btn" onclick="runPath()">▶ Запустить</button>
+    </div>
+
+    <div class="path-steps" id="path-steps">
+      <div class="path-step" id="ps-0">
+        <div class="ps-dot-wrap"><div class="ps-dot"></div><div class="ps-connector"></div></div>
+        <div class="ps-body">
+          <div class="ps-title"><span>Партнёр запускает кампанию</span><span class="ps-role">Партнёр</span></div>
+          <div class="ps-desc">Создаёт кампанию в трекере (Keitaro). Трекер генерирует уникальный tracking link с макросом для click_id.</div>
+          <div class="ps-code">https://track.keitaro.io/click?pid=42&offer=17&<span style="color:var(--gold)">sub1={ext_id}</span></div>
+        </div>
+      </div>
+
+      <div class="path-step" id="ps-1">
+        <div class="ps-dot-wrap"><div class="ps-dot"></div><div class="ps-connector"></div></div>
+        <div class="ps-body">
+          <div class="ps-title"><span>Пользователь кликает → рождается click_id</span><span class="ps-role">Трекер</span><span class="ps-tag">⚡ ключевой момент</span></div>
+          <div class="ps-desc">Трекер фиксирует: IP, User-Agent, гео, время, источник. Генерирует уникальный ID для этого клика. Делает редирект на лендинг, передавая click_id в URL.</div>
+          <div class="ps-code">→ landing.com/?<span style="color:var(--gold)">clickid=a7f3k2m9</span>&geo=NG&src=prop</div>
+        </div>
+      </div>
+
+      <div class="path-step" id="ps-2">
+        <div class="ps-dot-wrap"><div class="ps-dot"></div><div class="ps-connector"></div></div>
+        <div class="ps-body">
+          <div class="ps-title"><span>Лендинг передаёт click_id рекламодателю</span><span class="ps-role">Лендинг</span></div>
+          <div class="ps-desc">Пользователь вводит номер телефона. Форма отправляет на сервер рекламодателя: номер телефона + click_id. Рекламодатель сохраняет связку: номер ↔ click_id a7f3k2m9.</div>
+          <div class="ps-code">POST /subscribe  phone=<span style="color:#88CCFF">+2348012345678</span>  clickid=<span style="color:var(--gold)">a7f3k2m9</span></div>
+        </div>
+      </div>
+
+      <div class="path-step" id="ps-3">
+        <div class="ps-dot-wrap"><div class="ps-dot"></div><div class="ps-connector"></div></div>
+        <div class="ps-body">
+          <div class="ps-title"><span>Оператор подтверждает подписку</span><span class="ps-role">Оператор · MTN Nigeria</span></div>
+          <div class="ps-desc">Пользователь вводит PIN из SMS. MTN Nigeria проверяет: активен ли номер, есть ли деньги на балансе, нет ли блокировок. Отвечает: approved или rejected.</div>
+          <div class="ps-code">MTN → рекламодатель: <span style="color:var(--green-lt)">STATUS=approved</span>  phone=+2348012345678</div>
+        </div>
+      </div>
+
+      <div class="path-step" id="ps-4">
+        <div class="ps-dot-wrap"><div class="ps-dot"></div><div class="ps-connector"></div></div>
+        <div class="ps-body">
+          <div class="ps-title"><span>Рекламодатель отправляет postback</span><span class="ps-role">Рекламодатель → Трекер</span><span class="ps-tag">⚡ S2S</span></div>
+          <div class="ps-desc">HTTP GET запрос с сервера рекламодателя на URL трекера партнёра. Никакого браузера — сервер к серверу напрямую. Поэтому S2S надёжнее пикселя.</div>
+          <div class="ps-code">GET https://track.keitaro.io/postback?<br>&nbsp;&nbsp;<span style="color:var(--gold)">click_id</span>=<span style="color:#88CCFF">a7f3k2m9</span><br>&nbsp;&nbsp;&amp;<span style="color:var(--gold)">status</span>=<span style="color:var(--green-lt)">approved</span><br>&nbsp;&nbsp;&amp;<span style="color:var(--gold)">payout</span>=<span style="color:#88CCFF">0.32</span><br>&nbsp;&nbsp;&amp;<span style="color:var(--gold)">geo</span>=<span style="color:#88CCFF">NG</span></div>
+        </div>
+      </div>
+
+      <div class="path-step" id="ps-5">
+        <div class="ps-dot-wrap"><div class="ps-dot"></div><div class="ps-connector"></div></div>
+        <div class="ps-body">
+          <div class="ps-title"><span>Трекер засчитывает · Платформа проверяет</span><span class="ps-role">Трекер + GG</span></div>
+          <div class="ps-desc">Трекер находит клик a7f3k2m9 и помечает как конверсию. Параллельно GG Platform получает данные, антифрод проверяет паттерн. Конверсия засчитана — партнёру начислено $0.32.</div>
+          <div class="ps-code"><span style="color:var(--green-lt)">✓ Конверсия засчитана</span>  click=a7f3k2m9  payout=$0.32  antifraud=<span style="color:var(--green-lt)">CLEAN</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="path-insight" style="font-size:12px;color:var(--ink3);margin-bottom:14px;min-height:20px;transition:all .3s"></div>
+  <button class="btn-continue" id="path-next-btn" onclick="go('s2',25)" style="display:none">Дальше: пиксель vs S2S →</button>
+</div>
+</div>
+
+<!-- ════ S2: ДИАЛОГ — PIXEL vs S2S ════ -->
+<div class="screen" id="s2">
+<div class="scene">
+  <div class="scene-bg"></div>
+  <div class="data-stream" id="data-stream2"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div>
+      <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar npc-av-dmitry">📊</div>
+      <div>
+        <div class="npc-name dmitry">Дмитрий</div>
+        <div class="dialogue-box dmitry">
+          Ты только что увидела шаг 5 — postback, S2S. <em>Server-to-server.</em><br><br>
+          Вопрос: <strong>почему в mVAS не используют JavaScript пиксели для трекинга конверсий, хотя в e-commerce они стандарт?</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="choices" id="ch-s2">
+      <button class="choice-btn" onclick="handleS2(0)">🔐 Пиксель работает в браузере пользователя — а страница подписки часто закрывается до загрузки JS. Плюс AdBlock режет пиксели. S2S идёт между серверами — независимо от браузера.</button>
+      <button class="choice-btn" onclick="handleS2(1)">💰 Пиксель дороже в настройке, поэтому используют S2S.</button>
+      <button class="choice-btn" onclick="handleS2(2)">📱 На мобильных устройствах пиксели вообще не работают.</button>
+    </div>
+    <div id="fb-s2" style="display:none;margin-top:10px"></div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S3: КОД ПОСТБЕКА + РАЗБОР ════ -->
+<div class="screen" id="s3">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 3 · Слайд 02</div>
+  <h2>Постбек изнутри — каждый параметр</h2>
+  <p class="slide-sub">Это URL который рекламодатель отправляет на сервер трекера партнёра. Нажми на каждый параметр — узнай что он значит.</p>
+
+  <div class="code-block" style="margin-bottom:14px">
+<span class="cm">// URL постбека — рекламодатель настраивает один раз в ЛК платформы</span><br>
+<span class="cb">GET</span> https://track.keitaro.io/postback<br>
+&nbsp;&nbsp;?<span class="ck">click_id</span>=<span class="cv">{CLICK_ID}</span><br>
+&nbsp;&nbsp;&amp;<span class="ck">status</span>=<span class="cv">{STATUS}</span><br>
+&nbsp;&nbsp;&amp;<span class="ck">payout</span>=<span class="cv">{PAYOUT}</span><br>
+&nbsp;&nbsp;&amp;<span class="ck">geo</span>=<span class="cv">{GEO}</span><br>
+&nbsp;&nbsp;&amp;<span class="ck">operator</span>=<span class="cv">{OPERATOR}</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px" id="param-cards">
+    <div class="sort-chip sc-teal" style="cursor:pointer;padding:10px 12px;border-radius:9px;display:block;font-size:11px;line-height:1.55" onclick="revealParam(this,'click_id')">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-bottom:3px">click_id → a7f3k2m9</div>
+      <div class="param-desc" style="display:none;color:var(--cream2);margin-top:4px">Уникальный ID клика — связывает конверсию с конкретным кликом в трекере. Без него трекер не знает кому засчитать конверсию. <strong style="color:var(--teal-lt)">Самый важный параметр.</strong></div>
+      <div style="color:var(--ink3);font-size:10px">▼ нажми</div>
+    </div>
+    <div class="sort-chip sc-gold" style="cursor:pointer;padding:10px 12px;border-radius:9px;display:block;font-size:11px;line-height:1.55" onclick="revealParam(this,'status')">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-bottom:3px">status → approved / rejected</div>
+      <div class="param-desc" style="display:none;color:var(--cream2);margin-top:4px">Подтверждена конверсия или нет. <span style="color:#4ADE80">approved</span> = оператор принял, деньги спишутся. <span style="color:#EF4444">rejected</span> = оператор отклонил (нет денег, блокировка, фрод).</div>
+      <div style="color:var(--ink3);font-size:10px">▼ нажми</div>
+    </div>
+    <div class="sort-chip sc-teal" style="cursor:pointer;padding:10px 12px;border-radius:9px;display:block;font-size:11px;line-height:1.55" onclick="revealParam(this,'payout')">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-bottom:3px">payout → 0.32</div>
+      <div class="param-desc" style="display:none;color:var(--cream2);margin-top:4px">Сумма выплаты партнёру за эту конверсию в USD. Трекер использует это для расчёта Revenue и ROI кампании. Может отличаться для разных операторов.</div>
+      <div style="color:var(--ink3);font-size:10px">▼ нажми</div>
+    </div>
+    <div class="sort-chip sc-gold" style="cursor:pointer;padding:10px 12px;border-radius:9px;display:block;font-size:11px;line-height:1.55" onclick="revealParam(this,'geo')">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);margin-bottom:3px">geo → NG / KE / BR</div>
+      <div class="param-desc" style="display:none;color:var(--cream2);margin-top:4px">Страна пользователя. Трекер использует для разбивки статистики по ГЕО. Помогает AM видеть какие гео дают лучший апрув и EPC.</div>
+      <div style="color:var(--ink3);font-size:10px">▼ нажми</div>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s4',20)">Дальше: когда данные расходятся →</button>
+</div>
+</div>
+
+<!-- ════ S4: РАСХОЖДЕНИЕ ДАННЫХ ════ -->
+<div class="screen" id="s4">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 3 · Слайд 03</div>
+  <h2>«В трекере 100, в платформе 60» — почему?</h2>
+  <p class="slide-sub">Самый частый вопрос партнёра к AM. Знай все причины — это прямо проверяется в скрининге.</p>
+
+  <table class="mismatch-table">
+    <thead><tr><th>Причина</th><th>Что происходит</th><th>Как диагностировать</th><th>Решение</th></tr></thead>
+    <tbody>
+      <tr><td class="td-cause">click_id не передаётся</td><td>Рекламодатель отправляет постбек без {CLICK_ID} — значение пустое или «undefined»</td><td>Открыть логи постбека: click_id = пустая строка</td><td class="td-fix">Исправить URL постбека в ЛК рекламодателя</td></tr>
+      <tr><td class="td-cause">Дублирование постбека</td><td>Рекламодатель отправляет один постбек дважды — трекер засчитывает 2 конверсии</td><td>Два одинаковых click_id в логах</td><td class="td-fix">Включить дедупликацию в трекере</td></tr>
+      <tr><td class="td-cause">Задержка оператора</td><td>Оператор подтверждает спустя 12–72 часа — данные расходятся при сравнении «за сегодня»</td><td>За вчера данные совпадают, за сегодня — нет</td><td class="td-fix">Сравнивать только закрытые периоды (T-1, T-7)</td></tr>
+      <tr><td class="td-cause">Антифрод отклонил</td><td>Конверсии в трекере есть, но платформа пометила как rejected/fraud</td><td>В платформе статус конверсий: rejected 40 из 100</td><td class="td-fix">Анализировать rejected — найти паттерн фрода</td></tr>
+      <tr><td class="td-cause">Cap оффера</td><td>Рекламодатель достиг дневного лимита — новые конверсии не засчитываются</td><td>Конверсии «исчезают» после определённого времени</td><td class="td-fix">Мониторить cap и предупреждать партнёра</td></tr>
+      <tr><td class="td-cause">Разница часовых поясов</td><td>Трекер и платформа используют разные timezone — конверсии попадают в разные дни</td><td>Сумма за 2 дня совпадает, распределение — нет</td><td class="td-fix">Синхронизировать timezone в трекере и платформе</td></tr>
+    </tbody>
+  </table>
+
+  <button class="btn-continue" onclick="go('s-trackers',20)">Дальше: трекеры →</button>
+</div>
+</div>
+
+<!-- ════ S5: DEBUG СЦЕНАРИЙ ════ -->
+<div class="screen" id="s5">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 3 · Задание 01</div>
+  <h2>Дебаг-сценарий: найди причину</h2>
+  <p class="slide-sub">Три независимых кейса. В каждом — партнёр сообщает о проблеме. Выбери правильную гипотезу.</p>
+
+  <!-- Кейс 1 -->
+  <div class="debug-wrap" style="margin-bottom:12px">
+    <div class="debug-title">🔴 Кейс 1</div>
+    <div class="debug-alert">Партнёр: «У меня в трекере 200 конверсий за вчера, в платформе — 200, но сегодня трекер показывает 80, платформа — 40. Вы занижаете!»</div>
+    <div class="debug-opts" id="d1-opts">
+      <div class="debug-opt" onclick="debug(this,'d1',false,'Не совсем. Партнёр сравнивает данные за сегодня в реальном времени. Оператор подтверждает конверсии с задержкой до 72 часов. Вчера данные сошлись потому что период закрыт. Сегодня — нет, потому что постбеки ещё идут.')">❌ Антифрод заблокировал половину конверсий сегодня</div>
+      <div class="debug-opt" onclick="debug(this,'d1',true,'Именно. Сегодняшние данные незакрытые — постбеки от оператора ещё поступают. Правильный ответ партнёру: «Сравни данные завтра за сегодняшний день — они сойдутся».')">✅ Оператор подтверждает с задержкой — данные за незакрытый период не совпадут</div>
+      <div class="debug-opt" onclick="debug(this,'d1',false,'Нет. Click_id работает — вчера данные совпали. Проблема в том что сравнивается незакрытый период.')">❌ click_id не передаётся в постбеке</div>
+    </div>
+    <div class="debug-reveal" id="d1-reveal"></div>
+  </div>
+
+  <!-- Кейс 2 -->
+  <div class="debug-wrap" style="margin-bottom:12px">
+    <div class="debug-title">🔴 Кейс 2</div>
+    <div class="debug-alert">Партнёр: «В трекере 150 конверсий, в платформе 75. Период закрытый — вчера. Вчера было всё нормально, сегодня утром проверяю вчерашний день и вижу такое расхождение»</div>
+    <div class="debug-opts" id="d2-opts">
+      <div class="debug-opt" onclick="debug(this,'d2',false,'Задержка оператора исключена — период закрыт и вчера было нормально. Значит что-то изменилось именно вчера.')">❌ Задержка оператора — постбеки ещё идут</div>
+      <div class="debug-opt" onclick="debug(this,'d2',false,'Возможно, но нужно проверить: cap обычно виден по времени «отсечки» — конверсии до 14:00 засчитаны, после нет.')">❌ Дублирование постбека в трекере</div>
+      <div class="debug-opt" onclick="debug(this,'d2',true,'Правильно. Платформа показывает 75 approved из 150. Нужно смотреть статусы в платформе: если 75 rejected с пометкой fraud — антифрод сработал. Если rejected без пометки — возможно cap оффера.')">✅ Антифрод отклонил 75 конверсий — или cap оффера достигнут. Смотреть статусы в платформе.</div>
+    </div>
+    <div class="debug-reveal" id="d2-reveal"></div>
+  </div>
+
+  <!-- Кейс 3 -->
+  <div class="debug-wrap">
+    <div class="debug-title">🔴 Кейс 3</div>
+    <div class="debug-alert">Новый партнёр, первый день. Трекер показывает 300 кликов, 0 конверсий. Период подождали 3 часа. Статус в платформе: конверсий 0. Партнёр говорит «оффер не работает»</div>
+    <div class="debug-opts" id="d3-opts">
+      <div class="debug-opt" onclick="debug(this,'d3',false,'Нет — антифрод срабатывает при подозрительных паттернах, а не просто блокирует всё. 0 конверсий при 300 кликах = постбек не настроен или не доходит.')">❌ Антифрод заблокировал все конверсии</div>
+      <div class="debug-opt" onclick="debug(this,'d3',true,'Именно. Первым делом проверяем постбек: открываем логи трекера — приходят ли вообще постбеки? Если нет — URL постбека не настроен в ЛК рекламодателя или настроен неверно. Партнёр должен вставить правильный URL постбека.')">✅ Постбек не настроен — URL не добавлен в ЛК рекламодателя или настроен неверно</div>
+      <div class="debug-opt" onclick="debug(this,'d3',false,'Не в этом дело — оффер активен, он в платформе. Проблема в технической настройке трекинга.')">❌ Оффер неактивен</div>
+    </div>
+    <div class="debug-reveal" id="d3-reveal"></div>
+  </div>
+
+  <div id="debug-score" style="font-size:12px;color:var(--ink3);margin:12px 0;min-height:20px"></div>
+  <button class="btn-continue" id="debug-next" onclick="go('s6',0)" style="display:none">Дальше: сортировка →</button>
+</div>
+</div>
+
+<!-- ════ S6: СОРТИРОВКА — ПРИЧИНА РАСХОЖДЕНИЯ ════ -->
+<div class="screen" id="s6">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 3 · Задание 02</div>
+  <h2>Сортировка: трекер или платформа?</h2>
+  <p class="slide-sub">Перетащи каждую ситуацию в правильную категорию — где нужно искать причину расхождения.</p>
+
+  <div class="sort-pool" id="sort-pool">
+    <div class="sort-chip sc-teal" draggable="true" data-id="c1" data-ans="postback" ondragstart="sdrag(event)">🔗 click_id пустой в логах постбека</div>
+    <div class="sort-chip sc-gold" draggable="true" data-id="c2" data-ans="operator" ondragstart="sdrag(event)">⏰ Данные за «сегодня» расходятся</div>
+    <div class="sort-chip sc-red" draggable="true" data-id="c3" data-ans="antifraud" ondragstart="sdrag(event)">🤖 75 конверсий rejected в платформе</div>
+    <div class="sort-chip sc-teal" draggable="true" data-id="c4" data-ans="postback" ondragstart="sdrag(event)">📬 Постбек приходит дважды для одного click_id</div>
+    <div class="sort-chip sc-gold" draggable="true" data-id="c5" data-ans="operator" ondragstart="sdrag(event)">📅 Сумма за 2 дня совпадает, распределение нет</div>
+    <div class="sort-chip sc-red" draggable="true" data-id="c6" data-ans="antifraud" ondragstart="sdrag(event)">🕐 Конверсии исчезают после 14:00 каждый день</div>
+  </div>
+
+  <div class="sort-zones">
+    <div>
+      <div class="sort-zones" style="grid-template-columns:1fr;gap:8px">
+        <div class="sort-zone" id="zone-postback" ondragover="sallow(event)" ondrop="sdrop(event,'postback')">
+          <div class="sort-zone-title">⚙️ Проблема с постбеком</div>
+        </div>
+        <div class="sort-zone" id="zone-operator" ondragover="sallow(event)" ondrop="sdrop(event,'operator')">
+          <div class="sort-zone-title">⏳ Задержка оператора / timezone</div>
+        </div>
+        <div class="sort-zone" id="zone-antifraud" ondragover="sallow(event)" ondrop="sdrop(event,'antifraud')">
+          <div class="sort-zone-title">🛡 Антифрод / cap оффера</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center">
+      <div style="font-size:12px;color:var(--ink3);text-align:center;line-height:1.6">Перетащи<br>карточки<br>в нужную<br>категорию</div>
+    </div>
+  </div>
+
+  <div id="sort-fb" style="font-size:12px;min-height:20px;margin-bottom:12px;color:var(--ink3)"></div>
+  <button class="btn-continue" id="sort-check" onclick="checkSort()" style="background:var(--navy3);color:var(--ink3)">Проверить →</button>
+</div>
+</div>
+
+<!-- ════ S7: ФИНАЛ ════ -->
+<div class="screen" id="s7">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div>
+  </div>
+
+  <div class="final-card">
+    <span class="final-trophy">🔗</span>
+    <div class="final-title">Модуль 3 завершён</div>
+    <div class="final-desc">Ты прошла путь клика от первого касания до выплаты.<br>Теперь понимаешь почему данные расходятся — и что с этим делать.</div>
+
+    <div class="notebook" style="text-align:left;margin-bottom:18px">
+      <div class="nb-title">📓 Дневник расследования · День 3</div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">click_id — уникальный ID клика. Связывает конверсию с кликом в трекере. Самый важный параметр постбека.</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Postback — HTTP GET запрос сервер→сервер. Рекламодатель отправляет в трекер: click_id + status + payout</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">S2S надёжнее пикселя — не зависит от браузера, AdBlock и скорости загрузки страницы</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Оператор подтверждает с задержкой до 72ч — сравнивать только закрытые периоды (T-1)</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">6 причин расхождения: click_id, дубль, задержка, антифрод, cap оффера, timezone</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">При 0 конверсий у нового партнёра — первое что проверяешь: настроен ли постбек</span></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:16px">
+      <div style="text-align:center">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink3);margin-bottom:3px">НАБРАНО XP</div>
+        <div style="font-size:26px;font-weight:700;color:var(--gold)" id="final-xp">0</div>
+      </div>
+      <div style="width:1px;height:36px;background:var(--navy3)"></div>
+      <div style="text-align:center">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink3);margin-bottom:3px">УРОВЕНЬ</div>
+        <div style="font-size:15px;font-weight:700;color:var(--teal-lt)">Детектив трекинга</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">
+      Завтра — Модуль 4: <strong style="color:var(--gold)">«Почему апрув разный»</strong>.<br>
+      Операторы, ГЕО и почему Safaricom даёт 78%, а MTN — 45% на одном и том же оффере.
+    </div>
+
+    <button class="btn-continue" onclick="restart()">↺ Пройти ещё раз</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── STATE ──
+let xp=0; const XP_MAX=350;
+let pathStep=-1; let pathRunning=false;
+let debugDone={d1:false,d2:false,d3:false}; let debugScore=0;
+let sortDragId=null; const sortPlaced={};
+
+// ── INIT ──
+(function(){
+  // particles
+  const pw=document.getElementById('particles');
+  const colors=['#2DD4BF','#C9A84C','#4ADE80'];
+  for(let i=0;i<14;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;background:${colors[i%3]};--dur:${7+Math.random()*9}s;--delay:${Math.random()*8}s;--dx:${(Math.random()-.5)*55}px`;
+    pw.appendChild(p);
+  }
+  // data streams
+  ['data-stream','data-stream2'].forEach(id=>{
+    const wrap=document.getElementById(id);
+    if(!wrap)return;
+    const chars='01アイウエオカキクケコABCDEF0123456789';
+    for(let i=0;i<6;i++){
+      const col=document.createElement('div');
+      col.className='ds-col';
+      col.style.cssText=`left:${Math.random()*95}%;width:12px;--spd:${8+Math.random()*10}s;--del:${Math.random()*6}s`;
+      let txt='';
+      for(let j=0;j<40;j++) txt+=chars[Math.floor(Math.random()*chars.length)]+'<br>';
+      col.innerHTML=txt;
+      wrap.appendChild(col);
+    }
+  });
+})();
+
+// ── XP ──
+function addXP(n){
+  xp=Math.min(xp+n,XP_MAX);
+  document.getElementById('xp-fill').style.width=(xp/XP_MAX*100)+'%';
+  document.getElementById('xp-val').textContent=xp+' / '+XP_MAX;
+  if(n>0){const t=document.getElementById('xp-toast');t.textContent='+'+n+' XP';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+}
+
+// ── NAV ──
+function go(id,xpAmt){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const lbls={s0:'День третий',s1:'Путь клика',s2:'Диалог',s3:'Постбек',s4:'Расхождения',s5:'Дебаг',s6:'Сортировка',s7:'Финал'};
+  document.getElementById('scene-lbl').textContent=lbls[id]||'';
+  if(xpAmt)addXP(xpAmt);
+  if(id==='s7')document.getElementById('final-xp').textContent=xp;
+  window.scrollTo(0,0);
+}
+
+// ── PATH ANIMATION ──
+function runPath(){
+  if(pathRunning)return;
+  pathRunning=true;
+  document.getElementById('run-btn').textContent='▶ Идёт...';
+  document.getElementById('run-btn').style.pointerEvents='none';
+  pathStep=-1;
+  nextPathStep();
+}
+function nextPathStep(){
+  pathStep++;
+  if(pathStep>5){
+    pathRunning=false;
+    document.getElementById('run-btn').textContent='↺ Снова';
+    document.getElementById('run-btn').style.pointerEvents='';
+    document.getElementById('run-btn').onclick=()=>{
+      document.querySelectorAll('.path-step').forEach(s=>s.classList.remove('lit'));
+      pathStep=-1;pathRunning=false;
+      document.getElementById('run-btn').textContent='▶ Запустить';
+      document.getElementById('path-insight').textContent='';
+      document.getElementById('path-next-btn').style.display='none';
+    };
+    // Show insight and next btn
+    document.getElementById('path-insight').innerHTML='✅ <strong style="color:#4ADE80">Вся цепочка пройдена.</strong> click_id связал клик с конверсией. Постбек доставил данные. Антифрод проверил. Конверсия засчитана. Если что-то в этой цепочке сломалось — данные расходятся.';
+    document.getElementById('path-next-btn').style.display='block';
+    addXP(30);
+    return;
+  }
+  document.getElementById('ps-'+pathStep).classList.add('lit');
+  document.getElementById('ps-'+pathStep).scrollIntoView({behavior:'smooth',block:'nearest'});
+  setTimeout(nextPathStep, pathStep===4?2000:1200);
+}
+
+// ── S2 PIXEL vs S2S ──
+function handleS2(idx){
+  document.querySelectorAll('#ch-s2 .choice-btn').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb-s2');
+  fb.style.display='block';
+  if(idx===0){
+    document.querySelectorAll('#ch-s2 .choice-btn')[0].classList.add('correct');
+    fb.innerHTML=`<div class="npc-row"><div class="npc-avatar npc-av-dmitry">📊</div><div><div class="npc-name dmitry">Дмитрий</div><div class="dialogue-box dmitry"><strong>Точно.</strong> Пиксель зависит от браузера — AdBlock, Safari ITP, быстрое закрытие страницы. В mVAS страница подписки часто закрывается почти мгновенно после PIN. S2S не зависит ни от чего на стороне клиента. Поэтому S2S — стандарт вертикали.</div></div></div><button class="btn-continue" onclick="go('s3',35)" style="margin-top:10px">Дальше →</button>`;
+    addXP(35);
+  }else if(idx===1){
+    document.querySelectorAll('#ch-s2 .choice-btn')[1].classList.add('wrong');
+    document.querySelectorAll('#ch-s2 .choice-btn')[0].classList.add('correct');
+    fb.innerHTML=`<div class="npc-row"><div class="npc-avatar npc-av-dmitry">📊</div><div><div class="npc-name dmitry">Дмитрий</div><div class="dialogue-box dmitry">Не в цене дело. Проблема в <strong>надёжности</strong>: пиксель работает в браузере пользователя — а он может стоять AdBlock, или Safari режет трекеры, или страница закрывается до загрузки JS. S2S идёт напрямую между серверами — браузер не участвует.</div></div></div><button class="btn-continue" onclick="go('s3',15)" style="margin-top:10px">Понятно →</button>`;
+    addXP(15);
+  }else{
+    document.querySelectorAll('#ch-s2 .choice-btn')[2].classList.add('wrong');
+    document.querySelectorAll('#ch-s2 .choice-btn')[0].classList.add('correct');
+    fb.innerHTML=`<div class="npc-row"><div class="npc-avatar npc-av-dmitry">📊</div><div><div class="npc-name dmitry">Дмитрий</div><div class="dialogue-box dmitry">Не совсем. Пиксель на мобильных работает — если пользователь не закрыл страницу и нет блокировщиков. Главная проблема в другом: в mVAS <em>страница закрывается мгновенно после PIN</em> — JS не успевает выполниться. Плюс AdBlock. S2S решает оба этих случая.</div></div></div><button class="btn-continue" onclick="go('s3',20)" style="margin-top:10px">Понятно →</button>`;
+    addXP(20);
+  }
+}
+
+// ── REVEAL PARAM ──
+function revealParam(el,key){
+  const desc=el.querySelector('.param-desc');
+  const hint=el.querySelector('div:last-child');
+  if(desc.style.display==='none'){
+    desc.style.display='block';
+    if(hint)hint.style.display='none';
+    addXP(5);
+  }
+}
+
+// ── DEBUG SCENARIOS ──
+function debug(el,id,correct,explain){
+  if(debugDone[id])return;
+  debugDone[id]=true;
+  el.closest('.debug-opts').querySelectorAll('.debug-opt').forEach(o=>o.style.pointerEvents='none');
+  el.classList.add(correct?'ok':'err');
+  const rev=document.getElementById(id+'-reveal');
+  rev.textContent=(correct?'✅ ':'❌ ')+explain;
+  rev.classList.add('show');
+  if(correct){debugScore++;addXP(30);}else addXP(8);
+  // Check if all done
+  if(Object.values(debugDone).every(Boolean)){
+    const sc=document.getElementById('debug-score');
+    sc.innerHTML=`<strong style="color:${debugScore===3?'#4ADE80':debugScore>=2?'var(--gold)':'#EF4444'}">${debugScore}/3 кейсов решено верно.</strong> ${debugScore===3?'Отличная диагностика!':debugScore>=2?'Хороший результат.':'Перечитай таблицу расхождений — там все ответы.'}`;
+    document.getElementById('debug-next').style.display='block';
+  }
+}
+
+// ── SORT DnD ──
+function sdrag(e){
+  sortDragId=e.target.dataset.id;
+  e.target.classList.add('dragging');
+  setTimeout(()=>e.target.classList.remove('dragging'),0);
+}
+function sallow(e){
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+  e.currentTarget.addEventListener('dragleave',()=>e.currentTarget.classList.remove('drag-over'),{once:true});
+}
+function sdrop(e,zone){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(!sortDragId)return;
+  const chip=document.querySelector(`[data-id="${sortDragId}"]`);
+  if(!chip)return;
+  // Remove from wherever it is
+  chip.parentElement.removeChild(chip);
+  // Place in zone
+  document.getElementById('zone-'+zone).appendChild(chip);
+  sortPlaced[sortDragId]=zone;
+  sortDragId=null;
+  // Style
+  const btn=document.getElementById('sort-check');
+  if(Object.keys(sortPlaced).length>=3){btn.style.background='';btn.style.color='';}
+}
+function checkSort(){
+  const chips=document.querySelectorAll('.sort-chip[data-id]');
+  let correct=0,total=0;
+  chips.forEach(chip=>{
+    const zone=chip.parentElement.id.replace('zone-','');
+    const ans=chip.dataset.ans;
+    if(zone==='sort-pool')return;
+    total++;
+    if(zone===ans){correct++;chip.style.border='1.5px solid #4ADE80';}
+    else{chip.style.border='1.5px solid #EF4444';}
+  });
+  const fb=document.getElementById('sort-fb');
+  if(total<6){fb.innerHTML='⚠️ Расставь все шесть карточек.';return;}
+  fb.innerHTML=correct===6?'✅ <strong style="color:#4ADE80">Все верно!</strong> Ты видишь разницу между причинами расхождения.':
+    `<span style="color:${correct>=4?'var(--gold)':'#EF4444'}">${correct}/6 правильно.</span> Ошибки выделены красным — посмотри на них и вспомни таблицу расхождений.`;
+  addXP(correct===6?45:correct>=4?25:10);
+  if(correct===6)setTimeout(()=>go('s7',0),1500);
+  else{document.getElementById('sort-check').textContent='Попробовать ещё раз';document.getElementById('sort-check').onclick=resetSort;}
+}
+function resetSort(){
+  const pool=document.getElementById('sort-pool');
+  document.querySelectorAll('.sort-chip[data-id]').forEach(c=>{c.style.border='';c.parentElement.removeChild(c);pool.appendChild(c);});
+  Object.keys(sortPlaced).forEach(k=>delete sortPlaced[k]);
+  document.getElementById('sort-fb').textContent='';
+  document.getElementById('sort-check').textContent='Проверить →';
+  document.getElementById('sort-check').onclick=checkSort;
+  document.getElementById('sort-check').style.background='var(--navy3)';
+  document.getElementById('sort-check').style.color='var(--ink3)';
+}
+
+function stquiz(el, correct, explain) {
+  document.querySelectorAll('#st-opts .quiz-opt').forEach(o => o.style.pointerEvents='none');
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if(!correct) document.querySelectorAll('#st-opts .quiz-opt')[1].classList.add('correct');
+  const e=document.getElementById('st-exp');
+  e.textContent=(correct?'✅ ':'❌ ')+explain; e.classList.add('show');
+  addXP(correct?25:8);
+}
+
+function restart(){
+  xp=0;pathStep=-1;pathRunning=false;
+  debugDone={d1:false,d2:false,d3:false};debugScore=0;
+  Object.keys(sortPlaced).forEach(k=>delete sortPlaced[k]);
+  document.getElementById('xp-fill').style.width='0%';
+  document.getElementById('xp-val').textContent='0 / 350';
+  document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=false;b.className='choice-btn';});
+  document.querySelectorAll('.debug-opt').forEach(o=>{o.style.pointerEvents='';o.className='debug-opt';});
+  document.querySelectorAll('.debug-reveal').forEach(r=>{r.className='debug-reveal';r.textContent='';});
+  document.querySelectorAll('.path-step').forEach(s=>s.classList.remove('lit'));
+  document.getElementById('path-insight').textContent='';
+  document.getElementById('path-next-btn').style.display='none';
+  document.getElementById('run-btn').textContent='▶ Запустить';
+  document.getElementById('run-btn').onclick=runPath;
+  document.getElementById('run-btn').style.pointerEvents='';
+  document.getElementById('debug-score').textContent='';
+  document.getElementById('debug-next').style.display='none';
+  document.querySelectorAll('#fb-s2').forEach(f=>f.style.display='none');
+  document.querySelectorAll('.param-desc').forEach(d=>d.style.display='none');
+  document.querySelectorAll('.param-desc+div').forEach(d=>{if(d.textContent==='▼ нажми')d.style.display='block';});
+  resetSort();
+  go('s0',0);
+}
+</script>
+
+<!-- ════ NEW: TRACKERS ════ -->
+<div class="screen" id="s-trackers">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+  <div class="eyebrow">Модуль 3 · Слайд 04 — из видео GG</div>
+  <h2>Трекеры: выбор инструмента</h2>
+  <p class="slide-sub">Трекер — главный инструмент AM и партнёра. От него зависит точность данных и скорость оптимизации.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <div class="dd-card" style="border-left:3px solid var(--ac)">
+      <h3>⭐ Binom — выбор Golden Goose</h3>
+      <p>Молниеносные инсайты, удобный интерфейс, отличная аналитика данных. Постоянная поддержка 24/7. Баланс функциональности и стоимости.</p>
+      <div class="expert-note"><strong>GG рекомендует Binom</strong> как основной трекер для работы с платформой.</div>
+    </div>
+    <div class="dd-card">
+      <h3>📊 Voluum</h3>
+      <p>ИИ для оптимизации кампаний, глобальные интеграции, работает бесперебойно. Высокая стоимость для большого объёма трафика.</p>
+    </div>
+    <div class="dd-card">
+      <h3>🛡 RedTrack</h3>
+      <p>Защита данных и GDPR-совместимость. Versatile для веб и мобайл. Подходит как новичкам так и профессионалам.</p>
+    </div>
+    <div class="dd-card">
+      <h3>⚡ Bemob</h3>
+      <p>Простой в использовании, гибкие тарифы. Отслеживание эффективности кампаний в реальном времени. Хорошо для старта.</p>
+    </div>
+    <div class="dd-card">
+      <h3>🔬 PureClick</h3>
+      <p>Превращает сырые данные в детальные отчёты. Мгновенные отчёты по кампаниям. Богатый набор функций.</p>
+    </div>
+    <div class="dd-card">
+      <h3>🔧 Keitaro</h3>
+      <p>Самохостинг — полный контроль над данными. Кастомизируемые лендинги без ограничений. Для опытных с IT-ресурсами.</p>
+    </div>
+  </div>
+
+  <div class="dd-card" style="margin-bottom:14px">
+    <h3>💡 Что важно в трекере для mVAS</h3>
+    <p>Скорость обработки постбеков, поддержка S2S, удобная разбивка по sub-sources, возможность создавать правила для автобана зон. Binom и Voluum закрывают все эти задачи.</p>
+  </div>
+
+  <button class="btn-continue" onclick="go('s-testing',15)">Дальше: тестирование кампаний →</button>
+</div>
+</div>
+
+<!-- ════ NEW: CAMPAIGN TESTING ════ -->
+<div class="screen" id="s-testing">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+  </div>
+  <div class="eyebrow">Модуль 3 · Слайд 05 — кейс GG</div>
+  <h2>Тестирование кампании — реальный кейс</h2>
+  <p class="slide-sub">Реальная кампания GG: Pakistan, Sweepstakes, PropellerAds. Вот как проходит правильный тест.</p>
+
+  <div class="dd-card" style="margin-bottom:12px">
+    <h3>📋 Параметры кейса</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+      <div><span style="color:var(--sl-text3)">Сеть:</span> <strong>Golden Goose</strong></div>
+      <div><span style="color:var(--sl-text3)">ГЕО:</span> <strong>Пакистан</strong></div>
+      <div><span style="color:var(--sl-text3)">Оффер:</span> <strong>Sweepstakes PIN submit</strong></div>
+      <div><span style="color:var(--sl-text3)">Оператор:</span> <strong>Zong (рек. AM)</strong></div>
+      <div><span style="color:var(--sl-text3)">Трафик:</span> <strong>PropellerAds Push</strong></div>
+      <div><span style="color:var(--sl-text3)">Трекер:</span> <strong>Voluum</strong></div>
+    </div>
+  </div>
+
+  <div class="reasons-grid">
+    <div class="reason-card" onclick="this.classList.toggle('open')">
+      <div class="reason-header">
+        <div class="reason-num rn-1">1</div>
+        <div class="reason-title">A/B тест прелендеров</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">
+        3 прелендера: Слоты / Колесо фортуны / Скретч-карты. Общая концепция, разная форма.<br><br>
+        <strong>Правило AB-теста:</strong> всегда 50/50 распределение. Больше двух одновременно — труднее интерпретировать результаты.<br><br>
+        Результат: Колесо фортуны выиграло у Слотов почти вдвое. Скретч показали сравнимый CR — оставили в сплите.
+        <div class="reason-example">Важно: самый плохой креатив теста стал лидером теста №2. Не исключай раньше времени.</div>
+      </div>
+    </div>
+
+    <div class="reason-card" onclick="this.classList.toggle('open')">
+      <div class="reason-header">
+        <div class="reason-num rn-2">2</div>
+        <div class="reason-title">Сегментация по возрасту подписки</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">
+        3 кампании по "subscription age" (возраст подписчика в сети):<br>
+        • 0–7 дней — новые, высокий биддинг<br>
+        • 8–30 дней — средние<br>
+        • 30+ дней — старые, дешевле<br><br>
+        <strong>Почему это важно:</strong> новые подписчики дороже в трафике но лучше конвертируют. Старые — дешевле, но CR ниже. Оптимальное соотношение — ключ к ROI.
+      </div>
+    </div>
+
+    <div class="reason-card" onclick="this.classList.toggle('open')">
+      <div class="reason-header">
+        <div class="reason-num rn-3">3</div>
+        <div class="reason-title">3 правила оптимизации зон</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">
+        После первых данных по каждой зоне (источнику трафика):<br><br>
+        🔴 <strong>Красная зона без лидов</strong> → бан<br>
+        🟡 <strong>Красная с лидами (>4x стоимость лида)</strong> → снизь ставку, дай шанс<br>
+        🟢 <strong>Прибыльная с лидами</strong> → повышай ставку<br><br>
+        <div class="reason-example">Не меняй несколько параметров одновременно — иначе не поймёшь что именно изменило результат.</div>
+      </div>
+    </div>
+
+    <div class="reason-card" onclick="this.classList.toggle('open')">
+      <div class="reason-header">
+        <div class="reason-num rn-1">4</div>
+        <div class="reason-title">Анализ браузеров и версий Android</div>
+        <div class="reason-arrow">▼</div>
+      </div>
+      <div class="reason-body">
+        После сбора данных — смотришь какие браузеры и версии ОС конвертируют лучше. Оставляешь только их для следующего теста.<br><br>
+        В кейсе: Android версии 4, 5, 8, 9 — исключены как неэффективные.<br><br>
+        <strong>Принцип:</strong> не исключай всё сразу. Сначала зоны, потом браузеры — итерационно.
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="quiz-wrap" style="margin-bottom:12px">
+    <div class="quiz-q">Зона показала 50 кликов, 2 лида, ROI −120% (в красной зоне при стоимости лида×2). Что делаешь?</div>
+    <div id="st-opts">
+      <div class="quiz-opt" onclick="stquiz(this,false,'Рано баниться — у зоны есть лиды. Правило: бан только если >4x стоимость лида. Здесь 2x — пробуй снизить ставку.')">Бан зоны — она в минусе</div>
+      <div class="quiz-opt" onclick="stquiz(this,true,'Верно. Зона с лидами при ROI −120% (2x стоимость) → снизить ставку и дать шанс. Бан только если >4x или лидов совсем нет.')">Снизить ставку — зона с лидами, дать ещё шанс</div>
+      <div class="quiz-opt" onclick="stquiz(this,false,'Повышение ставки при отрицательном ROI приведёт к ещё большим потерям.')">Повысить ставку — чтобы получить больше данных</div>
+    </div>
+    <div class="quiz-explain" id="st-exp"></div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s5',20)">Дальше: дебаг-сценарий →</button>
+</div>
+</div>
+
+</body>
+</html>

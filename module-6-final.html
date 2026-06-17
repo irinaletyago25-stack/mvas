@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GG Academy · Модуль 6 · Стать своей</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Special+Elite&display=swap');
+
+/* ═══════════════════════════════════════════════════════
+   GG ACADEMY · SEPIA DOSSIER · MODULE 6
+   Single light mode · warm paper · old case-file feel
+   Accent: #C9A84C
+═══════════════════════════════════════════════════════ */
+:root{
+  /* Warm paper base — sepia, no blue */
+  --paper:    #F0E9DA;   /* main background — aged paper */
+  --paper2:   #F7F2E7;   /* cards — lighter cream */
+  --paper3:   #E6DCC7;   /* sunken panels */
+  --paper4:   #DCCFB5;   /* deeper tone */
+  --paper-edge: #C8B894; /* borders */
+  --paper-edge2: #B5A37D;/* darker borders */
+
+  /* Warm ink text */
+  --ink:    #2A2317;   /* near-black warm */
+  --ink2:   #4D4030;   /* body */
+  --ink3:   #7A6B52;   /* muted */
+  --ink4:   #9A8B70;   /* faint */
+
+  /* Accent */
+  --ac:      #C9A84C;
+  --ac-rgb:  201,168,76;
+  --ac-lt:   #F0D88A;
+  --ac-dk:   #8A6820;
+  --ac-bg:   rgba(201,168,76,.10);
+  --ac-bg2:  rgba(201,168,76,.06);
+  --ac-bd:   rgba(201,168,76,.35);
+  --ac-glow: rgba(201,168,76,.22);
+  --ac-grad: linear-gradient(135deg, #8A6820, #C9A84C 65%, #F0D88A);
+  --ac-grad-soft: linear-gradient(135deg, rgba(201,168,76,.14), rgba(201,168,76,.04));
+
+  /* Status — muted warm */
+  --ok:     #4A7C2E;
+  --ok-lt:  #6FA84A;
+  --ok-bg:  rgba(74,124,46,.12);
+  --ok-bd:  rgba(74,124,46,.4);
+  --err:    #A8392B;
+  --err-lt: #C85A4A;
+  --err-bg: rgba(168,57,43,.1);
+  --err-bd: rgba(168,57,43,.4);
+
+  /* Type */
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Oswald', sans-serif;
+  --type: 'Special Elite', serif;
+
+  /* Depth — warm shadows */
+  --r: 10px;
+  --r-lg: 14px;
+  --sh-sm: 0 1px 3px rgba(60,45,25,.10), 0 1px 2px rgba(60,45,25,.06);
+  --sh: 0 3px 14px rgba(60,45,25,.10), 0 1px 4px rgba(60,45,25,.06);
+  --sh-md: 0 8px 26px rgba(60,45,25,.14), 0 3px 8px rgba(60,45,25,.08);
+  --sh-lg: 0 16px 44px rgba(60,45,25,.18), 0 6px 14px rgba(60,45,25,.10);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);min-height:100vh;overflow-x:hidden;background:var(--paper);color:var(--ink2)}
+
+/* paper grain overlay — global warm texture */
+body::after{
+  content:'';position:fixed;inset:0;z-index:8000;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ── SCAN LINE — subtle ── */
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:1px;z-index:9000;
+  background:linear-gradient(90deg,transparent,var(--ac-bd),transparent);
+  animation:scan 6s ease-in-out infinite;opacity:.4;pointer-events:none;
+}
+@keyframes scan{0%{top:46px;opacity:.4}50%{opacity:.1}100%{top:100vh;opacity:0}}
+
+/* ── HUD — case-file header ── */
+.hud{
+  position:fixed;top:0;left:0;right:0;height:46px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  border-bottom:2px solid var(--ac-dk);
+  display:flex;align-items:center;gap:10px;
+  padding:0 18px;z-index:100;
+  box-shadow:0 2px 16px rgba(42,35,23,.35);
+}
+.hud::before{
+  content:'';position:absolute;left:0;bottom:-2px;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.6;
+}
+.hud-badge{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ac-lt);background:rgba(201,168,76,.15);
+  border:1px solid var(--ac-bd);border-radius:4px;
+  padding:3px 9px;white-space:nowrap;flex-shrink:0;
+}
+.hud-mod{
+  font-family:var(--mono);font-size:10px;color:rgba(240,233,218,.5);
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.02em;
+}
+.hud-mod strong{color:var(--ac-lt);font-weight:600}
+.hud-xp-wrap{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.hud-xp-lbl{font-family:var(--mono);font-size:9px;color:rgba(240,233,218,.4);letter-spacing:.08em}
+.hud-bar{width:78px;height:4px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden}
+.hud-fill{height:100%;border-radius:3px;background:var(--ac-grad);transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(201,168,76,.5)}
+.hud-val{font-family:var(--mono);font-size:10px;color:var(--ac-lt);min-width:54px;text-align:right;font-weight:500}
+
+/* XP TOAST */
+.xp-toast{
+  position:fixed;top:54px;right:16px;
+  background:var(--ac-grad);color:#2A2317;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.06em;padding:6px 14px;border-radius:7px;
+  z-index:201;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 6px 20px rgba(201,168,76,.45);
+}
+.xp-toast.show{transform:translateX(0)}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;padding-top:46px;animation:screenIn .4s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:flex;flex-direction:column}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════
+   SCENES — now ALSO on warm paper
+═══════════════════════════ */
+.scene,.scene-bg,.scene-bg-office{position:relative}
+.scene{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:24px 20px;position:relative;overflow:hidden;
+  min-height:calc(100vh - 46px);
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(201,168,76,.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(201,168,76,.04) 0%, transparent 45%),
+    var(--paper);
+}
+.scene-bg,.scene-bg-office{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 25% 30%, rgba(201,168,76,.05) 0%, transparent 55%),
+    var(--paper);
+}
+.scene-bg::after,.scene-bg-office::after{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 41px,rgba(120,107,82,.04) 42px),
+    repeating-linear-gradient(90deg,transparent,transparent 61px,rgba(120,107,82,.04) 62px);
+  mask-image:radial-gradient(ellipse at center, black 35%, transparent 88%);
+}
+/* soft vignette — warm */
+.scene::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(120,90,50,.18);
+}
+
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.particle{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--ac-dk);opacity:0;
+  animation:floatP var(--dur,8s) var(--delay,0s) infinite ease-in-out;
+}
+@keyframes floatP{0%{transform:translateY(100vh);opacity:0}10%{opacity:.25}90%{opacity:.08}100%{transform:translateY(-20px) translateX(var(--dx,20px));opacity:0}}
+
+/* Dialogue — on paper */
+.dialogue-wrap{position:relative;z-index:10;max-width:680px;margin:0 auto;width:100%}
+.npc-row{display:flex;align-items:flex-end;gap:11px;margin-bottom:11px}
+.npc-avatar{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:radial-gradient(circle at 35% 30%, var(--paper2), var(--paper3));
+  border:2px solid var(--ac-bd);
+  box-shadow:0 0 0 4px var(--ac-glow), 0 3px 10px rgba(60,45,25,.18);
+}
+.npc-avatar.av-dmitry,.av-d,.npc-av-dmitry{border-color:rgba(15,138,122,.45);box-shadow:0 0 0 4px rgba(15,138,122,.12),0 3px 10px rgba(60,45,25,.18)}
+.npc-name{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;color:var(--ac-dk);
+}
+.npc-name.nm-d,.nm-dmitry,.dmitry{color:#0F8A7A}
+.dialogue-box{
+  background:linear-gradient(160deg, var(--paper2), var(--paper2) 70%, var(--paper3));
+  border:1px solid var(--paper-edge);border-left:3px solid var(--ac);
+  border-radius:14px;border-top-left-radius:4px;
+  padding:15px 18px;font-size:13.5px;line-height:1.8;color:var(--ink2);
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.dialogue-box.db-d,.dialogue-box.dmitry{border-left-color:#0F8A7A}
+.dialogue-box em{color:var(--ac-dk);font-style:italic;font-weight:500}
+.dialogue-box strong{color:var(--ink);font-weight:600}
+.dialogue-box.db-d strong,.dialogue-box.dmitry strong{color:#0F6A5E}
+
+.player-row{display:flex;justify-content:flex-end;margin-bottom:11px}
+.player-box{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);
+  border-radius:14px;border-top-right-radius:4px;padding:11px 15px;
+  font-size:12.5px;line-height:1.6;color:var(--ink2);max-width:82%;
+  box-shadow:var(--sh-sm);
+}
+.player-box::after{
+  content:'💬 Ирина';display:block;
+  font-family:var(--mono);font-size:9px;color:var(--ac-dk);
+  letter-spacing:.08em;margin-top:4px;text-align:right;
+}
+
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.choice-btn{
+  background:var(--paper2);
+  border:1px solid var(--paper-edge);
+  border-radius:10px;padding:12px 16px;text-align:left;
+  font-size:13px;line-height:1.6;color:var(--ink2);
+  cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);font-family:var(--sans);
+  position:relative;overflow:hidden;box-shadow:var(--sh-sm);
+}
+.choice-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--ac);transform:scaleY(0);transition:transform .25s;
+}
+.choice-btn:hover:not(:disabled){
+  background:var(--ac-bg2);border-color:var(--ac-bd);
+  transform:translateX(5px);box-shadow:var(--sh);
+}
+.choice-btn:hover:not(:disabled)::before{transform:scaleY(1)}
+.choice-btn.correct{background:var(--ok-bg);border-color:var(--ok);color:#2D4A1A}
+.choice-btn.wrong{background:var(--err-bg);border-color:var(--err);color:#6B1F15}
+
+/* Continue button */
+.btn-continue{
+  margin-top:15px;padding:12px 28px;
+  background:var(--ac-grad);
+  border:none;border-radius:10px;color:#2A2317;
+  font-family:var(--display);font-size:12px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .25s;box-shadow:0 5px 16px rgba(201,168,76,.28);
+}
+.btn-continue:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 9px 24px rgba(201,168,76,.36)}
+
+/* ═══════════════════════════
+   SLIDES — same paper, seamless
+═══════════════════════════ */
+.slide{
+  flex:1;padding:30px 26px;max-width:780px;margin:0 auto;width:100%;
+  background:var(--paper);position:relative;
+}
+.slide::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.02'/%3E%3C/svg%3E");
+}
+.slide>*{position:relative;z-index:1}
+
+/* Progress — evidence ticks */
+.prog-row,.progress-row{display:flex;gap:4px;margin-bottom:24px;align-items:center}
+.prog-step,.progress-step{flex:1;height:5px;background:var(--paper4);border-radius:3px;transition:all .4s;overflow:hidden}
+.prog-step.done,.progress-step.done{background:var(--ac-dk)}
+.prog-step.active,.progress-step.active{background:var(--ac);box-shadow:0 0 8px rgba(201,168,76,.4)}
+
+/* Eyebrow — case label */
+.eyebrow,.slide-eyebrow{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.16em;color:var(--ac-dk);text-transform:uppercase;
+  margin-bottom:8px;padding:3px 10px;
+  background:var(--ac-bg);border:1px solid var(--ac-bd);border-radius:4px;
+}
+.slide h2{
+  font-family:var(--display);font-size:28px;font-weight:700;
+  color:var(--ink);margin-bottom:8px;line-height:1.15;letter-spacing:-.01em;
+}
+.slide-sub{font-size:14px;color:var(--ink2);margin-bottom:24px;line-height:1.65}
+
+/* Case-file cards — dossier */
+.dd-card,.ops-card,.info-card,.role-map{
+  background:linear-gradient(165deg, var(--paper2), var(--paper2) 72%, var(--paper3));
+  border:1px solid var(--paper-edge);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+  transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s, border-color .25s;
+}
+.dd-card::before,.ops-card::before{
+  content:'';position:absolute;top:0;left:20px;width:36px;height:3px;
+  background:var(--ac-grad);border-radius:0 0 3px 3px;
+}
+.dd-card:hover,.ops-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);border-color:var(--ac-bd)}
+.dd-card h3,.ops-card h3{
+  font-family:var(--display);font-size:16px;font-weight:600;color:var(--ink);
+  margin-bottom:11px;display:flex;align-items:center;gap:9px;letter-spacing:.01em;
+}
+.dd-card p,.ops-card p{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:9px}
+.dd-card p:last-child,.ops-card p:last-child{margin-bottom:0}
+.dd-card strong,.ops-card strong{color:var(--ink);font-weight:600}
+
+/* Info cards (reveal) */
+.info-card{cursor:pointer}
+.info-card::before{display:none}
+.info-card:hover{border-color:var(--ac-bd);transform:translateY(-2px)}
+.info-card.revealed{
+  border-color:var(--ac);border-left:4px solid var(--ac);
+  background:linear-gradient(165deg, var(--paper2), var(--ac-bg2));
+}
+.ic-q,.info-card-q{
+  font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);
+  margin-bottom:7px;display:flex;align-items:center;gap:7px;letter-spacing:.01em;
+}
+.ic-a,.info-card-a{font-size:13px;color:var(--ink2);line-height:1.7;display:none}
+.info-card.revealed .ic-a,.info-card.revealed .info-card-a{display:block}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+/* Tables — evidence ledger */
+.dd-table,.comp-table,.mismatch-table{
+  width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin:12px 0;
+  border:1px solid var(--paper-edge2);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);
+}
+.dd-table th,.comp-table th,.mismatch-table th{
+  text-align:left;padding:11px 13px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  font-family:var(--mono);font-weight:600;color:var(--ac-lt);
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+}
+.dd-table td,.comp-table td,.mismatch-table td{
+  padding:11px 13px;border-top:1px solid var(--paper-edge);
+  color:var(--ink2);vertical-align:top;line-height:1.55;background:var(--paper2);
+}
+.dd-table tr:last-child td{border-bottom:none}
+.dd-table tr:hover td,.comp-table tr:hover td{background:var(--paper3)}
+.hi{font-weight:600;color:var(--ink)}
+.good{color:var(--ok);font-weight:600}
+.mid{color:var(--ac-dk);font-weight:600}
+.low{color:var(--err);font-weight:600}
+
+/* Notebook — detective's journal */
+.notebook{
+  background:linear-gradient(165deg, #EFE7D3, #E8DDC4);
+  border:1px solid var(--paper-edge2);border-left:4px solid var(--ac);
+  border-radius:var(--r);padding:16px 18px;margin-bottom:16px;
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.5);position:relative;
+}
+.notebook::after{
+  content:'';position:absolute;top:10px;bottom:10px;left:14px;width:1px;
+  background:repeating-linear-gradient(180deg,rgba(201,168,76,.3),rgba(201,168,76,.3) 2px,transparent 2px,transparent 6px);
+}
+.nb-title,.notebook-title{
+  font-family:var(--type);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ac-dk);margin-bottom:9px;padding-left:12px;
+}
+.nb-entry,.notebook-entry{
+  display:flex;gap:9px;padding:4px 0 4px 12px;border-bottom:1px solid rgba(201,168,76,.12);
+}
+.nb-entry:last-child,.notebook-entry:last-child{border-bottom:none}
+.nb-check{color:var(--ac-dk);flex-shrink:0;font-size:13px}
+.nb-text{color:#3A3020;font-size:12.5px;line-height:1.65;font-family:var(--type)}
+
+/* Quiz */
+.quiz-wrap,.ops-quiz,.dtree-wrap,.debug-wrap,.inv-board,.verdict-wrap{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge);border-radius:var(--r);padding:18px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+}
+.quiz-q,.dtree-q,.verdict-q,.eq-text{
+  font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink);
+  margin-bottom:13px;line-height:1.45;letter-spacing:.01em;
+}
+.quiz-opt,.dtree-opt,.verdict-opt,.debug-opt,.inv-opt,.eq-opt{
+  padding:12px 15px;border-radius:9px;
+  border:1.5px solid var(--paper-edge2);background:var(--paper);
+  font-size:13px;color:var(--ink2);cursor:pointer;
+  transition:all .2s cubic-bezier(.4,0,.2,1);line-height:1.5;margin-bottom:7px;
+}
+.quiz-opt:hover,.dtree-opt:hover,.verdict-opt:hover,
+.debug-opt:hover,.inv-opt:hover,.eq-opt:hover{
+  border-color:var(--ac);background:var(--ac-bg2);color:var(--ink);transform:translateX(3px);
+}
+.quiz-opt.correct,.dtree-opt.ok,.verdict-opt.v-ok,
+.debug-opt.ok,.inv-opt.ok,.eq-opt.ok,.quiz-opt.reveal{
+  border-color:var(--ok);background:var(--ok-bg);color:#2D4A1A;cursor:default;transform:none;
+}
+.quiz-opt.wrong,.dtree-opt.err,.verdict-opt.v-err,
+.debug-opt.err,.inv-opt.err,.eq-opt.err{
+  border-color:var(--err);background:var(--err-bg);color:#6B1F15;cursor:default;transform:none;
+}
+.quiz-explain,.dtree-reveal,.debug-reveal,.inv-reveal,.verdict-reveal,.eq-reveal{
+  font-size:12.5px;color:var(--ink2);
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:9px;padding:11px 13px;margin-top:9px;display:none;line-height:1.7;font-family:var(--type);
+}
+.quiz-explain.show,.dtree-reveal.show,.debug-reveal.show,
+.inv-reveal.show,.verdict-reveal.show,.eq-reveal.show{display:block}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:11px}
+.quiz-counter{font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.quiz-next{font-family:var(--mono);font-size:12px;color:var(--ac-dk);background:none;border:none;cursor:pointer;font-weight:600}
+
+/* Expert note */
+.expert-note,.ops-note{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);border-left:3px solid var(--ac);
+  border-radius:0 var(--r) var(--r) 0;padding:11px 15px;font-size:12.5px;
+  color:var(--ink2);margin:11px 0;line-height:1.7;font-style:italic;
+}
+.expert-note strong,.ops-note strong{color:var(--ac-dk);font-style:normal;font-weight:600}
+.scenario{
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:var(--r);padding:14px 16px;margin:10px 0;box-shadow:var(--sh-sm);
+}
+.sc-q{font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.sc-a{font-size:12.5px;color:var(--ink2);line-height:1.7}
+.sc-a strong{color:var(--ink);font-weight:600}
+.sub-h{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:16px 0 8px}
+
+/* Code block — dark inset even on light theme (terminal feel) */
+.code-block,.formula{
+  background:linear-gradient(165deg, #2A2317, #1F1A11);
+  border:1px solid var(--ac-bd);border-radius:var(--r);padding:14px 16px;
+  font-family:var(--mono);font-size:11.5px;color:var(--ac-lt);
+  margin:11px 0;line-height:1.85;overflow-x:auto;box-shadow:var(--sh-md);
+}
+.cm,.f-comment{color:#6B6050}.ck,.f-key{color:var(--ac-lt)}.cv,.f-val{color:#9AC8D8}
+.ce{color:#F4A060}.cb{color:#5EBFB0}
+
+/* Sliders */
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--paper4);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ac-grad);cursor:pointer;box-shadow:0 0 0 4px var(--ac-glow),0 2px 6px rgba(60,45,25,.3)}
+
+/* Drag & drop */
+.dnd-slot,.dnd-zone,.sort-zone{
+  border:2px dashed var(--paper-edge2);border-radius:var(--r);min-height:66px;
+  display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;
+  transition:all .25s;font-size:12px;color:var(--ink3);background:var(--paper);
+}
+.dnd-slot.has-card,.dnd-zone.has-card,.sort-zone.drag-over{
+  border-color:var(--ac);border-style:solid;background:var(--ac-bg2);
+  box-shadow:inset 0 0 16px rgba(201,168,76,.08);
+}
+.dnd-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--ac-dk);opacity:.5}
+.dnd-card,.sort-chip{
+  background:linear-gradient(165deg,var(--paper2),var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:9px;padding:9px 15px;
+  font-size:12px;font-weight:600;color:var(--ink);cursor:grab;user-select:none;
+  transition:all .18s;display:inline-flex;align-items:center;gap:6px;margin:3px;box-shadow:var(--sh-sm);
+}
+.dnd-card:hover,.sort-chip:hover{border-color:var(--ac);background:var(--ac-bg2);transform:translateY(-2px);box-shadow:var(--sh)}
+.dnd-card.placed{opacity:.35;pointer-events:none}
+.dnd-cards,.sort-pool{
+  display:flex;flex-wrap:wrap;gap:8px;padding:14px;
+  background:linear-gradient(165deg,var(--paper3),var(--paper));
+  border-radius:var(--r);border:1px dashed var(--paper-edge2);margin-bottom:14px;min-height:56px;
+}
+.dnd-zone-label,.sort-zone-title{font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+
+.role-map{padding:20px}
+.role-map::before{display:none}
+.role-map-title{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:15px;font-weight:600}
+
+/* Final card */
+.final-card{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:var(--r-lg);padding:28px;text-align:center;
+  box-shadow:var(--sh-lg);position:relative;overflow:hidden;
+}
+.final-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--ac-grad)}
+.final-card::after{
+  content:'';position:absolute;top:-60%;left:-30%;width:160%;height:200%;
+  background:conic-gradient(from 0deg,transparent 320deg,rgba(201,168,76,.05) 360deg);
+  animation:spin 12s linear infinite;pointer-events:none;
+}
+.final-card>*{position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.final-trophy{font-size:48px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px rgba(201,168,76,.3))}
+.final-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:.01em}
+.final-desc{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:16px}
+
+/* Back button */
+.gg-back{
+  position:fixed;top:9px;left:9px;z-index:9999;
+  background:linear-gradient(180deg,#2A2317,#3A3020);
+  border:1px solid var(--ac-bd);border-radius:8px;padding:7px 14px;
+  font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ac-lt);
+  cursor:pointer;transition:all .2s;letter-spacing:.06em;box-shadow:0 2px 10px rgba(42,35,23,.3);
+}
+.gg-back:hover{background:#3A3020;border-color:var(--ac);transform:translateX(-2px)}
+
+@media(max-width:600px){
+  .slide{padding:18px 14px}
+  .scene{padding:16px 12px}
+  .hud-mod{display:none}
+  .info-grid{grid-template-columns:1fr}
+  .slide h2{font-size:23px}
+}
+
+</style>
+</head>
+<body>
+
+<div class="scan-line"></div>
+<div class="hud">
+  <div class="hud-badge">GG · M6</div>
+  <div class="hud-mod"><strong>Стать своей</strong> · <span id="scene-lbl"></span></div>
+  <div class="hud-xp-wrap">
+    <span class="hud-xp-lbl">XP</span>
+    <div class="hud-bar"><div class="hud-fill" id="xp-fill" style="width:0%"></div></div>
+    <span class="hud-val" id="xp-val">0 / 500</span>
+  </div>
+</div>
+<div class="xp-toast" id="xp-toast">+0 XP</div>
+<div class="particles" id="particles"></div>
+
+<!-- ════ S0: ИНТРО ════ -->
+<div class="screen active" id="s0">
+<div class="scene">
+  <div class="scene-bg scene-bg-day"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+      <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+    </div>
+    <div class="npc-row">
+      <div class="npc-avatar av-o">🦆</div>
+      <div>
+        <div class="npc-name nm-o">Олеся</div>
+        <div class="dialogue-box db-o">
+          Ирина, последний день онбординга.<br><br>
+          Ты прошла экосистему, деньги, трекинг, операторов, кризисную коммуникацию. <em>Это была хорошая неделя.</em><br><br>
+          Сегодня: <strong>compliance — правила которые нельзя нарушать</strong>, рабочий день AM изнутри, конференции. И финальный экзамен.<br><br>
+          Дмитрий сказал что ты разбираешься быстро. Я согласна. Покажи это на экзамене.
+        </div>
+      </div>
+    </div>
+    <div class="choices">
+      <button class="choice-btn" onclick="go('s1',20)">🎯 Готова. Compliance — моё слабое место, хочу закрыть это сегодня.</button>
+      <button class="choice-btn" onclick="go('s1',15)">💪 Шесть дней — и я уже думаю как AM. Пошли на финал.</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S1: COMPLIANCE ════ -->
+<div class="screen" id="s1">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+    <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+  <div class="eyebrow">Модуль 6 · Слайд 01</div>
+  <h2>Compliance: что AM должен знать</h2>
+  <p class="slide-sub">Compliance — это правила операторов и регуляторов. Нарушение = блокировка оффера. AM первый кто это видит — и должен предупредить.</p>
+
+  <table class="comp-table">
+    <thead><tr><th>Рынок</th><th>Регулятор</th><th>Ключевые требования</th><th>Риск нарушения</th></tr></thead>
+    <tbody>
+      <tr><td class="comp-market">🇳🇬 Нигерия</td><td>NCC</td><td>Двойной opt-in обязателен. Цена подписки видна до оформления.</td><td class="comp-warn">Блокировка оффера оператором</td></tr>
+      <tr><td class="comp-market">🇰🇪 Кения</td><td>CA Kenya</td><td>SMS-уведомление о стоимости ДО подписки. 3 жалобы → Safaricom отключает оффер.</td><td class="comp-bad">Отключение без предупреждения</td></tr>
+      <tr><td class="comp-market">🇿🇦 ЮАР</td><td>ICASA</td><td>Полное раскрытие условий. Отписка в 1 клик. Запрет агрессивных формулировок.</td><td class="comp-warn">Штраф + блокировка</td></tr>
+      <tr><td class="comp-market">🇸🇦 Саудовская Аравия</td><td>CITC</td><td>Только халяльный контент. Регистрация контент-провайдера обязательна.</td><td class="comp-bad">Полный бан на рынке</td></tr>
+      <tr><td class="comp-market">🇮🇩 Индонезия</td><td>BRTI</td><td>Регистрация у оператора. Без регистрации — Telkomsel блокирует трафик.</td><td class="comp-warn">Автоматическая блокировка</td></tr>
+      <tr><td class="comp-market">🌍 ЕС / США</td><td>GDPR / FTC</td><td>Явное многошаговое согласие. Право на отказ. mVAS фактически невозможен легально.</td><td class="comp-bad">Штрафы до 4% оборота</td></tr>
+    </tbody>
+  </table>
+
+  <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--gold-lt);margin-bottom:14px;line-height:1.6">
+    ⚡ <strong style="color:var(--gold)">Для методолога:</strong> compliance — это отдельная компетенция в матрице AM. Кандидат который не знает требований NCC или Safaricom — не понимает реальной операционной среды. Это проверяется в скрининге.
+  </div>
+
+  <div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:9px;padding:10px 13px;font-size:11px;color:#FECACA;margin-bottom:14px;line-height:1.6">
+    🚫 <strong>Рекламные платформы:</strong> Meta автоматически блокирует большинство mVAS лендингов. Google UAC — только для верифицированных рекламодателей. PropellerAds и RichAds — без ограничений, это основные каналы для вертикали.
+  </div>
+
+
+  <div class="scenario" style="margin-bottom:14px">
+    <div class="sc-q">🚨 Сценарий: что делает AM когда видит нарушение</div>
+    <div class="sc-a">
+      Партнёр прислал лендинг для Кении — написано по-английски, без SMS-уведомления о стоимости до подписки.<br><br>
+      <strong>Действия AM:</strong><br>
+      1. Не запускает оффер — предупреждает партнёра до старта<br>
+      2. Объясняет: «Safaricom требует уведомление о стоимости ДО подтверждения. 3 жалобы = оффер отключён для всей платформы»<br>
+      3. Запрашивает исправленный вариант или предлагает готовый шаблон<br><br>
+      <strong>Ключевой принцип:</strong> compliance-проблема AM-а = потеря ГЕО для всех партнёров. Это не бюрократия — это защита бизнеса.
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s2',20)">Дальше: рабочий день AM →</button>
+</div>
+</div>
+
+<!-- ════ S2: РАБОЧИЙ ДЕНЬ ════ -->
+<div class="screen" id="s2">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div>
+    <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+  <div class="eyebrow">Модуль 6 · Слайд 02</div>
+  <h2>Рабочий день AM — изнутри</h2>
+  <p class="slide-sub">Нажми на каждый блок — узнай что именно делает AM, какие инструменты использует и почему этот момент важен.</p>
+
+  <div class="timeline">
+    <div class="tl-slot" onclick="tlToggle(this)">
+      <div class="tl-time">09:00</div>
+      <div class="tl-block">
+        <div class="tl-title"><span>☀️ Morning review</span><span class="tl-arrow">▼</span></div>
+        <div class="tl-detail">
+          Открывает дашборд платформы: смотрит апрув за вчера по всему портфелю, топ-офферы, антифрод-флаги. Если апрув просел у кого-то на 15%+ — это первая задача дня.<br>
+          <strong>Ключевой вопрос:</strong> «Кто из партнёров в красной зоне?»
+          <div class="tl-tools">
+            <span class="tl-tool">Platform Dashboard</span>
+            <span class="tl-tool">Антифрод-отчёт</span>
+            <span class="tl-priority pri-high">Приоритет 1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-slot" onclick="tlToggle(this)">
+      <div class="tl-time">09:30</div>
+      <div class="tl-block">
+        <div class="tl-title"><span>💬 Входящие от партнёров</span><span class="tl-arrow">▼</span></div>
+        <div class="tl-detail">
+          Telegram/WhatsApp — основной канал. Норма ответа: <strong>до 4 часов</strong> в рабочее время. Срочные вопросы (фрод, cap) — в течение 30 минут. Отвечает на вопросы, диагностирует проблемы, берёт задачи в работу.
+          <div class="tl-tools">
+            <span class="tl-tool">Telegram</span>
+            <span class="tl-tool">WhatsApp</span>
+            <span class="tl-tool">Email</span>
+            <span class="tl-priority pri-high">Приоритет 1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-slot" onclick="tlToggle(this)">
+      <div class="tl-time">11:00</div>
+      <div class="tl-block">
+        <div class="tl-title"><span>📊 Анализ офферного портфеля</span><span class="tl-arrow">▼</span></div>
+        <div class="tl-detail">
+          Смотрит какие офферы хорошо конвертят под конкретный тип трафика. Ищет «недооценённые» офферы — высокий EPC, ещё не заполненный cap. Готовит рекомендации для проактивного предложения партнёрам.
+          <div class="tl-tools">
+            <span class="tl-tool">Offers Dashboard</span>
+            <span class="tl-tool">Google Sheets</span>
+            <span class="tl-priority pri-mid">Приоритет 2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-slot" onclick="tlToggle(this)">
+      <div class="tl-time">14:00</div>
+      <div class="tl-block">
+        <div class="tl-title"><span>📞 Созвоны с партнёрами</span><span class="tl-arrow">▼</span></div>
+        <div class="tl-detail">
+          Онбординг новых партнёров (переданных от BDM), созвоны по масштабированию с топ-партнёрами, обсуждение новых гео. Zoom/Meet — для сложных задач которые быстрее решить голосом.
+          <div class="tl-tools">
+            <span class="tl-tool">Zoom</span>
+            <span class="tl-tool">Google Meet</span>
+            <span class="tl-priority pri-mid">Приоритет 2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-slot" onclick="tlToggle(this)">
+      <div class="tl-time">17:00</div>
+      <div class="tl-block">
+        <div class="tl-title"><span>📋 CRM + отчётность</span><span class="tl-arrow">▼</span></div>
+        <div class="tl-detail">
+          Обновляет карточки партнёров: статус, договорённости, следующий шаг, дата follow-up. TL открывает CRM и должен за 30 секунд понять состояние каждого партнёра без звонка AM. <strong>Без обновления CRM — нет контроля портфеля.</strong>
+          <div class="tl-tools">
+            <span class="tl-tool">CRM</span>
+            <span class="tl-tool">Google Sheets</span>
+            <span class="tl-priority pri-low">Завершение дня</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s3',20)">Дальше: конференции →</button>
+</div>
+</div>
+
+<!-- ════ S3: КОНФЕРЕНЦИИ ════ -->
+<div class="screen" id="s3">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+  <div class="eyebrow">Модуль 6 · Слайд 03</div>
+  <h2>Конференции — нетворкинг как работа</h2>
+  <p class="slide-sub">Нажми на конференцию — узнай что это и как AM её использует.</p>
+
+  <div class="conf-grid">
+    <div class="conf-card" onclick="confToggle(this)">
+      <div class="conf-name">Affiliate World <span class="conf-arrow">▼</span></div>
+      <div class="conf-meta">
+        <span class="conf-tag ct-geo">Барселона / Дубай</span>
+        <span class="conf-tag ct-time">2× в год</span>
+        <span class="conf-tag ct-size">5000+ чел</span>
+      </div>
+      <div class="conf-body">Главная конференция global affiliate. Февраль — Барселона, октябрь — Дубай. Все топ-платформы, сети, рекламодатели. GG имеет стенд — AM проводит встречи с партнёрами.
+        <div class="conf-am-tip">💡 AM-задача: 15–20 встреч 1-on-1 за два дня. Follow-up в 48 часов.</div>
+      </div>
+    </div>
+    <div class="conf-card" onclick="confToggle(this)">
+      <div class="conf-name">MAC <span class="conf-arrow">▼</span></div>
+      <div class="conf-meta">
+        <span class="conf-tag ct-geo">Москва</span>
+        <span class="conf-tag ct-time">2× в год</span>
+        <span class="conf-tag ct-size">Крупная СНГ</span>
+      </div>
+      <div class="conf-body">Moscow Affiliate Conference — крупнейшая русскоязычная. Арбитражники, CPA-сети, источники трафика. Хорошая точка для СНГ-партнёров.
+        <div class="conf-am-tip">💡 AM-задача: найти партнёров с pop/push трафиком на Африку, познакомиться лично.</div>
+      </div>
+    </div>
+    <div class="conf-card" onclick="confToggle(this)">
+      <div class="conf-name">Kinza <span class="conf-arrow">▼</span></div>
+      <div class="conf-meta">
+        <span class="conf-tag ct-geo">Москва</span>
+        <span class="conf-tag ct-time">1× в год</span>
+        <span class="conf-tag ct-size">Средняя</span>
+      </div>
+      <div class="conf-body">Конференция для арбитражников. Акцент на трафик и инструменты. Хорошо для знакомства с командами, ориентированными на Россию и СНГ.
+        <div class="conf-am-tip">💡 AM-задача: собрать контакты медиабаеров с опытом в pop-трафике.</div>
+      </div>
+    </div>
+    <div class="conf-card" onclick="confToggle(this)">
+      <div class="conf-name">iGB Affiliate <span class="conf-arrow">▼</span></div>
+      <div class="conf-meta">
+        <span class="conf-tag ct-geo">Лондон / Амстердам</span>
+        <span class="conf-tag ct-time">1–2× в год</span>
+        <span class="conf-tag ct-size">Средняя</span>
+      </div>
+      <div class="conf-body">Фокус на Gambling и Sports Betting. Пересечение с mVAS минимальное, но есть общая партнёрская база арбитражников работающих в нескольких вертикалях.
+        <div class="conf-am-tip">💡 AM-задача: найти мультивертикальных партнёров которые могут добавить mVAS.</div>
+      </div>
+    </div>
+    <div class="conf-card" onclick="confToggle(this)">
+      <div class="conf-name">CPA Life <span class="conf-arrow">▼</span></div>
+      <div class="conf-meta">
+        <span class="conf-tag ct-geo">Москва / онлайн</span>
+        <span class="conf-tag ct-time">Регулярно</span>
+        <span class="conf-tag ct-size">Нетворкинг</span>
+      </div>
+      <div class="conf-body">Камерные встречи арбитражного сообщества. Менее формально чем крупные конференции — хорошо для глубоких разговоров и долгосрочных отношений.
+        <div class="conf-am-tip">💡 AM-задача: поддерживать отношения с текущими партнёрами вне рабочего контекста.</div>
+      </div>
+    </div>
+    <div class="conf-card" onclick="confToggle(this)">
+      <div class="conf-name">Digital Bridge <span class="conf-arrow">▼</span></div>
+      <div class="conf-meta">
+        <span class="conf-tag ct-geo">Астана</span>
+        <span class="conf-tag ct-time">1× в год</span>
+        <span class="conf-tag ct-size">Международная</span>
+      </div>
+      <div class="conf-body">Международная технологическая конференция. Для GG — точка выхода на центральноазиатские рынки и знакомство с технологическими партнёрами.
+        <div class="conf-am-tip">💡 AM-задача: мониторинг новых ГЕО и операторов в Центральной Азии.</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-continue" onclick="go('s4',20)">Дальше: финальный экзамен →</button>
+</div>
+</div>
+
+<!-- ════ S4: ЭКЗАМЕН — БРИФ ════ -->
+<div class="screen" id="s4">
+<div class="scene">
+  <div class="scene-bg scene-bg-final"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+      <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+    </div>
+    <div class="npc-row">
+      <div class="npc-avatar av-o">🦆</div>
+      <div>
+        <div class="npc-name nm-o">Олеся</div>
+        <div class="dialogue-box db-o">
+          Ирина, время финального экзамена.<br><br>
+          <strong>Правила простые:</strong> 8 вопросов по всем шести модулям. Каждый вопрос — реальная ситуация из работы AM. Нет вопросов на память — только на понимание.<br><br>
+          <em>Набери 6 из 8 — дело закрыто. Меньше — расследование продолжается.</em><br><br>
+          Дмитрий смотрит на твои ответы. Удачи — хотя ты уже не нуждаешься в ней.
+        </div>
+      </div>
+    </div>
+    <div class="choices">
+      <button class="choice-btn" onclick="go('s5',0)">🎯 Готова. Начинаем.</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S5: ЭКЗАМЕН ════ -->
+<div class="screen" id="s5">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Финальный экзамен · 8 вопросов</div>
+  <h2>Дело о вертикали mVAS</h2>
+  <p class="slide-sub">Каждый вопрос — реальная ситуация. Выбери единственно верный ответ.</p>
+
+  <div class="exam-progress">
+    <div class="exam-pbar-wrap"><div class="exam-pbar" id="exam-pbar" style="width:0%"></div></div>
+    <div class="exam-pcount" id="exam-pcount">0 / 8</div>
+  </div>
+
+  <div id="exam-questions"></div>
+
+  <div id="exam-result" style="display:none;font-size:12px;color:var(--ink3);margin-bottom:14px;min-height:20px"></div>
+  <button class="btn-continue" id="exam-next" onclick="go('s6',0)" style="display:none">Получить вердикт →</button>
+</div>
+</div>
+
+<!-- ════ S6: ВЕРДИКТ ════ -->
+<div class="screen" id="s6">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="verdict-closed" id="verdict-area"></div>
+  <button class="btn-continue" id="verdict-next" onclick="go('s7',0)" style="display:none">Завершить курс →</button>
+</div>
+</div>
+
+<!-- ════ S7: ФИНАЛ ════ -->
+<div class="screen" id="s7">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div>
+  </div>
+
+  <div class="final-card">
+    <span class="final-trophy">🏆</span>
+    <div class="final-title">Курс пройден</div>
+    <div class="final-subtitle">
+      Шесть дней. Шесть расследований. <br>Ты стала своей в Golden Goose.
+    </div>
+
+    <div class="achievement-grid">
+      <div class="achv achv-1"><div class="achv-icon">🔗</div><div class="achv-name">ТРЕКЕР</div><div class="achv-desc">click_id, postback, S2S</div></div>
+      <div class="achv achv-2"><div class="achv-icon">💰</div><div class="achv-name">EPC-МАСТЕР</div><div class="achv-desc">Считаю быстро и верно</div></div>
+      <div class="achv achv-3"><div class="achv-icon">🌍</div><div class="achv-name">ГЕО-ЭКСПЕРТ</div><div class="achv-desc">Операторы и апрув</div></div>
+      <div class="achv achv-4"><div class="achv-icon">🛡</div><div class="achv-name">АНТИФРОД</div><div class="achv-desc">6 паттернов наизусть</div></div>
+      <div class="achv achv-5"><div class="achv-icon">🤝</div><div class="achv-name">ДИПЛОМАТ</div><div class="achv-desc">Максим остался</div></div>
+      <div class="achv achv-6"><div class="achv-icon">⭐</div><div class="achv-name">СВОЯ</div><div class="achv-desc">Финальный экзамен</div></div>
+    </div>
+
+    <div class="total-xp-display">
+      <div class="txp-item"><div class="txp-num">1900+</div><div class="txp-lbl">Суммарный XP за курс</div></div>
+      <div style="width:1px;height:40px;background:rgba(201,168,76,.2)"></div>
+      <div class="txp-item"><div class="txp-num" id="m6-xp">0</div><div class="txp-lbl">XP этого модуля</div></div>
+      <div style="width:1px;height:40px;background:rgba(201,168,76,.2)"></div>
+      <div class="txp-item"><div class="txp-num">6</div><div class="txp-lbl">Модулей пройдено</div></div>
+    </div>
+
+    <div class="notebook" style="text-align:left;margin-bottom:18px">
+      <div class="nb-title">📓 Дневник расследования · Итог</div>
+      <div class="nb-entry"><span class="nb-check">★</span><span class="nb-text">Compliance — отдельная компетенция AM. Нарушение правил оператора = блокировка оффера.</span></div>
+      <div class="nb-entry"><span class="nb-check">★</span><span class="nb-text">Рабочий день: morning review → входящие → офферный анализ → созвоны → CRM</span></div>
+      <div class="nb-entry"><span class="nb-check">★</span><span class="nb-text">Конференции = рабочий инструмент, не отдых. 15–20 встреч за 2 дня, follow-up в 48ч</span></div>
+      <div class="nb-entry"><span class="nb-check">★</span><span class="nb-text">Вся вертикаль mVAS теперь не чёрный ящик — это система с логикой которую я понимаю</span></div>
+      <div class="nb-entry"><span class="nb-check">★</span><span class="nb-text">Compliance-нарушение = угроза всему ГЕО. AM останавливает партнёра до запуска, не после</span></div>
+      <div class="nb-entry"><span class="nb-check">★</span><span class="nb-text">Рабочий день AM: данные → входящие → офферы → созвоны → CRM. Без CRM-обновления нет контроля портфеля</span></div>
+    </div>
+
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.7">
+      <strong style="color:var(--gold)">Что дальше?</strong><br>
+      Открой <strong>mvas_v5.html</strong> — там всё что нужно для глубокого повторения.<br>
+      Шпаргалка к собеседованию — в <strong>cheatsheet.html</strong>.<br>
+      Ты готова объяснить mVAS любому AM с нуля.
+    </div>
+
+    <button class="btn-continue" onclick="restart()">↺ Пройти модуль ещё раз</button>
+  </div>
+</div>
+</div>
+
+<script>
+let xp=0; const XP_MAX=500;
+let examScore=0; let examDone={}; let examTotal=8;
+
+(function(){
+  const pw=document.getElementById('particles');
+  const cols=['#C9A84C','#F0D88A','#4ADE80','#2DD4BF'];
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;background:${cols[i%4]};--dur:${6+Math.random()*10}s;--delay:${Math.random()*8}s;--dx:${(Math.random()-.5)*60}px`;
+    pw.appendChild(p);
+  }
+})();
+
+function addXP(n){
+  xp=Math.min(xp+n,XP_MAX);
+  document.getElementById('xp-fill').style.width=(xp/XP_MAX*100)+'%';
+  document.getElementById('xp-val').textContent=xp+' / '+XP_MAX;
+  if(n>0){const t=document.getElementById('xp-toast');t.textContent='+'+n+' XP';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+}
+function go(id,xpAmt){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const lbls={s0:'Последний день',s1:'Compliance',s2:'Рабочий день',s3:'Конференции',s4:'Инструктаж',s5:'Экзамен',s6:'Вердикт',s7:'Курс завершён'};
+  document.getElementById('scene-lbl').textContent=lbls[id]||'';
+  if(xpAmt)addXP(xpAmt);
+  if(id==='s6')buildVerdict();
+  if(id==='s7'){document.getElementById('m6-xp').textContent=xp;}
+  window.scrollTo(0,0);
+}
+
+// Timeline
+function tlToggle(slot){
+  const wasOpen=slot.classList.contains('open');
+  document.querySelectorAll('.tl-slot').forEach(s=>s.classList.remove('open'));
+  if(!wasOpen){slot.classList.add('open');addXP(4);}
+}
+// Conf
+function confToggle(card){
+  const wasOpen=card.classList.contains('open');
+  document.querySelectorAll('.conf-card').forEach(c=>c.classList.remove('open'));
+  if(!wasOpen){card.classList.add('open');addXP(4);}
+}
+
+// EXAM DATA
+const EXAM_Qs=[
+  {id:'q1',mod:'M1',
+   q:'Рекламодатель платит GG $0.55 за подписку. Партнёр получает $0.35. Маржа GG — сколько процентов?',
+   opts:['35%','63.6%','36.4%','20%'],c:2,
+   exp:'$0.55 − $0.35 = $0.20 маржа. $0.20 / $0.55 × 100 = 36.4%. Именно эта маржа умноженная на объём конверсий и есть бизнес GG.'},
+  {id:'q2',mod:'M2',
+   q:'Оффер A: выплата $0.45, CR 2%, апрув 60%. Оффер B: выплата $0.28, CR 4%, апрув 75%. Какой лучше по EPC?',
+   opts:['Оффер A — выплата выше','Оффер B — EPC $0.0084 против $0.0054 у A','Одинаковые','Нельзя сравнить без объёма трафика'],c:1,
+   exp:'EPC A = $0.45 × 0.02 × 0.60 = $0.0054. EPC B = $0.28 × 0.04 × 0.75 = $0.0084. Оффер B даёт на 55% больше с каждого клика — несмотря на меньшую выплату. Всегда считай EPC с апрувом.'},
+  {id:'q3',mod:'M3',
+   q:'Партнёр: «В трекере 120 конверсий за сегодня, в платформе 80». Период — текущий день, данные смотрит в 15:00. Главная гипотеза?',
+   opts:['Антифрод отклонил 40 конверсий','Постбек сломан — click_id не передаётся','Задержка оператора — период незакрытый, постбеки ещё идут','Cap оффера достигнут'],c:2,
+   exp:'Незакрытый период! Оператор подтверждает с задержкой до 72 часов. Если смотреть данные за текущий день — они никогда не совпадут в реальном времени. Правильный ответ партнёру: «Проверь завтра за сегодняшний день — данные сойдутся».'},
+  {id:'q4',mod:'M4',
+   q:'Апрув партнёра на Нигерии упал с 70% до 35% за два дня. Источник трафика и лендинг не изменились. Первое действие AM?',
+   opts:['Позвонить партнёру и спросить что изменилось','Открыть разбивку апрува по операторам — найти аутлайера','Сразу предложить сменить ГЕО','Проверить постбек — click_id мог сломаться'],c:1,
+   exp:'Данные раньше выводов. Разбивка по операторам покажет: если MTN Nigeria упал с 68% до 30%, а Airtel держится — это изменение политики MTN, не вина партнёра. Без этого шага любой вывод будет гипотезой без доказательств.'},
+  {id:'q5',mod:'M4',
+   q:'Оффер работает в Саудовской Аравии. Рекламодатель хочет добавить контент «18+». Реакция AM?',
+   opts:['Согласовать — партнёр просит','Отказать: в Саудовской Аравии compliance требует только халяльный контент. Оффер заблокируют.','Согласовать при условии отдельного лендинга','Уточнить у юриста'],c:1,
+   exp:'CITC (Саудовская Аравия) — жёсткий регулятор. Только халяльный контент. Нарушение = полный бан рекламодателя на рынке. AM обязан это знать и защитить рекламодателя от потери оффера.'},
+  {id:'q6',mod:'M5',
+   q:'Партнёр пишет: «Вы меня кидаете — 200 конверсий в трекере, 60 у вас». Первое сообщение AM:',
+   opts:['«Скорее всего антифрод — у вас плохой трафик»','«Понял, смотрю данные — дай 5 минут, скажу точно что происходит»','«Расхождения бывают — это нормально»','«Перезвони нам для уточнения»'],c:1,
+   exp:'Данные до выводов. Нельзя обвинять без фактов — это потеря партнёра. Нельзя говорить "нормально" — это потеря доверия. Правильно: "смотрю прямо сейчас". Пять минут диагностики дают факты для честного объяснения.'},
+  {id:'q7',mod:'M3+M5',
+   q:'Новый партнёр запустил кампанию. Трекер: 500 кликов, 0 конверсий. 4 часа прошло. Что проверяешь первым?',
+   opts:['Антифрод — все конверсии заблокированы','Постбек — настроен ли URL в ЛК рекламодателя и приходят ли постбеки в логи трекера','Качество трафика — нужна другая рекламная сеть','Оператор — могут быть технические работы'],c:1,
+   exp:'0 конверсий при 500 кликах у нового партнёра = постбек. Первое: открываешь логи трекера — приходят ли вообще постбеки? Если нет — URL постбека не вставлен в ЛК рекламодателя или вставлен неверно. Это самая частая ошибка при первом запуске.'},
+  {id:'q8',mod:'M2+M4',
+   q:'Партнёр хочет перейти с CPA $0.40 на RevShare 25% при выплате рекламодателя $1/день. Его churn rate — 12%/день. Стоит ли переходить?',
+   opts:['Да — RevShare всегда выгоднее','Нет — при churn 12%/день RevShare за 30 дней ≈ $1.50, CPA $0.40 выгоднее','Да — 25% от $1 это $0.25/день × много дней','Зависит от объёма трафика'],c:1,
+   exp:'Посчитаем RevShare: при churn 12%/день через 30 дней остаётся 2% пользователей. Суммарный RevShare ≈ $1.50 за весь период. CPA разово: $0.40. Кажется RevShare лучше — но при churn 12% большинство уходит за первую неделю. При таком churn CPA надёжнее. При churn 3–5% RevShare выигрывает кратно.'},
+];
+
+function buildExam(){
+  const wrap=document.getElementById('exam-questions');
+  wrap.innerHTML='';
+  EXAM_Qs.forEach((q,idx)=>{
+    const div=document.createElement('div');
+    div.className='exam-q';
+    div.id='eq-'+q.id;
+    div.innerHTML=`
+      <div class="eq-num">Вопрос ${idx+1} / ${EXAM_Qs.length} · <span style="color:var(--teal-lt)">${q.mod}</span></div>
+      <div class="eq-text">${q.q}</div>
+      <div class="eq-opts">
+        ${q.opts.map((o,i)=>`<div class="eq-opt" onclick="examAnswer('${q.id}',${i},${q.c},'${q.exp.replace(/'/g,"&#39;")}')">${o}</div>`).join('')}
+      </div>
+      <div class="eq-reveal" id="er-${q.id}"></div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function examAnswer(qid,chosen,correct,explain){
+  if(examDone[qid])return;
+  examDone[qid]=true;
+  const qEl=document.getElementById('eq-'+qid);
+  const opts=qEl.querySelectorAll('.eq-opt');
+  opts.forEach(o=>o.style.pointerEvents='none');
+  opts[correct].classList.add('ok');
+  if(chosen!==correct) opts[chosen].classList.add('err');
+  const rev=document.getElementById('er-'+qid);
+  rev.textContent=(chosen===correct?'✅ ':'❌ ')+explain;
+  rev.classList.add('show');
+  if(chosen===correct){examScore++;addXP(35);}else addXP(5);
+
+  const done=Object.keys(examDone).length;
+  document.getElementById('exam-pbar').style.width=(done/examTotal*100)+'%';
+  document.getElementById('exam-pcount').textContent=done+' / '+examTotal;
+
+  if(done===examTotal){
+    const res=document.getElementById('exam-result');
+    res.style.display='block';
+    const pass=examScore>=6;
+    res.innerHTML=`<strong style="color:${pass?'#4ADE80':'#EF4444'}">${examScore}/${examTotal} правильно — ${pass?'порог пройден ✅':'порог не достигнут ❌'}</strong> Минимум для закрытия дела: 6/8.`;
+    document.getElementById('exam-next').style.display='block';
+    if(pass)addXP(50);
+  }
+}
+
+function buildVerdict(){
+  const pass=examScore>=6;
+  const pct=Math.round(examScore/examTotal*100);
+  const area=document.getElementById('verdict-area');
+  area.innerHTML=`
+    <span style="font-size:64px;display:block;margin-bottom:16px;animation:sealIn .6s ease">${pass?'🔒':'🔍'}</span>
+    <div class="vc-stamp">${pass?'ДЕЛО ЗАКРЫТО':'РАССЛЕДОВАНИЕ ПРОДОЛЖАЕТСЯ'}</div>
+    <p style="font-size:13px;color:var(--ink3);line-height:1.7;margin:16px 0;max-width:480px;margin-left:auto;margin-right:auto">
+      ${pass
+        ? `Ты набрала <strong style="color:var(--gold)">${examScore}/8</strong>. Шесть дней расследования завершены. Ты стала своей в Golden Goose — понимаешь вертикаль на уровне AM и можешь строить курсы, матрицы и кейсы на реальных ситуациях.`
+        : `Ты набрала <strong style="color:var(--gold)">${examScore}/8</strong>. Расследование продолжается — есть зоны которые стоит повторить. Это нормально. Открой модуль где были ошибки и пройди ещё раз.`
+      }
+    </p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+      ${EXAM_Qs.map((q,i)=>`<div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:${examDone[q.id]&&examScore>=(i+1)?'rgba(74,222,128,.15)':'rgba(239,68,68,.12)'};border:1px solid ${examDone[q.id]&&i<examScore?'#4ADE80':'#EF4444'}">${i+1}</div>`).join('')}
+    </div>`;
+  document.getElementById('verdict-next').style.display='block';
+}
+
+function restart(){
+  xp=0;examScore=0;examDone={};
+  document.getElementById('xp-fill').style.width='0%';
+  document.getElementById('xp-val').textContent='0 / 500';
+  document.getElementById('exam-pbar').style.width='0%';
+  document.getElementById('exam-pcount').textContent='0 / 8';
+  document.getElementById('exam-result').style.display='none';
+  document.getElementById('exam-result').innerHTML='';
+  document.getElementById('exam-next').style.display='none';
+  document.getElementById('verdict-next').style.display='none';
+  document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=false;b.className='choice-btn';});
+  document.querySelectorAll('.tl-slot').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.conf-card').forEach(c=>c.classList.remove('open'));
+  buildExam();
+  go('s0',0);
+}
+</script>
+</body>
+</html>

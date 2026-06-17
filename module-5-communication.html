@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GG Academy · Модуль 5 · Партнёр в панике</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Special+Elite&display=swap');
+
+/* ═══════════════════════════════════════════════════════
+   GG ACADEMY · SEPIA DOSSIER · MODULE 5
+   Single light mode · warm paper · old case-file feel
+   Accent: #7C5CD6
+═══════════════════════════════════════════════════════ */
+:root{
+  /* Warm paper base — sepia, no blue */
+  --paper:    #F0E9DA;   /* main background — aged paper */
+  --paper2:   #F7F2E7;   /* cards — lighter cream */
+  --paper3:   #E6DCC7;   /* sunken panels */
+  --paper4:   #DCCFB5;   /* deeper tone */
+  --paper-edge: #C8B894; /* borders */
+  --paper-edge2: #B5A37D;/* darker borders */
+
+  /* Warm ink text */
+  --ink:    #2A2317;   /* near-black warm */
+  --ink2:   #4D4030;   /* body */
+  --ink3:   #7A6B52;   /* muted */
+  --ink4:   #9A8B70;   /* faint */
+
+  /* Accent */
+  --ac:      #7C5CD6;
+  --ac-rgb:  124,92,214;
+  --ac-lt:   #A88FE8;
+  --ac-dk:   #5436A0;
+  --ac-bg:   rgba(124,92,214,.10);
+  --ac-bg2:  rgba(124,92,214,.06);
+  --ac-bd:   rgba(124,92,214,.35);
+  --ac-glow: rgba(124,92,214,.22);
+  --ac-grad: linear-gradient(135deg, #5436A0, #7C5CD6 65%, #A88FE8);
+  --ac-grad-soft: linear-gradient(135deg, rgba(124,92,214,.14), rgba(124,92,214,.04));
+
+  /* Status — muted warm */
+  --ok:     #4A7C2E;
+  --ok-lt:  #6FA84A;
+  --ok-bg:  rgba(74,124,46,.12);
+  --ok-bd:  rgba(74,124,46,.4);
+  --err:    #A8392B;
+  --err-lt: #C85A4A;
+  --err-bg: rgba(168,57,43,.1);
+  --err-bd: rgba(168,57,43,.4);
+
+  /* Type */
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Oswald', sans-serif;
+  --type: 'Special Elite', serif;
+
+  /* Depth — warm shadows */
+  --r: 10px;
+  --r-lg: 14px;
+  --sh-sm: 0 1px 3px rgba(60,45,25,.10), 0 1px 2px rgba(60,45,25,.06);
+  --sh: 0 3px 14px rgba(60,45,25,.10), 0 1px 4px rgba(60,45,25,.06);
+  --sh-md: 0 8px 26px rgba(60,45,25,.14), 0 3px 8px rgba(60,45,25,.08);
+  --sh-lg: 0 16px 44px rgba(60,45,25,.18), 0 6px 14px rgba(60,45,25,.10);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);min-height:100vh;overflow-x:hidden;background:var(--paper);color:var(--ink2)}
+
+/* paper grain overlay — global warm texture */
+body::after{
+  content:'';position:fixed;inset:0;z-index:8000;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ── SCAN LINE — subtle ── */
+.scan-line{
+  position:fixed;top:0;left:0;right:0;height:1px;z-index:9000;
+  background:linear-gradient(90deg,transparent,var(--ac-bd),transparent);
+  animation:scan 6s ease-in-out infinite;opacity:.4;pointer-events:none;
+}
+@keyframes scan{0%{top:46px;opacity:.4}50%{opacity:.1}100%{top:100vh;opacity:0}}
+
+/* ── HUD — case-file header ── */
+.hud{
+  position:fixed;top:0;left:0;right:0;height:46px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  border-bottom:2px solid var(--ac-dk);
+  display:flex;align-items:center;gap:10px;
+  padding:0 18px;z-index:100;
+  box-shadow:0 2px 16px rgba(42,35,23,.35);
+}
+.hud::before{
+  content:'';position:absolute;left:0;bottom:-2px;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.6;
+}
+.hud-badge{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ac-lt);background:rgba(124,92,214,.15);
+  border:1px solid var(--ac-bd);border-radius:4px;
+  padding:3px 9px;white-space:nowrap;flex-shrink:0;
+}
+.hud-mod{
+  font-family:var(--mono);font-size:10px;color:rgba(240,233,218,.5);
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.02em;
+}
+.hud-mod strong{color:var(--ac-lt);font-weight:600}
+.hud-xp-wrap{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.hud-xp-lbl{font-family:var(--mono);font-size:9px;color:rgba(240,233,218,.4);letter-spacing:.08em}
+.hud-bar{width:78px;height:4px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden}
+.hud-fill{height:100%;border-radius:3px;background:var(--ac-grad);transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(124,92,214,.5)}
+.hud-val{font-family:var(--mono);font-size:10px;color:var(--ac-lt);min-width:54px;text-align:right;font-weight:500}
+
+/* XP TOAST */
+.xp-toast{
+  position:fixed;top:54px;right:16px;
+  background:var(--ac-grad);color:#2A2317;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.06em;padding:6px 14px;border-radius:7px;
+  z-index:201;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 6px 20px rgba(124,92,214,.45);
+}
+.xp-toast.show{transform:translateX(0)}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;padding-top:46px;animation:screenIn .4s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:flex;flex-direction:column}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════
+   SCENES — now ALSO on warm paper
+═══════════════════════════ */
+.scene,.scene-bg,.scene-bg-office{position:relative}
+.scene{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:24px 20px;position:relative;overflow:hidden;
+  min-height:calc(100vh - 46px);
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(124,92,214,.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(124,92,214,.04) 0%, transparent 45%),
+    var(--paper);
+}
+.scene-bg,.scene-bg-office{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 25% 30%, rgba(124,92,214,.05) 0%, transparent 55%),
+    var(--paper);
+}
+.scene-bg::after,.scene-bg-office::after{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 41px,rgba(120,107,82,.04) 42px),
+    repeating-linear-gradient(90deg,transparent,transparent 61px,rgba(120,107,82,.04) 62px);
+  mask-image:radial-gradient(ellipse at center, black 35%, transparent 88%);
+}
+/* soft vignette — warm */
+.scene::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(120,90,50,.18);
+}
+
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.particle{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--ac-dk);opacity:0;
+  animation:floatP var(--dur,8s) var(--delay,0s) infinite ease-in-out;
+}
+@keyframes floatP{0%{transform:translateY(100vh);opacity:0}10%{opacity:.25}90%{opacity:.08}100%{transform:translateY(-20px) translateX(var(--dx,20px));opacity:0}}
+
+/* Dialogue — on paper */
+.dialogue-wrap{position:relative;z-index:10;max-width:680px;margin:0 auto;width:100%}
+.npc-row{display:flex;align-items:flex-end;gap:11px;margin-bottom:11px}
+.npc-avatar{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:radial-gradient(circle at 35% 30%, var(--paper2), var(--paper3));
+  border:2px solid var(--ac-bd);
+  box-shadow:0 0 0 4px var(--ac-glow), 0 3px 10px rgba(60,45,25,.18);
+}
+.npc-avatar.av-dmitry,.av-d,.npc-av-dmitry{border-color:rgba(15,138,122,.45);box-shadow:0 0 0 4px rgba(15,138,122,.12),0 3px 10px rgba(60,45,25,.18)}
+.npc-name{
+  font-family:var(--mono);font-size:9px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;color:var(--ac-dk);
+}
+.npc-name.nm-d,.nm-dmitry,.dmitry{color:#0F8A7A}
+.dialogue-box{
+  background:linear-gradient(160deg, var(--paper2), var(--paper2) 70%, var(--paper3));
+  border:1px solid var(--paper-edge);border-left:3px solid var(--ac);
+  border-radius:14px;border-top-left-radius:4px;
+  padding:15px 18px;font-size:13.5px;line-height:1.8;color:var(--ink2);
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.4);
+}
+.dialogue-box.db-d,.dialogue-box.dmitry{border-left-color:#0F8A7A}
+.dialogue-box em{color:var(--ac-dk);font-style:italic;font-weight:500}
+.dialogue-box strong{color:var(--ink);font-weight:600}
+.dialogue-box.db-d strong,.dialogue-box.dmitry strong{color:#0F6A5E}
+
+.player-row{display:flex;justify-content:flex-end;margin-bottom:11px}
+.player-box{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);
+  border-radius:14px;border-top-right-radius:4px;padding:11px 15px;
+  font-size:12.5px;line-height:1.6;color:var(--ink2);max-width:82%;
+  box-shadow:var(--sh-sm);
+}
+.player-box::after{
+  content:'💬 Ирина';display:block;
+  font-family:var(--mono);font-size:9px;color:var(--ac-dk);
+  letter-spacing:.08em;margin-top:4px;text-align:right;
+}
+
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.choice-btn{
+  background:var(--paper2);
+  border:1px solid var(--paper-edge);
+  border-radius:10px;padding:12px 16px;text-align:left;
+  font-size:13px;line-height:1.6;color:var(--ink2);
+  cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);font-family:var(--sans);
+  position:relative;overflow:hidden;box-shadow:var(--sh-sm);
+}
+.choice-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--ac);transform:scaleY(0);transition:transform .25s;
+}
+.choice-btn:hover:not(:disabled){
+  background:var(--ac-bg2);border-color:var(--ac-bd);
+  transform:translateX(5px);box-shadow:var(--sh);
+}
+.choice-btn:hover:not(:disabled)::before{transform:scaleY(1)}
+.choice-btn.correct{background:var(--ok-bg);border-color:var(--ok);color:#2D4A1A}
+.choice-btn.wrong{background:var(--err-bg);border-color:var(--err);color:#6B1F15}
+
+/* Continue button */
+.btn-continue{
+  margin-top:15px;padding:12px 28px;
+  background:var(--ac-grad);
+  border:none;border-radius:10px;color:#2A2317;
+  font-family:var(--display);font-size:12px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .25s;box-shadow:0 5px 16px rgba(124,92,214,.28);
+}
+.btn-continue:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 9px 24px rgba(124,92,214,.36)}
+
+/* ═══════════════════════════
+   SLIDES — same paper, seamless
+═══════════════════════════ */
+.slide{
+  flex:1;padding:30px 26px;max-width:780px;margin:0 auto;width:100%;
+  background:var(--paper);position:relative;
+}
+.slide::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.02'/%3E%3C/svg%3E");
+}
+.slide>*{position:relative;z-index:1}
+
+/* Progress — evidence ticks */
+.prog-row,.progress-row{display:flex;gap:4px;margin-bottom:24px;align-items:center}
+.prog-step,.progress-step{flex:1;height:5px;background:var(--paper4);border-radius:3px;transition:all .4s;overflow:hidden}
+.prog-step.done,.progress-step.done{background:var(--ac-dk)}
+.prog-step.active,.progress-step.active{background:var(--ac);box-shadow:0 0 8px rgba(124,92,214,.4)}
+
+/* Eyebrow — case label */
+.eyebrow,.slide-eyebrow{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.16em;color:var(--ac-dk);text-transform:uppercase;
+  margin-bottom:8px;padding:3px 10px;
+  background:var(--ac-bg);border:1px solid var(--ac-bd);border-radius:4px;
+}
+.slide h2{
+  font-family:var(--display);font-size:28px;font-weight:700;
+  color:var(--ink);margin-bottom:8px;line-height:1.15;letter-spacing:-.01em;
+}
+.slide-sub{font-size:14px;color:var(--ink2);margin-bottom:24px;line-height:1.65}
+
+/* Case-file cards — dossier */
+.dd-card,.ops-card,.info-card,.role-map{
+  background:linear-gradient(165deg, var(--paper2), var(--paper2) 72%, var(--paper3));
+  border:1px solid var(--paper-edge);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+  transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s, border-color .25s;
+}
+.dd-card::before,.ops-card::before{
+  content:'';position:absolute;top:0;left:20px;width:36px;height:3px;
+  background:var(--ac-grad);border-radius:0 0 3px 3px;
+}
+.dd-card:hover,.ops-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);border-color:var(--ac-bd)}
+.dd-card h3,.ops-card h3{
+  font-family:var(--display);font-size:16px;font-weight:600;color:var(--ink);
+  margin-bottom:11px;display:flex;align-items:center;gap:9px;letter-spacing:.01em;
+}
+.dd-card p,.ops-card p{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:9px}
+.dd-card p:last-child,.ops-card p:last-child{margin-bottom:0}
+.dd-card strong,.ops-card strong{color:var(--ink);font-weight:600}
+
+/* Info cards (reveal) */
+.info-card{cursor:pointer}
+.info-card::before{display:none}
+.info-card:hover{border-color:var(--ac-bd);transform:translateY(-2px)}
+.info-card.revealed{
+  border-color:var(--ac);border-left:4px solid var(--ac);
+  background:linear-gradient(165deg, var(--paper2), var(--ac-bg2));
+}
+.ic-q,.info-card-q{
+  font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);
+  margin-bottom:7px;display:flex;align-items:center;gap:7px;letter-spacing:.01em;
+}
+.ic-a,.info-card-a{font-size:13px;color:var(--ink2);line-height:1.7;display:none}
+.info-card.revealed .ic-a,.info-card.revealed .info-card-a{display:block}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+/* Tables — evidence ledger */
+.dd-table,.comp-table,.mismatch-table{
+  width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin:12px 0;
+  border:1px solid var(--paper-edge2);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);
+}
+.dd-table th,.comp-table th,.mismatch-table th{
+  text-align:left;padding:11px 13px;
+  background:linear-gradient(180deg, #2A2317, #3A3020);
+  font-family:var(--mono);font-weight:600;color:var(--ac-lt);
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+}
+.dd-table td,.comp-table td,.mismatch-table td{
+  padding:11px 13px;border-top:1px solid var(--paper-edge);
+  color:var(--ink2);vertical-align:top;line-height:1.55;background:var(--paper2);
+}
+.dd-table tr:last-child td{border-bottom:none}
+.dd-table tr:hover td,.comp-table tr:hover td{background:var(--paper3)}
+.hi{font-weight:600;color:var(--ink)}
+.good{color:var(--ok);font-weight:600}
+.mid{color:var(--ac-dk);font-weight:600}
+.low{color:var(--err);font-weight:600}
+
+/* Notebook — detective's journal */
+.notebook{
+  background:linear-gradient(165deg, #EFE7D3, #E8DDC4);
+  border:1px solid var(--paper-edge2);border-left:4px solid var(--ac);
+  border-radius:var(--r);padding:16px 18px;margin-bottom:16px;
+  box-shadow:var(--sh), inset 0 1px 0 rgba(255,255,255,.5);position:relative;
+}
+.notebook::after{
+  content:'';position:absolute;top:10px;bottom:10px;left:14px;width:1px;
+  background:repeating-linear-gradient(180deg,rgba(124,92,214,.3),rgba(124,92,214,.3) 2px,transparent 2px,transparent 6px);
+}
+.nb-title,.notebook-title{
+  font-family:var(--type);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ac-dk);margin-bottom:9px;padding-left:12px;
+}
+.nb-entry,.notebook-entry{
+  display:flex;gap:9px;padding:4px 0 4px 12px;border-bottom:1px solid rgba(124,92,214,.12);
+}
+.nb-entry:last-child,.notebook-entry:last-child{border-bottom:none}
+.nb-check{color:var(--ac-dk);flex-shrink:0;font-size:13px}
+.nb-text{color:#3A3020;font-size:12.5px;line-height:1.65;font-family:var(--type)}
+
+/* Quiz */
+.quiz-wrap,.ops-quiz,.dtree-wrap,.debug-wrap,.inv-board,.verdict-wrap{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge);border-radius:var(--r);padding:18px;margin-bottom:14px;
+  box-shadow:var(--sh);position:relative;
+}
+.quiz-q,.dtree-q,.verdict-q,.eq-text{
+  font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink);
+  margin-bottom:13px;line-height:1.45;letter-spacing:.01em;
+}
+.quiz-opt,.dtree-opt,.verdict-opt,.debug-opt,.inv-opt,.eq-opt{
+  padding:12px 15px;border-radius:9px;
+  border:1.5px solid var(--paper-edge2);background:var(--paper);
+  font-size:13px;color:var(--ink2);cursor:pointer;
+  transition:all .2s cubic-bezier(.4,0,.2,1);line-height:1.5;margin-bottom:7px;
+}
+.quiz-opt:hover,.dtree-opt:hover,.verdict-opt:hover,
+.debug-opt:hover,.inv-opt:hover,.eq-opt:hover{
+  border-color:var(--ac);background:var(--ac-bg2);color:var(--ink);transform:translateX(3px);
+}
+.quiz-opt.correct,.dtree-opt.ok,.verdict-opt.v-ok,
+.debug-opt.ok,.inv-opt.ok,.eq-opt.ok,.quiz-opt.reveal{
+  border-color:var(--ok);background:var(--ok-bg);color:#2D4A1A;cursor:default;transform:none;
+}
+.quiz-opt.wrong,.dtree-opt.err,.verdict-opt.v-err,
+.debug-opt.err,.inv-opt.err,.eq-opt.err{
+  border-color:var(--err);background:var(--err-bg);color:#6B1F15;cursor:default;transform:none;
+}
+.quiz-explain,.dtree-reveal,.debug-reveal,.inv-reveal,.verdict-reveal,.eq-reveal{
+  font-size:12.5px;color:var(--ink2);
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:9px;padding:11px 13px;margin-top:9px;display:none;line-height:1.7;font-family:var(--type);
+}
+.quiz-explain.show,.dtree-reveal.show,.debug-reveal.show,
+.inv-reveal.show,.verdict-reveal.show,.eq-reveal.show{display:block}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:11px}
+.quiz-counter{font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.quiz-next{font-family:var(--mono);font-size:12px;color:var(--ac-dk);background:none;border:none;cursor:pointer;font-weight:600}
+
+/* Expert note */
+.expert-note,.ops-note{
+  background:var(--ac-grad-soft);border:1px solid var(--ac-bd);border-left:3px solid var(--ac);
+  border-radius:0 var(--r) var(--r) 0;padding:11px 15px;font-size:12.5px;
+  color:var(--ink2);margin:11px 0;line-height:1.7;font-style:italic;
+}
+.expert-note strong,.ops-note strong{color:var(--ac-dk);font-style:normal;font-weight:600}
+.scenario{
+  background:#EFE7D3;border:1px solid var(--paper-edge2);border-left:3px solid var(--ac);
+  border-radius:var(--r);padding:14px 16px;margin:10px 0;box-shadow:var(--sh-sm);
+}
+.sc-q{font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.sc-a{font-size:12.5px;color:var(--ink2);line-height:1.7}
+.sc-a strong{color:var(--ink);font-weight:600}
+.sub-h{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:16px 0 8px}
+
+/* Code block — dark inset even on light theme (terminal feel) */
+.code-block,.formula{
+  background:linear-gradient(165deg, #2A2317, #1F1A11);
+  border:1px solid var(--ac-bd);border-radius:var(--r);padding:14px 16px;
+  font-family:var(--mono);font-size:11.5px;color:var(--ac-lt);
+  margin:11px 0;line-height:1.85;overflow-x:auto;box-shadow:var(--sh-md);
+}
+.cm,.f-comment{color:#6B6050}.ck,.f-key{color:var(--ac-lt)}.cv,.f-val{color:#9AC8D8}
+.ce{color:#F4A060}.cb{color:#5EBFB0}
+
+/* Sliders */
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--paper4);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ac-grad);cursor:pointer;box-shadow:0 0 0 4px var(--ac-glow),0 2px 6px rgba(60,45,25,.3)}
+
+/* Drag & drop */
+.dnd-slot,.dnd-zone,.sort-zone{
+  border:2px dashed var(--paper-edge2);border-radius:var(--r);min-height:66px;
+  display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;
+  transition:all .25s;font-size:12px;color:var(--ink3);background:var(--paper);
+}
+.dnd-slot.has-card,.dnd-zone.has-card,.sort-zone.drag-over{
+  border-color:var(--ac);border-style:solid;background:var(--ac-bg2);
+  box-shadow:inset 0 0 16px rgba(124,92,214,.08);
+}
+.dnd-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--ac-dk);opacity:.5}
+.dnd-card,.sort-chip{
+  background:linear-gradient(165deg,var(--paper2),var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:9px;padding:9px 15px;
+  font-size:12px;font-weight:600;color:var(--ink);cursor:grab;user-select:none;
+  transition:all .18s;display:inline-flex;align-items:center;gap:6px;margin:3px;box-shadow:var(--sh-sm);
+}
+.dnd-card:hover,.sort-chip:hover{border-color:var(--ac);background:var(--ac-bg2);transform:translateY(-2px);box-shadow:var(--sh)}
+.dnd-card.placed{opacity:.35;pointer-events:none}
+.dnd-cards,.sort-pool{
+  display:flex;flex-wrap:wrap;gap:8px;padding:14px;
+  background:linear-gradient(165deg,var(--paper3),var(--paper));
+  border-radius:var(--r);border:1px dashed var(--paper-edge2);margin-bottom:14px;min-height:56px;
+}
+.dnd-zone-label,.sort-zone-title{font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+
+.role-map{padding:20px}
+.role-map::before{display:none}
+.role-map-title{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:15px;font-weight:600}
+
+/* Final card */
+.final-card{
+  background:linear-gradient(165deg, var(--paper2), var(--paper3));
+  border:1px solid var(--paper-edge2);border-radius:var(--r-lg);padding:28px;text-align:center;
+  box-shadow:var(--sh-lg);position:relative;overflow:hidden;
+}
+.final-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--ac-grad)}
+.final-card::after{
+  content:'';position:absolute;top:-60%;left:-30%;width:160%;height:200%;
+  background:conic-gradient(from 0deg,transparent 320deg,rgba(124,92,214,.05) 360deg);
+  animation:spin 12s linear infinite;pointer-events:none;
+}
+.final-card>*{position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.final-trophy{font-size:48px;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 12px rgba(124,92,214,.3))}
+.final-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:.01em}
+.final-desc{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:16px}
+
+/* Back button */
+.gg-back{
+  position:fixed;top:9px;left:9px;z-index:9999;
+  background:linear-gradient(180deg,#2A2317,#3A3020);
+  border:1px solid var(--ac-bd);border-radius:8px;padding:7px 14px;
+  font-family:var(--mono);font-size:10px;font-weight:600;color:var(--ac-lt);
+  cursor:pointer;transition:all .2s;letter-spacing:.06em;box-shadow:0 2px 10px rgba(42,35,23,.3);
+}
+.gg-back:hover{background:#3A3020;border-color:var(--ac);transform:translateX(-2px)}
+
+@media(max-width:600px){
+  .slide{padding:18px 14px}
+  .scene{padding:16px 12px}
+  .hud-mod{display:none}
+  .info-grid{grid-template-columns:1fr}
+  .slide h2{font-size:23px}
+}
+
+</style>
+</head>
+<body>
+
+<div class="scan-line"></div>
+<div class="hud">
+  <div class="hud-badge">GG · M5</div>
+  <div class="hud-mod"><strong>Партнёр в панике</strong> · <span id="scene-lbl"></span></div>
+  <div class="hud-xp-wrap">
+    <span class="hud-xp-lbl">XP</span>
+    <div class="hud-bar"><div class="hud-fill" id="xp-fill" style="width:0%"></div></div>
+    <span class="hud-val" id="xp-val">0 / 450</span>
+  </div>
+</div>
+<div class="xp-toast" id="xp-toast">+0 XP</div>
+<div class="particles" id="particles"></div>
+
+<!-- ════ S0: ИНТРО ════ -->
+<div class="screen active" id="s0">
+<div class="scene">
+  <div class="scene-bg"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+      <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar av-olesya">🦆</div>
+      <div>
+        <div class="npc-name nm-o">Олеся</div>
+        <div class="dialogue-box db-o">
+          Ирина, сегодня самое сложное в работе AM — не цифры, не трекинг.<br><br>
+          <strong>Сложнее всего — партнёр который думает что его обманывают.</strong><br><br>
+          Сегодня ты будешь AM. Придёт партнёр — Максим, опытный арбитражник. У него проблема, он злится. <em>Твоя задача: не потерять его, разобраться и решить.</em><br><br>
+          Дмитрий даст подсказку в сложный момент. Но решения — твои.
+        </div>
+      </div>
+    </div>
+
+    <div class="choices">
+      <button class="choice-btn" onclick="go('s1',20)">💼 Готова. Понимаю что сначала данные — потом выводы, и не обвинять партнёра без фактов.</button>
+      <button class="choice-btn" onclick="go('s1',10)">😅 Немного нервничаю — но пошли. Буду внимательна к тону.</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S1: ЧАТ — ПЕРВОЕ СООБЩЕНИЕ ════ -->
+<div class="screen" id="s1">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+    <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 5 · Симуляция 01</div>
+  <h2>Максим пишет</h2>
+  <p class="slide-sub">Выбери правильный ответ — каждый выбор влияет на дальнейший ход разговора и XP.</p>
+
+  <div class="chat-wrap">
+    <div class="chat-header">
+      <div class="chat-avatar">М</div>
+      <div>
+        <div class="chat-partner-name">Максим · Партнёр</div>
+        <div class="chat-status">● онлайн · Нигерия-02 · Pop · 8 000 кликов/день</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat1">
+      <div class="msg msg-partner">
+        <div class="msg-bubble">У меня всё сломалось. 200 конверсий в трекере, вы засчитали 80. Это что вообще такое? Вы меня кидаете что ли??</div>
+        <div class="msg-time">09:14</div>
+      </div>
+    </div>
+    <div class="chat-input-wrap">
+      <div class="chat-choices" id="cc1">
+        <button class="chat-choice" onclick="sendMsg('s1','cc1','msg1a',true,30,'Максим, понял. Смотрю прямо сейчас — дай мне 5 минут разобраться в данных, потом скажу точно что происходит.','Хорошо. Профессионально — не защищаться, не обвинять. Собираешь данные перед ответом.')">📊 «Максим, понял. Смотрю прямо сейчас — дай мне 5 минут разобраться в данных, потом скажу точно что происходит.»</button>
+        <button class="chat-choice" onclick="sendMsg('s1','cc1','msg1b',false,10,'Максим, мы никого не кидаем. Скорее всего это антифрод — у вас был подозрительный трафик.','Слишком рано. Ты ещё не видела данных — не стоит выдвигать обвинения без фактов.')">🛡 «Максим, мы никого не кидаем. Скорее всего антифрод — у вас был подозрительный трафик.»</button>
+        <button class="chat-choice" onclick="sendMsg('s1','cc1','msg1c',false,5,'Максим, у нас всё корректно. Бывают расхождения — это нормально.','Плохо. Партнёр злится, а ты говоришь «это нормально» без объяснения. Это потеря доверия.')">😐 «У нас всё корректно. Расхождения бывают — это нормально.»</button>
+      </div>
+      <div id="s1-reveal" style="display:none;font-size:11px;padding:8px 4px;color:var(--purple-lt);line-height:1.5"></div>
+    </div>
+  </div>
+  <button class="btn-continue" id="s1-next" onclick="go('s2',0)" style="display:none">Дальше: смотрим данные →</button>
+</div>
+</div>
+
+<!-- ════ S2: ДЕРЕВО ДИАГНОСТИКИ ════ -->
+<div class="screen" id="s2">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div>
+    <div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 5 · Задание 01</div>
+  <h2>Дерево диагностики</h2>
+  <p class="slide-sub">Максим ждёт. У тебя 5 минут. Пройди дерево диагностики — найди причину расхождения 200 vs 80.</p>
+
+  <!-- Шаг A -->
+  <div class="dtree-wrap">
+    <div class="dtree-situation">Данные: трекер 200 конверсий · платформа GG: 80 approved · Оффер Нигерия-02 · Pop-трафик · Период: вчера (закрытый)</div>
+    <div class="dtree-q">A. Первый шаг диагностики:</div>
+    <div class="dtree-opts" id="da-opts">
+      <div class="dtree-opt" onclick="dt('da','a1',true,'Правильно. Сначала смотришь статусы в платформе: из 200 заявленных — 80 approved, 90 rejected (fraud), 30 rejected (cap). Картина ясна: 90 конверсий помечены антифродом.')">✅ Открываю статусы конверсий в платформе — сколько approved, сколько rejected и почему</div>
+      <div class="dtree-opt" onclick="dt('da','a2',false,'Нет — период закрытый, задержки оператора нет. Это первый кандидат только для незакрытых периодов.')">❌ Проверяю задержку постбека от оператора</div>
+      <div class="dtree-opt" onclick="dt('da','a3',false,'Это шаг третий, не первый. Без картины статусов не знаешь что искать в трекере.')">❌ Сразу запрашиваю у Максима логи трекера</div>
+    </div>
+    <div class="dtree-reveal" id="da-reveal"></div>
+  </div>
+
+  <!-- Шаг B -->
+  <div class="dtree-wrap" id="db-wrap" style="opacity:.35">
+    <div class="dtree-q">B. Платформа показывает: 80 approved, 90 rejected (fraud), 30 rejected (cap). Что дальше?</div>
+    <div class="dtree-opts" id="db-opts">
+      <div class="dtree-opt" onclick="dt('db','b1',true,'Точно. Смотришь антифрод-отчёт: 90 конверсий — IP концентрация (85% с трёх IP-адресов за 4 часа). Cap — оффер достиг дневного лимита в 15:30. Две разные проблемы одновременно.')">✅ Открываю антифрод-отчёт по rejected конверсиям — ищу паттерн по IP, device, времени</div>
+      <div class="dtree-opt" onclick="dt('db','b2',false,'Рано. Сначала нужно понять причину rejected — это фрод, cap или что-то ещё? Разные причины = разные решения.')">❌ Сразу предлагаю Максиму сменить источник трафика</div>
+      <div class="dtree-opt" onclick="dt('db','b3',false,'Cap — это одна из причин, но у тебя 90 rejected как fraud и 30 как cap. Нужно разобраться с обоими.')">❌ Говорю Максиму что оффер достиг cap и это вся причина</div>
+    </div>
+    <div class="dtree-reveal" id="db-reveal"></div>
+  </div>
+
+  <!-- Шаг C -->
+  <div class="dtree-wrap" id="dc-wrap" style="opacity:.35">
+    <div class="dtree-q">C. Антифрод: 85% кликов с трёх IP-адресов за 4 часа. Cap: оффер достиг лимита в 15:30. Максим, скорее всего, не знает об обоих. Как отделяешь его вину от внешних причин?</div>
+    <div class="dtree-opts" id="dc-opts">
+      <div class="dtree-opt" onclick="dt('dc','c1',true,'Правильно. Cap — это внешняя причина, не вина Максима. Фрод с 3 IP — нужно выяснить: это его источник или накрутка извне? Два разных разговора, два разных решения.')">✅ Разделяю: cap — внешняя причина (информирую). IP-концентрация — смотрю источник трафика Максима (уточняю у него)</div>
+      <div class="dtree-opt" onclick="dt('dc','c2',false,'Нет. IP-концентрация может быть фродом со стороны рекламной сети, не Максима. Обвинить его без проверки источника — значит потерять партнёра.')">❌ Говорю Максиму что он гнал фродовый трафик</div>
+      <div class="dtree-opt" onclick="dt('dc','c3',false,'Так нельзя. У тебя есть данные — и cap, и антифрод. Скрыть это значит потерять доверие когда партнёр узнает.')">❌ Говорю только про cap, про антифрод не упоминаю</div>
+    </div>
+    <div class="dtree-reveal" id="dc-reveal"></div>
+  </div>
+
+  <div id="dt-score" style="font-size:12px;color:var(--ink3);margin-bottom:12px;min-height:20px"></div>
+  <button class="btn-continue" id="dt-next" onclick="go('s3',0)" style="display:none">Дальше: отвечаем Максиму →</button>
+</div>
+</div>
+
+<!-- ════ S3: ЧАТ — ОБЪЯСНЕНИЕ ════ -->
+<div class="screen" id="s3">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 5 · Симуляция 02</div>
+  <h2>Объясняем Максиму</h2>
+  <p class="slide-sub">Диагноз поставлен. Теперь — сообщение. Как передать сложную информацию чтобы партнёр понял и не ушёл к конкуренту?</p>
+
+  <div class="chat-wrap">
+    <div class="chat-header">
+      <div class="chat-avatar">М</div>
+      <div>
+        <div class="chat-partner-name">Максим · Партнёр</div>
+        <div class="chat-status">● онлайн · ждёт ответа 5 минут</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat3">
+      <div class="msg msg-partner">
+        <div class="msg-bubble">Ну что там??</div>
+        <div class="msg-time">09:20</div>
+      </div>
+    </div>
+    <div class="chat-input-wrap">
+      <div class="chat-choices" id="cc3">
+        <button class="chat-choice" onclick="sendMsg('s3','cc3','msg3a',true,40,'Максим, разобрался. Две причины:\n\n1. Оффер вчера достиг дневного cap в 15:30 — 30 конверсий после этого времени не засчитались. Это не зависит от тебя, мы должны были предупредить — моя ответственность.\n\n2. Антифрод платформы зафиксировал концентрацию кликов: 85% с трёх IP за 4 часа. Прежде чем делать выводы — скажи какой источник трафика использовал вчера после 13:00?','Отлично. Два отдельных объяснения, честно про cap («моя ответственность»), не обвиняешь в фроде — спрашиваешь источник.')">✅ «Максим, разобрался. Две причины: 1) cap оффера достигнут в 15:30, 30 конверсий не засчитались — должны были предупредить, это моё упущение. 2) Антифрод видит IP-концентрацию — скажи какой источник использовал после 13:00?»</button>
+        <button class="chat-choice" onclick="sendMsg('s3','cc3','msg3b',false,15,'Максим, часть конверсий отклонена антифродом — качество трафика подозрительное. Нужно проверять источники.','Слишком обвинительно. Ты ещё не знаешь что источник Максима — причина фрода. И про cap не упомянула.')">❌ «Максим, антифрод отклонил конверсии — качество трафика подозрительное. И оффер достиг cap.»</button>
+        <button class="chat-choice" onclick="sendMsg('s3','cc3','msg3c',false,8,'Максим, сейчас уточняем у технической команды. Подожди ещё немного.','Нет. Ты уже знаешь причины — тянуть время без причины = ещё больше злости.')">❌ «Максим, уточняем у технической команды. Подожди ещё немного.»</button>
+      </div>
+      <div id="s3-reveal" style="display:none;font-size:11px;padding:8px 4px;color:var(--purple-lt);line-height:1.5"></div>
+    </div>
+  </div>
+  <button class="btn-continue" id="s3-next" onclick="go('s4',0)" style="display:none">Дальше: Максим отвечает →</button>
+</div>
+</div>
+
+<!-- ════ S4: ЧАТ — МАКСИМ ОПРАВДЫВАЕТСЯ ════ -->
+<div class="screen" id="s4">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 5 · Симуляция 03</div>
+  <h2>Максим отвечает</h2>
+  <p class="slide-sub">Партнёр раскрылся. Теперь важно правильно отреагировать на его объяснение.</p>
+
+  <div class="chat-wrap">
+    <div class="chat-header">
+      <div class="chat-avatar">М</div>
+      <div>
+        <div class="chat-partner-name">Максим · Партнёр</div>
+        <div class="chat-status">● онлайн</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat4">
+      <div class="msg msg-partner">
+        <div class="msg-bubble">После 13 переключился на Propeller — зону Adult Pop. Раньше там норм было. Это они мне фрод в трафик подмешали что ли?</div>
+        <div class="msg-time">09:24</div>
+      </div>
+      <div class="msg msg-partner">
+        <div class="msg-bubble">Ладно про cap понял. Следующий раз предупреждай заранее.</div>
+        <div class="msg-time">09:24</div>
+      </div>
+    </div>
+    <div class="chat-input-wrap">
+      <div class="chat-choices" id="cc4">
+        <button class="chat-choice" onclick="sendMsg('s4','cc4','msg4a',true,35,'Скорее всего именно так — в Adult Pop зонах бывают ботные саблаиты. Это не твоя вина, это качество конкретных площадок внутри сети.\n\nРекомендую: посмотри разбивку по sub1 в трекере — найди площадки с CR выше 8% и заблокируй их. Оставшиеся саблаиты должны дать нормальный апрув.\n\nПро cap — принял. Настрою уведомление на 80% fill rate, ты получишь сигнал заранее.','Отлично. Объяснил без обвинений, дал конкретный план действий, взял ответственность за cap.')">✅ «Скорее всего да — Adult Pop бывает с ботными площадками. Не твоя вина. Посмотри sub1 в трекере: блокируй саблаиты с CR выше 8%. По cap — настрою уведомление на 80% fill.»</button>
+        <button class="chat-choice" onclick="sendMsg('s4','cc4','msg4b',false,10,'Максим, Adult Pop — рискованный источник. Мы не можем гарантировать апрув с такого трафика.','Уклончиво и безответственно. Ты не помогаешь — ты отстраняешься.')">❌ «Adult Pop — рискованный источник. Мы не можем гарантировать апрув.»</button>
+        <button class="chat-choice" onclick="sendMsg('s4','cc4','msg4c',false,5,'Максим, тогда проблема в вашем источнике. Вам нужно сменить трафик.','Обвинение без помощи. Правильно — объяснить механику и дать конкретное решение.')">❌ «Тогда проблема в вашем источнике. Вам нужно сменить трафик.»</button>
+      </div>
+      <div id="s4-reveal" style="display:none;font-size:11px;padding:8px 4px;color:var(--purple-lt);line-height:1.5"></div>
+    </div>
+  </div>
+  <button class="btn-continue" id="s4-next" onclick="go('s5',0)" style="display:none">Финал разговора →</button>
+</div>
+</div>
+
+<!-- ════ S5: ЧАТ — ФИНАЛ РАЗГОВОРА ════ -->
+<div class="screen" id="s5">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div><div class="prog-step"></div>
+  </div>
+
+  <div class="eyebrow">Модуль 5 · Симуляция 04</div>
+  <h2>Закрываем разговор</h2>
+  <p class="slide-sub">Максим успокоился. Последний шаг — превратить кризис в возможность.</p>
+
+  <div class="chat-wrap">
+    <div class="chat-header">
+      <div class="chat-avatar">М</div>
+      <div>
+        <div class="chat-partner-name">Максим · Партнёр</div>
+        <div class="chat-status">● онлайн · настроение улучшилось</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat5">
+      <div class="msg msg-partner">
+        <div class="msg-bubble">Окей, понял по sub1. Спасибо что разобрался быстро. Думал уже уходить к другой платформе если честно.</div>
+        <div class="msg-time">09:31</div>
+      </div>
+    </div>
+    <div class="chat-input-wrap">
+      <div class="chat-choices" id="cc5">
+        <button class="chat-choice" onclick="sendMsg('s5','cc5','msg5a',true,45,'Рад что разобрались. Бывает — важно что сразу написал.\n\nПока мы тут: у тебя pop на Нигерию. Есть оффер на Кению под push — Safaricom, апрув 78%, выплата $0.38. Если есть push-трафик — EPC там получше чем на нигерийском pop. Хочешь скину детали?','Отлично. Закрыл кризис, сохранил отношения, проактивно предложил новый оффер. Это работа AM.')">✅ «Рад что разобрались. Пока ты здесь — есть оффер Кения push, Safaricom, апрув 78%, $0.38. Если есть push-трафик — EPC там выше чем нигерийский pop. Скинуть детали?»</button>
+        <button class="chat-choice" onclick="sendMsg('s5','cc5','msg5b',false,10,'Хорошо, обращайся если что-то ещё!','Пассивно. Это момент когда нужно предложить следующий шаг — а не просто попрощаться.')">❌ «Хорошо, обращайся если что-то ещё!»</button>
+        <button class="chat-choice" onclick="sendMsg('s5','cc5','msg5c',false,5,'Мы всегда стараемся помочь партнёрам.','Пусто. Корпоративный штамп который ничего не значит.')">❌ «Мы всегда стараемся помочь партнёрам.»</button>
+      </div>
+      <div id="s5-reveal" style="display:none;font-size:11px;padding:8px 4px;color:var(--purple-lt);line-height:1.5"></div>
+    </div>
+  </div>
+  <button class="btn-continue" id="s5-next" onclick="go('s6',0)" style="display:none">Разбор разговора →</button>
+</div>
+</div>
+
+<!-- ════ S6: РАЗБОР + КОММУНИКАЦИОННЫЕ ПРИНЦИПЫ ════ -->
+<div class="screen" id="s6">
+<div class="scene">
+  <div class="scene-bg"></div>
+  <div class="dialogue-wrap">
+    <div class="prog-row">
+      <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+      <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div><div class="prog-step"></div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar av-olesya">🦆</div>
+      <div>
+        <div class="npc-name nm-o">Олеся</div>
+        <div class="dialogue-box db-o">
+          Ирина, разговор закрыт. Максим остался. <strong>Это хороший исход.</strong><br><br>
+          Дмитрий хочет разобрать что именно сработало. Это пригодится тебе когда будешь писать курс для AM — именно такие принципы туда нужны.
+        </div>
+      </div>
+    </div>
+
+    <div class="npc-row">
+      <div class="npc-avatar av-dmitry">📊</div>
+      <div>
+        <div class="npc-name nm-d">Дмитрий</div>
+        <div class="dialogue-box db-d">
+          Пять принципов которые сработали в этом разговоре. <strong>Запомни их как структуру курса для AM:</strong><br><br>
+          <strong>1. Данные раньше выводов.</strong> Ты не обвинила, не защищалась — открыла платформу.<br>
+          <strong>2. Разделила причины.</strong> Cap — одно. Антифрод — другое. Разные объяснения, разные решения.<br>
+          <strong>3. Взяла ответственность за cap.</strong> «Должны были предупредить» — разоружает партнёра.<br>
+          <strong>4. Не обвиняла без фактов.</strong> Про фрод — спросила источник, не заявила виновность.<br>
+          <strong>5. Предложила следующий шаг.</strong> Кризис → возможность. Новый оффер в конце.
+        </div>
+      </div>
+    </div>
+
+    <div class="choices" id="ch-s6">
+      <button class="choice-btn" onclick="handleS6(0)">📝 Всё понятно. Это структура «факт → разбор → ответственность → решение → следующий шаг».</button>
+      <button class="choice-btn" onclick="handleS6(1)">🤔 Мне сложнее всего было «взять ответственность за cap» — это же не моя вина как AM, это платформы?</button>
+    </div>
+    <div id="fb-s6" style="display:none;margin-top:10px"></div>
+  </div>
+</div>
+</div>
+
+<!-- ════ S7: ФИНАЛ ════ -->
+<div class="screen" id="s7">
+<div class="slide">
+  <div class="prog-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step done"></div><div class="prog-step done"></div>
+  </div>
+
+  <div class="final-card">
+    <span class="final-trophy">🤝</span>
+    <div class="final-title">Партнёр остался</div>
+    <div class="final-desc">Ты прошла самое сложное — кризисный разговор.<br>Максим думал уйти. Остался. Это и есть работа AM.</div>
+
+    <div class="comm-score" style="margin-bottom:18px;text-align:left">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Коммуникационный профиль разговора</div>
+      <div class="cs-row"><span class="cs-label">Данные до выводов</span><span class="cs-val cs-ok" id="sc-data">—</span></div>
+      <div class="cs-row"><span class="cs-label">Не обвиняла без фактов</span><span class="cs-val cs-ok" id="sc-noaccuse">—</span></div>
+      <div class="cs-row"><span class="cs-label">Взяла ответственность за cap</span><span class="cs-val cs-ok" id="sc-resp">—</span></div>
+      <div class="cs-row"><span class="cs-label">Конкретное решение по антифроду</span><span class="cs-val cs-ok" id="sc-solution">—</span></div>
+      <div class="cs-row"><span class="cs-label">Предложила новый оффер в конце</span><span class="cs-val cs-ok" id="sc-upsell">—</span></div>
+    </div>
+
+    <div class="notebook" style="text-align:left;margin-bottom:18px">
+      <div class="nb-title">📓 Дневник расследования · День 5</div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Алгоритм кризиса: данные → разбор причин → ответственность → решение → следующий шаг</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">IP-концентрация (85% с 3 IP) — признак ботных саблаитов в рекламной сети, не вина партнёра</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Cap оффера — всегда уведомлять при 80% fill rate. Это обязанность AM.</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Adult Pop зоны в PropellerAds — высокий риск ботных площадок. Диагностика: sub1 с CR > 8% → блок</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">«Взять ответственность» ≠ признать вину. Это показать что ты на стороне партнёра.</span></div>
+      <div class="nb-entry"><span class="nb-check">✓</span><span class="nb-text">Кризис = возможность предложить новый оффер. Максим теперь знает про Кению.</span></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:16px">
+      <div style="text-align:center">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink3);margin-bottom:3px">НАБРАНО XP</div>
+        <div style="font-size:26px;font-weight:700;color:var(--gold)" id="final-xp">0</div>
+      </div>
+      <div style="width:1px;height:36px;background:var(--navy3)"></div>
+      <div style="text-align:center">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink3);margin-bottom:3px">УРОВЕНЬ</div>
+        <div style="font-size:14px;font-weight:700;color:var(--purple-lt)">Кризисный дипломат</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">
+      Завтра — <strong style="color:var(--gold)">Модуль 6: «Стать своей»</strong>.<br>
+      Compliance, рабочий день AM, конференции. Финальный экзамен — дело закрыто или расследование продолжается.
+    </div>
+
+    <button class="btn-continue" onclick="restart()">↺ Пройти ещё раз</button>
+  </div>
+</div>
+</div>
+
+<script>
+let xp=0; const XP_MAX=450;
+let dtDone={da:false,db:false,dc:false}; let dtScore=0;
+let chatScores={s1:0,s3:0,s4:0,s5:0};
+let s6Done=false;
+
+(function(){
+  const pw=document.getElementById('particles');
+  const cols=['#A78BFA','#7C3AED','#C9A84C','#2DD4BF'];
+  for(let i=0;i<16;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;background:${cols[i%4]};--dur:${7+Math.random()*9}s;--delay:${Math.random()*8}s;--dx:${(Math.random()-.5)*55}px`;
+    pw.appendChild(p);
+  }
+})();
+
+function addXP(n){
+  xp=Math.min(xp+n,XP_MAX);
+  document.getElementById('xp-fill').style.width=(xp/XP_MAX*100)+'%';
+  document.getElementById('xp-val').textContent=xp+' / '+XP_MAX;
+  if(n>0){const t=document.getElementById('xp-toast');t.textContent='+'+n+' XP';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+}
+
+function go(id,xpAmt){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const lbls={s0:'День пятый',s1:'Первый контакт',s2:'Диагностика',s3:'Объяснение',s4:'Источник фрода',s5:'Закрытие',s6:'Разбор',s7:'Дело закрыто'};
+  document.getElementById('scene-lbl').textContent=lbls[id]||'';
+  if(xpAmt)addXP(xpAmt);
+  if(id==='s7'){buildFinalScore();document.getElementById('final-xp').textContent=xp;}
+  window.scrollTo(0,0);
+}
+
+// Chat message sender
+function sendMsg(screenId,choicesId,msgId,correct,xpAmt,amText,feedback){
+  const choicesEl=document.getElementById(choicesId);
+  choicesEl.querySelectorAll('.chat-choice').forEach(b=>b.disabled=true);
+  if(correct) chatScores[screenId]=(chatScores[screenId]||0)+1;
+  addXP(xpAmt);
+
+  const chat=document.getElementById('chat'+screenId.replace('s',''));
+  // Show typing indicator
+  const typing=document.createElement('div');
+  typing.className='msg msg-typing';
+  typing.innerHTML=`<div class="msg-bubble"><span class="typing-dots"><span>.</span><span>.</span><span>.</span></span> Ирина печатает</div>`;
+  chat.appendChild(typing);
+  chat.scrollTop=chat.scrollHeight;
+
+  setTimeout(()=>{
+    chat.removeChild(typing);
+    // Add AM message
+    const msg=document.createElement('div');
+    msg.className='msg msg-am';
+    msg.innerHTML=`<div class="msg-bubble">${amText.replace(/\n/g,'<br>')}</div><div class="msg-time">${getTime()}</div>`;
+    chat.appendChild(msg);
+    chat.scrollTop=chat.scrollHeight;
+
+    // Show feedback
+    const rev=document.getElementById(screenId.replace('s','')+'-reveal')||document.getElementById(screenId+'-reveal');
+    if(rev){
+      rev.style.display='block';
+      rev.textContent=(correct?'✅ ':'⚠️ ')+feedback;
+    }
+
+    // Show next button after delay
+    setTimeout(()=>{
+      const nb=document.getElementById(screenId+'-next');
+      if(nb)nb.style.display='block';
+    },800);
+  },1200);
+}
+
+let timeOffset=0;
+function getTime(){
+  const base=new Date(2026,0,1,9,14+timeOffset,0);
+  timeOffset+=Math.floor(Math.random()*4)+2;
+  return base.getHours().toString().padStart(2,'0')+':'+base.getMinutes().toString().padStart(2,'0');
+}
+
+// Decision tree
+function dt(id,optId,correct,explain){
+  if(dtDone[id])return;
+  dtDone[id]=true;
+  const opts=document.getElementById(id+'-opts');
+  opts.querySelectorAll('.dtree-opt').forEach(o=>o.style.pointerEvents='none');
+  const chosen=opts.querySelector(`[onclick*="${optId}"]`)||event.currentTarget;
+  // find actual clicked element
+  const clicked=event.currentTarget;
+  clicked.classList.add(correct?'ok':'err');
+  const rev=document.getElementById(id+'-reveal');
+  rev.textContent=(correct?'✅ ':'❌ ')+explain;
+  rev.classList.add('show');
+  if(correct){dtScore++;addXP(30);}else addXP(8);
+
+  // unlock next step
+  if(id==='da'&&correct){
+    setTimeout(()=>{document.getElementById('db-wrap').style.opacity='1';document.getElementById('db-wrap').style.transition='opacity .5s';},500);
+  }
+  if(id==='db'&&correct){
+    setTimeout(()=>{document.getElementById('dc-wrap').style.opacity='1';document.getElementById('dc-wrap').style.transition='opacity .5s';},500);
+  }
+  if(id==='dc'){
+    const sc=document.getElementById('dt-score');
+    sc.innerHTML=`<strong style="color:${dtScore===3?'#4ADE80':dtScore>=2?'var(--gold)':'#EF4444'}">${dtScore}/3 шага верных.</strong> ${dtScore===3?'Идеальная диагностика!':dtScore>=2?'Хорошо.':'Повтори алгоритм расследования.'}`;
+    document.getElementById('dt-next').style.display='block';
+  }
+}
+
+// S6 dialogue
+function handleS6(idx){
+  document.querySelectorAll('#ch-s6 .choice-btn').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb-s6');
+  fb.style.display='block';
+  if(idx===0){
+    document.querySelectorAll('#ch-s6 .choice-btn')[0].classList.add('correct');
+    fb.innerHTML=`<div class="npc-row"><div class="npc-avatar av-dmitry">📊</div><div><div class="npc-name nm-d">Дмитрий</div><div class="dialogue-box db-d"><strong>Именно.</strong> Эта структура — универсальная. Работает с любым кризисом: технический сбой, антифрод, cap, задержка постбека. Когда будешь писать курс для AM — это должен быть отдельный модуль с симуляцией диалогов.</div></div></div><button class="btn-continue" onclick="go('s7',0)" style="margin-top:10px">Завершить модуль →</button>`;
+    addXP(30);
+  }else{
+    document.querySelectorAll('#ch-s6 .choice-btn')[1].classList.add('correct');
+    fb.innerHTML=`<div class="npc-row"><div class="npc-avatar av-dmitry">📊</div><div><div class="npc-name nm-d">Дмитрий</div><div class="dialogue-box db-d">Хороший вопрос. «Взять ответственность» ≠ признать вину. Это показать партнёру что ты <strong>на его стороне</strong>. «Должны были предупредить» — это не «мы облажались», это «я контролирую ситуацию и слежу за твоим интересом». Разоружает лучше любых аргументов.</div></div></div><button class="btn-continue" onclick="go('s7',0)" style="margin-top:10px">Завершить →</button>`;
+    addXP(30);
+  }
+}
+
+function buildFinalScore(){
+  const total=Object.values(chatScores).reduce((a,b)=>a+b,0)+dtScore;
+  const maxTotal=7;
+  const pct=Math.round(total/maxTotal*100);
+  const items=[
+    ['sc-data',chatScores['s1']>0],
+    ['sc-noaccuse',chatScores['s3']>0||chatScores['s4']>0],
+    ['sc-resp',chatScores['s3']>0],
+    ['sc-solution',chatScores['s4']>0],
+    ['sc-upsell',chatScores['s5']>0],
+  ];
+  items.forEach(([id,ok])=>{
+    const el=document.getElementById(id);
+    if(el){el.textContent=ok?'✓':'✗';el.className='cs-val '+(ok?'cs-ok':'cs-bad');}
+  });
+}
+
+function restart(){
+  xp=0;dtScore=0;s6Done=false;
+  dtDone={da:false,db:false,dc:false};
+  chatScores={s1:0,s3:0,s4:0,s5:0};
+  timeOffset=0;
+  document.getElementById('xp-fill').style.width='0%';
+  document.getElementById('xp-val').textContent='0 / 450';
+  document.querySelectorAll('.choice-btn,.chat-choice,.dtree-opt').forEach(b=>{b.disabled=false;b.style.pointerEvents='';b.className=b.className.replace(/correct|wrong|ok|err|sent/g,'').trim();});
+  document.querySelectorAll('[id$="-reveal"]').forEach(r=>{r.style.display='none';r.textContent='';r.className=(r.className||'').replace(' show','');});
+  document.querySelectorAll('[id$="-next"]').forEach(b=>b.style.display='none');
+  document.querySelectorAll('#fb-s6').forEach(f=>{f.style.display='none';f.innerHTML='';});
+  ['db-wrap','dc-wrap'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.opacity='.35';el.style.transition='';}});
+  document.getElementById('dt-score').textContent='';
+  // Reset chat messages
+  ['1','3','4','5'].forEach(n=>{
+    const chat=document.getElementById('chat'+n);
+    if(!chat)return;
+    const firstMsg=chat.querySelector('.msg');
+    while(chat.children.length>1)chat.removeChild(chat.lastChild);
+  });
+  go('s0',0);
+}
+</script>
+</body>
+</html>
